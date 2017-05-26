@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "flow-bin": "^0.42.0",
+    "native-base": "^2.1.4",
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
+    "react-native-eventemitter": "0.0.1",
     "react-native-vector-icons": "^4.1.1",
     "react-navigation": "^1.0.0-beta.11"
   },
