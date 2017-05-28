@@ -14,7 +14,7 @@ export default class Lobby extends Component {
 		};
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 		this.getLobby();
 	}
 

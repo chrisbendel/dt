@@ -14,7 +14,7 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false, user: null };
+    this.state = { loggedIn: false, user: {} };
   }
 
   componentWillMount() {

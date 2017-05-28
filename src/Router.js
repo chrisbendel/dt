@@ -34,6 +34,7 @@ const DrawerIcon = ({ navigation }) => {
 	);
 };
 
+//Return a view here with either the user profile image/logout or a login route
 const DrawerContent = (props, user) => {
 	console.log(props);
 	console.log(user);
@@ -100,7 +101,7 @@ const GuestDrawerRoutes = {
 
 export const createNavigator = (
 	loggedIn: boolean = false,
-	user: Object = { test: "hi" }
+	user: Object = {}
 ) => {
 	return new StackNavigator(
 		{
