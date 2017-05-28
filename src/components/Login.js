@@ -1,25 +1,32 @@
 import React, { Component } from "react";
 import EventEmitter from "react-native-eventemitter";
+import { Text, Dimensions, AsyncStorage, AlertIOS } from "react-native";
 
-import Logout from "./Views/LogoutView";
-import Login from "./Views/LoginView";
-import FullSpinner from "./Views/FullSpinnerView";
-import { Container } from "native-base";
-import { AsyncStorage } from "react-native";
-import app from "./app";
+import {
+  Container,
+  Body,
+  Button,
+  Content,
+  Form,
+  Item,
+  Input
+} from "native-base";
 
-export default class Profile extends Component {
+import { login, logout } from "./../api/requests";
+
+export default class Login extends Component {
   constructor(props) {
     super(props);
 
+    EventEmitter.on("loginError", e => {
+      AlertIOS.alert(e);
+    });
+
     this.state = {
-      loading: false
+      username: "",
+      password: ""
     };
-
-    this.auth = this.auth.bind(this);
-    this.loading = this.loading.bind(this);
   }
-
   componentWillMount() {
     this.auth();
   }
@@ -41,18 +48,78 @@ export default class Profile extends Component {
   render() {
     return (
       <Container>
-        {this.state.loading
-          ? <FullSpinner />
-          : this.state.user
-              ? <Logout
-                  name={this.state.user.username}
-                  id={this.state.user._id}
-                  avatar={this.state.user.profileImage.secure_url}
-                  auth={this.auth}
-                  loading={this.loading}
+        <Content>
+          <Body style={styles.Body}>
+            <Form style={styles.Form}>
+              <Item style={styles.Box}>
+                <Input
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  returnKeyType="done"
+                  returnKeyLabel="done"
+                  onChangeText={username => this.setState({ username })}
+                  style={styles.pholder}
+                  placeholder="Username"
                 />
-              : <Login auth={this.auth} loading={this.loading} />}
+              </Item>
+              <Item last style={styles.Box}>
+                <Input
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  returnKeyType="done"
+                  returnKeyLabel="done"
+                  secureTextEntry={true}
+                  onChangeText={password => this.setState({ password })}
+                  style={styles.pholder}
+                  placeholder="Password"
+                />
+              </Item>
+              <Button
+                block
+                bordered
+                onPress={() => {
+                  this.loading();
+                  login(this.state.username, this.state.password).then(() => {
+                    this.auth();
+                  });
+                }}
+              >
+                <Text>Login</Text>
+              </Button>
+            </Form>
+          </Body>
+        </Content>
       </Container>
     );
   }
 }
+
+const { height, width } = Dimensions.get("window");
+const styles = {
+  Body: {
+    flex: 1,
+    marginTop: height / 4,
+    // height: screenHeight,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  Form: {
+    width: 200
+  },
+
+  Box: {
+    // justifyContent: 'center',
+    alignItems: "center"
+  },
+
+  Name: {
+    fontWeight: "bold"
+    // justifyContent: 'center',
+    // textAlign: 'center'
+  },
+
+  pholder: {
+    textAlign: "center"
+  }
+};

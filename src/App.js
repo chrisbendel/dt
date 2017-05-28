@@ -20,8 +20,7 @@ export default class App extends Component {
   componentWillMount() {
     AsyncStorage.getItem("user").then(user => {
       if (user) {
-        this.setState({ loggedIn: true, user: user });
-        user = JSON.parse(user);
+        this.setState({ loggedIn: true, user: JSON.parse(user) });
       } else {
         this.setState({ loggedIn: false, user: {} });
       }

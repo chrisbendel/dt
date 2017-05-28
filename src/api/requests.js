@@ -1,9 +1,5 @@
-// import EventEmitter from "react-native-eventemitter";
-// import { AsyncStorage } from "react-native";
-// import User from "./user/user";
-// import Room from "./room/room";
-// import roles from "./user/roles";
-// import socket from "./socket";
+import EventEmitter from "react-native-eventemitter";
+import { AsyncStorage } from "react-native";
 const base = "https://api.dubtrack.fm/";
 
 /******************/
@@ -37,7 +33,7 @@ export function login(username, password) {
     .then(res => res.json())
     .then(res => {
       if (res.code == 200) {
-        return this.getUserInfo(username).then(user => {
+        return getUserInfo(username).then(user => {
           EventEmitter.emit("userAuth", user._id);
           AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {
             console.log("Logged in");
