@@ -19,7 +19,7 @@ export function logout() {
   });
 }
 
-login = function(username, password) {
+export function login(username, password) {
   let login = {
     method: "POST",
     headers: {
@@ -53,9 +53,9 @@ login = function(username, password) {
         });
       }
     });
-};
+}
 
-getUserInfo = function(user) {
+export function getUserInfo(user) {
   return fetch(base + "user/" + user)
     .then(res => res.json())
     .then(json => {
@@ -64,7 +64,7 @@ getUserInfo = function(user) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
 /******************/
 /* LOBBY API CALLS */
@@ -92,13 +92,11 @@ export function getLobby(room = null) {
   }
 }
 
-// filterRooms = function(q) {};
-
 /******************/
 /* ROOM API CALLS */
 /******************/
 
-getRoomInfo = function(room) {
+export function getRoomInfo(room) {
   return fetch(base + "room/" + room)
     .then(res => res.json())
     .then(json => {
@@ -107,9 +105,9 @@ getRoomInfo = function(room) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
-getRoomUsers = function(room) {
+export function getRoomUsers(room) {
   return fetch(base + "room/" + room + "/users")
     .then(res => res.json())
     .then(json => {
@@ -118,9 +116,9 @@ getRoomUsers = function(room) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
-chat = function(message, room, realTimeChannel) {
+export function chat(message, room, realTimeChannel) {
   let obj = {
     method: "POST",
     headers: {
@@ -139,9 +137,9 @@ chat = function(message, room, realTimeChannel) {
   return fetch(base + "chat/" + room, obj).catch(e => {
     console.log(e);
   });
-};
+}
 
-joinRoom = function(id) {
+export function joinRoom(id) {
   let obj = {
     method: "POST",
     headers: {
@@ -151,9 +149,9 @@ joinRoom = function(id) {
     }
   };
   return fetch("https://api.dubtrack.fm/room/" + id + "/users", obj);
-};
+}
 
-currentSong = function(id) {
+export function currentSong(id) {
   return fetch("https://api.dubtrack.fm/room/" + id + "/playlist/active")
     .then(res => res.json())
     .then(json => {
@@ -162,13 +160,13 @@ currentSong = function(id) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
 /******************/
 /* PRIVATE MESSAGE API CALLS */
 /******************/
 
-listMessages = function() {
+export function getMessages() {
   return fetch(base + "message")
     .then(res => res.json())
     .then(json => {
@@ -177,9 +175,9 @@ listMessages = function() {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
-getConversation = function(id) {
+export function getConversation(id) {
   return fetch(base + "message/" + id)
     .then(res => res.json())
     .then(json => {
@@ -188,9 +186,9 @@ getConversation = function(id) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
-markAsRead = function(id) {
+export function markAsRead(id) {
   let obj = {
     method: "POST",
     headers: {
@@ -201,9 +199,9 @@ markAsRead = function(id) {
   };
 
   return fetch(base + "message/" + id + "/read", obj);
-};
+}
 
-newPM = function(usersid) {
+export function newPM(usersid) {
   if (usersid.length > 10) {
     console.log("conversations are up to 10 people.");
     return;
@@ -231,9 +229,9 @@ newPM = function(usersid) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
-checkNew = function() {
+export function checkNew() {
   return fetch(base + "message/new")
     .then(res => res.json())
     .then(json => {
@@ -242,9 +240,9 @@ checkNew = function() {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
-sendPM = function(id, message) {
+export function sendPM(id, message) {
   let obj = {
     method: "POST",
     headers: {
@@ -266,4 +264,4 @@ sendPM = function(id, message) {
     .catch(e => {
       console.log(e);
     });
-};
+}

@@ -1,39 +1,118 @@
 /* @flow */
 
-import React from "react";
-
+import React, { Component } from "react";
+import { Icon, Button, Image, Text } from "native-base";
+import { View, TouchableOpacity, AsyncStorage } from "react-native";
 import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  View
-} from "react-native";
-import { StackNavigator } from "react-navigation";
-
-import NavDrawer from "./components/NavDrawer";
+  DrawerNavigator,
+  StackNavigator,
+  DrawerItems,
+  navigationOptions
+} from "react-navigation";
 import Lobby from "./components/Lobby";
+import PrivateMessages from "./components/PrivateMessages";
 
-const Routes = {
-  NavDrawer: {
-    name: "Drawer",
-    description: "Navigation",
-    screen: NavDrawer
+class DrawerView extends Component {
+  constructor(props) {
+    super(props);
+    console.log(props);
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem("user").then(user => {
+      if (user) {
+        user = JSON.parse(user);
+        this.props.items = userRoutes;
+      } else {
+        this.props.items = userRoutes;
+      }
+    });
+  }
+
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <DrawerItems {...this.props} />
+      </View>
+    );
+  }
+}
+
+AsyncStorage.getItem("user").then(user => {
+  if (user) {
+    user = JSON.parse(user);
+    // this.props.items = userRoutes;
+    // this.setState({ loggedIn: true });
+  } else {
+    // this.props.items = userRoutes;
+    // this.setState({ loggedIn: false });
+  }
+});
+
+const userRoutes = {
+  Lobby: {
+    screen: Lobby,
+    navigationOptions: {
+      drawerLabel: "Lobby",
+      title: "Lobby"
+    }
+  },
+  PrivateMessages: {
+    screen: PrivateMessages,
+    navigationOptions: {
+      drawerLabel: "Messages",
+      title: "Messages"
+    }
   }
 };
 
-const AppNavigator = StackNavigator(
+const guestRoutes = {
+  Lobby: {
+    screen: Lobby,
+    navigationOptions: {
+      drawerLabel: "Lobby",
+      title: "Lobby"
+    }
+  }
+};
+
+const Drawer = new DrawerNavigator(guestRoutes, {
+  contentComponent: DrawerView,
+  drawerWidth: 200
+});
+
+const AppNavigator = new StackNavigator(
   {
-    ...Routes,
-    Lobby: {
-      screen: NavDrawer
+    Root: {
+      screen: Drawer
     }
   },
   {
-    initialRouteName: "Lobby",
-    mode: Platform.OS === "ios" ? "modal" : "card"
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: (
+        <View style={styles.drawerButton}>
+          <TouchableOpacity
+            onPress={() => {
+              const { routes, index } = navigation.state;
+              if (routes[index].routeName !== "DrawerClose") {
+                navigation.navigate("DrawerClose");
+              } else {
+                navigation.navigate("DrawerOpen");
+              }
+            }}
+          >
+            <Icon name="menu" navigate={navigation.navigate} />
+          </TouchableOpacity>
+        </View>
+      )
+    })
   }
 );
 
-export default () => <AppNavigator />;
+const styles = {
+  drawerButton: {
+    marginLeft: 30
+  }
+};
+
+export default AppNavigator;

@@ -8,7 +8,7 @@ const defaultImage = require("./../images/dt.png");
 export default class Lobby extends Component {
 	constructor(props) {
 		super(props);
-
+		console.log(this.props);
 		this.state = {
 			rooms: []
 		};
@@ -25,7 +25,7 @@ export default class Lobby extends Component {
 	}
 
 	renderItem = ({ item }) => {
-		console.log(item);
+		// console.log(item);
 		return (
 			<ListItem>
 				<Thumbnail
