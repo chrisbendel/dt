@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { Icon, Button, Image, Text } from "native-base";
-import { View, TouchableOpacity, AsyncStorage } from "react-native";
+import { View, TouchableOpacity, AsyncStorage, Platform } from "react-native";
 import {
 	DrawerNavigator,
 	TabNavigator,
@@ -15,7 +15,6 @@ import Lobby from "./components/Lobby";
 import PrivateMessages from "./components/PrivateMessages";
 
 const DrawerIcon = ({ navigation }) => {
-	console.log(navigation.state);
 	return (
 		<View style={styles.drawerButton}>
 			<TouchableOpacity
@@ -31,6 +30,16 @@ const DrawerIcon = ({ navigation }) => {
 			>
 				<Icon name="menu" navigation={navigation.navigate} />
 			</TouchableOpacity>
+		</View>
+	);
+};
+
+const DrawerContent = (props, user) => {
+	console.log(props);
+	console.log(user);
+	return (
+		<View style={{ flex: 1 }}>
+			<DrawerItems {...props} />
 		</View>
 	);
 };
@@ -89,16 +98,24 @@ const GuestDrawerRoutes = {
 	}
 };
 
-export const createNavigator = (user = false) => {
+export const createNavigator = (
+	loggedIn: boolean = false,
+	user: Object = { test: "hi" }
+) => {
 	return new StackNavigator(
 		{
 			Drawer: {
 				name: "Drawer",
 				screen: DrawerNavigator(
-					user ? UserDrawerRoutes : GuestDrawerRoutes
+					loggedIn ? UserDrawerRoutes : GuestDrawerRoutes,
+					{
+						drawerWidth: 200,
+						contentComponent: props => DrawerContent(props, user),
+						mode: Platform.OS === "ios" ? "modal" : "card"
+					}
 				)
 			},
-			...(user ? UserStack : GuestStack)
+			...(loggedIn ? UserStack : GuestStack)
 		},
 		{
 			navigationOptions: ({ navigation }) => ({
