@@ -6,7 +6,9 @@ import EventEmitter from "react-native-eventemitter";
 import { createNavigator } from "./Router";
 import Lobby from "./components/Lobby";
 import PrivateMessages from "./components/PrivateMessages";
-import Player from "./components/Player";
+import PlayerContainer from "./components/PlayerContainer";
+import { Player } from "react-native-audio-streaming";
+
 console.disableYellowBox = true;
 
 export default class App extends Component {
@@ -18,7 +20,6 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loggedIn: false, user: {} };
-
     EventEmitter.on("login", user => {
       this.setState({ loggedIn: true, user: user });
     });
@@ -43,9 +44,8 @@ export default class App extends Component {
     return (
       <Container>
         <Layout />
-        <Player />
+        <PlayerContainer />
       </Container>
     );
-    return <Layout />;
   }
 }
