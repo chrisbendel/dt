@@ -60,9 +60,6 @@ const MenuContent = (props, user) => {
 		//Logged out
 		return (
 			<View style={{ flex: 1 }}>
-				<Text style={{ textAlign: "center", justifyContent: "center" }}>
-					Hello
-				</Text>
 				<DrawerItems {...props} />
 			</View>
 		);

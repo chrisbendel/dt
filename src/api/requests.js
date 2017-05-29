@@ -9,8 +9,7 @@ const base = "https://api.dubtrack.fm/";
 export function logout() {
   return fetch(base + "auth/logout").then(() => {
     AsyncStorage.removeItem("user").then(() => {
-      EventEmitter.emit("userAuth", null);
-      console.log("Logged out");
+      EventEmitter.emit("logout");
     });
   });
 }
@@ -34,9 +33,8 @@ export function login(username, password) {
     .then(res => {
       if (res.code == 200) {
         return getUserInfo(username).then(user => {
-          EventEmitter.emit("userAuth", user._id);
           AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {
-            console.log("Logged in");
+            EventEmitter.emit("login", user);
           });
         });
       } else {
@@ -68,7 +66,7 @@ export function getUserInfo(user) {
 
 export function getLobby(room = null) {
   if (room) {
-    return fetch("https://api.dubtrack.fm/room/term/" + q)
+    return fetch("https://api.dubtrack.fm/room/term/" + room)
       .then(res => res.json())
       .then(json => {
         return json.data;

@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Icon, Button, Image, Text } from "native-base";
 import { View, TouchableOpacity, AsyncStorage } from "react-native";
+import EventEmitter from "react-native-eventemitter";
 
 import { createNavigator } from "./Router";
 import Lobby from "./components/Lobby";
 import PrivateMessages from "./components/PrivateMessages";
+
+console.disableYellowBox = true;
 
 export default class App extends Component {
   state = {
@@ -15,6 +18,14 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loggedIn: false, user: {} };
+
+    EventEmitter.on("login", user => {
+      this.setState({ loggedIn: true, user: user });
+    });
+
+    EventEmitter.on("logout", () => {
+      this.setState({ loggedIn: false, user: {} });
+    });
   }
 
   componentWillMount() {

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import EventEmitter from "react-native-eventemitter";
 import { Text, Dimensions, AsyncStorage, AlertIOS } from "react-native";
-
 import {
   Container,
   Body,
@@ -12,6 +11,7 @@ import {
   Input
 } from "native-base";
 
+import Loading from "./Loading";
 import { login, logout } from "./../api/requests";
 
 export default class Login extends Component {
@@ -46,6 +46,10 @@ export default class Login extends Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <Loading />;
+    }
+
     return (
       <Container>
         <Content>
