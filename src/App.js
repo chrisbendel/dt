@@ -6,7 +6,7 @@ import EventEmitter from "react-native-eventemitter";
 import { createNavigator } from "./Router";
 import Lobby from "./components/Lobby";
 import PrivateMessages from "./components/PrivateMessages";
-
+import Player from "./components/Player";
 console.disableYellowBox = true;
 
 export default class App extends Component {
@@ -43,9 +43,7 @@ export default class App extends Component {
     return (
       <Container>
         <Layout />
-        <Footer>
-          <Text> Hello </Text>
-        </Footer>
+        <Player />
       </Container>
     );
     return <Layout />;

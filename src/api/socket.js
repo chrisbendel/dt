@@ -1,4 +1,5 @@
-let EngineIOClient = require("react-native-engine.io-client");
+// let EngineIOClient = require("react-native-engine.io-client");
+import EngineIOClient from "react-native-engine.io-client";
 import EventEmitter from "react-native-eventemitter";
 import { AsyncStorage } from "react-native";
 export default class Socket {

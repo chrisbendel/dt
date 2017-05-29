@@ -13,8 +13,11 @@
     "native-base": "^2.1.4",
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
+    "react-native-engine.io-client": "^1.6.12",
     "react-native-eventemitter": "0.0.1",
+    "react-native-sliding-up-panel": "^1.1.12",
     "react-native-vector-icons": "^4.1.1",
+    "react-native-youtube": "^1.0.0-alpha.4",
     "react-navigation": "^1.0.0-beta.11"
   },
   "devDependencies": {
