@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Icon, Button, Image, Text } from "native-base";
+import { Container, Footer, Icon, Button, Image, Text } from "native-base";
 import { View, TouchableOpacity, AsyncStorage } from "react-native";
 import EventEmitter from "react-native-eventemitter";
 
@@ -40,6 +40,14 @@ export default class App extends Component {
 
   render() {
     let Layout = createNavigator(this.state.loggedIn, this.state.user);
+    return (
+      <Container>
+        <Layout />
+        <Footer>
+          <Text> Hello </Text>
+        </Footer>
+      </Container>
+    );
     return <Layout />;
   }
 }
