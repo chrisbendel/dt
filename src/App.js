@@ -7,7 +7,6 @@ import { createNavigator } from "./Router";
 import Lobby from "./components/Lobby";
 import PrivateMessages from "./components/PrivateMessages";
 import PlayerContainer from "./components/PlayerContainer";
-import { Player } from "react-native-audio-streaming";
 
 console.disableYellowBox = true;
 

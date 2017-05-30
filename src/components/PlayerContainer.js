@@ -13,20 +13,16 @@ import {
   AsyncStorage,
   Animated,
   View,
+  DeviceEventEmitter,
   TouchableOpacity,
   Dimensions
 } from "react-native";
 import SlidingUpPanel from "react-native-sliding-up-panel";
-
-// import Soundcloud from "react-native-soundcloud";
-// import { Actions } from "react-native-router-flux";
 import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
 import { currentSong } from "./../api/requests";
-import { Player } from "react-native-audio-streaming";
-
-//Public API key ripped from the website, can use this for now til i get a response from SC
-// const SC = new Soundcloud("F8q33BQPCtQHy1sLdye9DriPDNIECjcs");
+import { Player, MediaStates } from "react-native-audio-toolkit";
+// import MusicControl from "react-native-music-control";
 
 const { height, width } = Dimensions.get("window");
 const MAXHEIGHT = height - 22;
@@ -51,50 +47,16 @@ export default class PlayerContainer extends Component {
     // this.getScStream("11384003");
     let socket;
 
-    // AsyncStorage.getItem("user").then(user => {
-    //   user = JSON.parse(user);
-    //   if (user) {
-    //     socket = new Socket(user._id);
-    //   } else {
-    //     socket = new Socket();
-    //   }
-
-    //   EventEmitter.on("connectUser", id => {
-    //     socket.connectUser(id);
-    //   });
-
-    //   EventEmitter.on("userAuth", user => {
-    //     this.setState({ user: user });
-    //   });
-
-    //   EventEmitter.on("newSong", song => {
-    //     console.log(song);
-    //     this.setState({ song: song, playing: true });
-    //   });
-
-    //   EventEmitter.on("skipSong", msg => {
-    //     console.log(msg);
-    //     this.setState({ song: null, playing: false });
-    //     // this.setState({song: song, playing: true});
-    //   });
-
-    //   EventEmitter.on("roomJoin", room => {
-    //     socket.join(room._id);
-    //     if (room.currentSong) {
-    //       this.setState({ playing: true, room: room });
-    //       this.getSongTime(room);
-    //     } else {
-    //       this.setState({ playing: false, room: room });
-    //     }
-    //   });
-    // });
-
     this.state = {
       room: null,
       song: null,
       buffering: false,
       panelOpen: false
     };
+  }
+
+  _statusChanged(status) {
+    console.log(status);
   }
 
   getScStream(id) {
@@ -121,10 +83,9 @@ export default class PlayerContainer extends Component {
           info["adaptive_fmts"] = tmp;
           for (var link of info["adaptive_fmts"]) {
             console.log(link);
-            console.log(link.type);
-            // if (link.type.includes("vorbis")) {
-            if (link.type.includes("vorbis")) {
-              console.log(typeof link.url);
+            if (link.type.includes("audio/mp4")) {
+              // if (link.type.includes("audio/orvis")) {
+              console.log(link.url);
               this.setState({ song: link.url });
             }
           }
@@ -153,7 +114,10 @@ export default class PlayerContainer extends Component {
     let playing = this.state.playing;
     let song = this.state.song;
     let room = this.state.room;
+    console.log(song);
     if (song) {
+      // RNAudioStreamer.setUrl(song);
+      this.player = new Player(song);
       return (
         <View>
           <SlidingUpPanel
@@ -164,21 +128,46 @@ export default class PlayerContainer extends Component {
             handlerHeight={90}
             allowStayMiddle={false}
             handlerDefaultView={
-              <Player
-                url={
-                  song
-                  // "https://cf-media.sndcdn.com/RUgfMvPc0UbF.128.mp3?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vUlVnZk12UGMwVWJGLjEyOC5tcDMiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE0OTYwOTY5MzZ9fX1dfQ__&Signature=D6vBVgjU37Nl00mkDtC2Z~TN08GfbjQNHyq3JLwEG6GqMlSqkeWqsyiTtbcvTqWWFP~k8PGuAF85OJrwjzSOD-IFGGPgisB2v9QpKdRXhxc99a496mlwrBq8trCZ7qhK2j2Z1HO21OR-qBG-1uCir3Dr19vZrjofAEA9bDu9JHU3TuSKraF4BamdsNkirGG7yoCYO9IxE-2~Ui-S-Srk9ZMj1S~0f8pXyRISRTOtRalKi2a3HM~t2CTrJYx~MU4gv87HdXsv8vJsLU1JCHwWg3OwhlisiaRYQRoABvMy5hFYj4gPzkhsIzKZ1DPjOSsAKRwzfxnMPTYbyLo2PTJXjA__&Key-Pair-Id=APKAJAGZ7VMH2PFPW6UQ"
-                }
-              />
-              // <Button
-              //   onPress={() => {
-              //     this.toggleRoomPanel();
-              //     console.log(this.panel);
-              //     // this.panel.collapsePanel();
-              //   }}
-              // >
-              //   <Text> Press me </Text>
-              // </Button>
+              <Container>
+                <Button
+                  onPress={() => {
+                    this.player.play();
+                    // this.player.play(() => {
+                    //   MusicControl.setNowPlaying({
+                    //     title: "Billie Jean",
+                    //     artwork: "https://i.imgur.com/e1cpwdo.png", // URL or RN's image 3require()
+                    //     artist: "Michael Jackson",
+                    //     album: "Thriller",
+                    //     genre: "Post-disco, Rhythm and Blues, Funk, Dance-pop",
+                    //     duration: 294, // (Seconds)
+                    //     description: "", // Android Only
+                    //     color: 0xffffff, // Notification Color - Android Only
+                    //     date: "1983-01-02T00:00:00Z" // Release Date (RFC 3339) - Android Only
+                    //   });
+                    // });
+                    // this.toggleRoomPanel();
+                    // console.log(this.panel);
+                    // this.panel.collapsePanel();
+                  }}
+                >
+                  <Text> Play </Text>
+                </Button>
+
+                <Button
+                  onPress={() => {
+                    //we can pause or set volume to 0
+                    //Pausing might take extra code to reset the current time of the room
+                    //Might impact slow loading since youtube takes forever initially anyway.
+                    this.player.volume = 0;
+                    this.player.pause();
+                    // this.toggleRoomPanel();
+                    // console.log(this.panel);
+                    // this.panel.collapsePanel();
+                  }}
+                >
+                  <Text> Pause </Text>
+                </Button>
+              </Container>
             }
           >
             <View style={styles.frontContainer}>
