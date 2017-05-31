@@ -11,6 +11,8 @@ import {
 	Text,
 	Input
 } from "native-base";
+import EventEmitter from "react-native-eventemitter";
+
 import { getLobby } from "./../api/requests";
 
 const defaultImage = require("./../images/dt.png");
@@ -48,9 +50,7 @@ export default class Lobby extends Component {
 	}
 
 	pressRow(item) {
-		console.log(item);
-		// app.user.joinRoom(rowData._id);
-		// EventEmitter.emit("roomJoin", rowData);
+		EventEmitter.emit("joinRoom", item._id);
 	}
 
 	renderItem = ({ item }) => {

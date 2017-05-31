@@ -149,7 +149,7 @@ export function currentSong(id) {
   return fetch("https://api.dubtrack.fm/room/" + id + "/playlist/active")
     .then(res => res.json())
     .then(json => {
-      return json;
+      return json.data;
     })
     .catch(e => {
       console.log(e);
