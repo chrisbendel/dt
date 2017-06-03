@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import EventEmitter from "react-native-eventemitter";
 import {
   Container,
+  Content,
+  Col,
+  Grid,
+  Row,
   Footer,
   FooterTab,
   Spinner,
@@ -27,23 +31,9 @@ import { Player, MediaStates } from "react-native-audio-toolkit";
 const { height, width } = Dimensions.get("window");
 const MAXHEIGHT = height - 22;
 
-function qsToJson(qs) {
-  var res = {};
-  var pars = qs.split("&");
-  var kv, k, v;
-  for (i in pars) {
-    kv = pars[i].split("=");
-    k = kv[0];
-    v = kv[1];
-    res[k] = decodeURIComponent(v);
-  }
-  return res;
-}
-
 export default class PlayerContainer extends Component {
   constructor(props) {
     super(props);
-    // this.getScStream("11384003");
     let socket;
 
     EventEmitter.on("joinRoom", id => {
@@ -76,7 +66,8 @@ export default class PlayerContainer extends Component {
       id +
       "/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
     return fetch(url).then(res => {
-      this.setState({ song: res.url });
+      return (this.player = new Player(res.url).prepare());
+      // this.setState({ song: res.url });
     });
   }
 
@@ -87,23 +78,31 @@ export default class PlayerContainer extends Component {
   // }
 
   toggleRoomPanel() {
-    if (this.panel.state.containerHeight == MAXHEIGHT) {
+    let height = this.panel.state.getContainerHeight();
+    console.log(height);
+    if (height == MAXHEIGHT) {
       this.panel.collapsePanel();
       this.setState({ panelOpen: false });
     } else {
       this.panel.reloadHeight(MAXHEIGHT);
       this.setState({ panelOpen: true });
     }
+
+    // if (this.panel.state.containerHeight == MAXHEIGHT) {
+    //   this.panel.collapsePanel();
+    //   this.setState({ panelOpen: false });
+    // } else {
+    //   this.panel.reloadHeight(MAXHEIGHT);
+    //   this.setState({ panelOpen: true });
+    // }
   }
 
   //TODO Put media controls in here
-  setPlayerInfo(song) {
-    console.log(song);
+  getPlayerContainer(song) {
     switch (song.songInfo.type) {
       case "youtube":
         return (
           <Container>
-            <Text> HELLO </Text>
             <YouTube
               ref="youtubePlayer"
               videoId={song.songInfo.fkid}
@@ -114,39 +113,58 @@ export default class PlayerContainer extends Component {
               controls={0}
               apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
               origin={"https://www.youtube.com"}
-              //This logic needs work...
-              // onChangeState={e => {
-              //   if (e.state == "buffering") {
-              //     this.setState({ buffering: true });
-              //   } else if (e.state == "ended") {
-              //     this.setState({ song: null });
-              //   } else {
-              //     this.setState({ buffering: false });
-              //     this.refs.youtubePlayer.seekTo(song.startTime);
-              //   }
-              //   console.log(e);
-              // }}
+              // This logic needs work...
+              onChangeState={e => {
+                if (e.state == "buffering") {
+                  this.setState({ buffering: true });
+                } else if (e.state == "ended") {
+                  this.setState({ song: null });
+                } else {
+                  this.setState({ buffering: false });
+                  this.refs.youtubePlayer.seekTo(song.startTime);
+                }
+                console.log(e);
+              }}
               onReady={e => {
                 console.log(e);
                 this.refs.youtubePlayer.seekTo(song.startTime);
               }}
               style={styles.player}
             />
-            <Button
-              onPress={() => {
-                console.log(this.refs.youtubePlayer);
-                // this.refs.youtubePlayer.mute();
-              }}
-            >
-              <Text>press</Text>
-            </Button>
+            <Footer>
+              <FooterTab>
+                <Button>
+                  <Icon
+                    name={this.state.panelOpen ? "arrow-down" : "arrow-up"}
+                  />
+                </Button>
+              </FooterTab>
+            </Footer>
           </Container>
         );
         console.log("youtube", song);
         break;
       case "soundcloud":
-        this.getScStream(song.songInfo.fkid);
-        console.log("soundcloud", song);
+        this.getScStream(song.songInfo.fkid).then(player => {
+          console.log(player);
+          //player handles duration of songs in ms, not seconds
+          player.seek(song.startTime * 1000, () => {
+            player.play();
+          });
+        });
+        return (
+          <Container>
+            <Footer>
+              <FooterTab>
+                <Button>
+                  <Icon
+                    name={this.state.panelOpen ? "arrow-down" : "arrow-up"}
+                  />
+                </Button>
+              </FooterTab>
+            </Footer>
+          </Container>
+        );
         break;
       default:
         return null;
@@ -157,12 +175,11 @@ export default class PlayerContainer extends Component {
     let song = this.state.song;
     let room = this.state.room;
     let playerContainer;
-    // let playerContainer = this.setPlayerInfo(song);
+    // let playerContainer = this.getPlayerContainer(song);
     if (room) {
       if (song) {
-        playerContainer = this.setPlayerInfo(song);
+        playerContainer = this.getPlayerContainer(song);
       }
-      // RNAudioStreamer.setUrl(song);
       return (
         <View style={{ paddingBottom: 90 }}>
           <SlidingUpPanel
@@ -346,7 +363,7 @@ const styles = {
 //         for (var link of info["adaptive_fmts"]) {
 //           console.log(link);
 //           if (link.type.includes("audio/mp4")) {
-//             this.player = new Player(link.url).prepare();
+// this.player = new Player(link.url).prepare();
 //             // if (link.type.includes("audio/orvis")) {
 //             // console.log(link.url);
 //             this.setState({ song: link.url });
@@ -355,4 +372,17 @@ const styles = {
 //       }
 //     });
 //   });
+// }
+
+// function qsToJson(qs) {
+//   var res = {};
+//   var pars = qs.split("&");
+//   var kv, k, v;
+//   for (i in pars) {
+//     kv = pars[i].split("=");
+//     k = kv[0];
+//     v = kv[1];
+//     res[k] = decodeURIComponent(v);
+//   }
+//   return res;
 // }
