@@ -25,7 +25,6 @@ import PrivateMessages from "./components/PrivateMessages";
 
 //Return a view here with either the user profile image/logout or a login route
 const MenuContent = (props, user) => {
-	console.log(user);
 	if (Object.keys(user).length) {
 		//Logged in
 		return (
@@ -134,7 +133,6 @@ export const createNavigator = (
 	user: Object = {}
 ) => {
 	let routes = loggedIn ? UserDrawerRoutes : GuestDrawerRoutes;
-	console.log(user);
 	return StackNavigator(
 		{
 			Menu: {

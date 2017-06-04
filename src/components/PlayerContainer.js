@@ -99,228 +99,97 @@ export default class PlayerContainer extends Component {
 
   //TODO Put media controls in here
   getPlayerContainer(song) {
-    switch (song.songInfo.type) {
-      case "youtube":
-        return (
-          <Container>
-            <YouTube
-              ref="youtubePlayer"
-              videoId={song.songInfo.fkid}
-              play={true}
-              rel={false}
-              showFullscreenButton={false}
-              showinfo={false}
-              controls={0}
-              apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
-              origin={"https://www.youtube.com"}
-              // This logic needs work...
-              onChangeState={e => {
-                if (e.state == "buffering") {
-                  this.setState({ buffering: true });
-                } else if (e.state == "ended") {
-                  this.setState({ song: null });
-                } else {
-                  this.setState({ buffering: false });
+    console.log("inside getpc", song);
+    if (song) {
+      switch (song.songInfo.type) {
+        case "youtube":
+          return (
+            <View>
+              <YouTube
+                ref="youtubePlayer"
+                videoId={song.songInfo.fkid}
+                play={true}
+                rel={false}
+                showFullscreenButton={false}
+                showinfo={false}
+                controls={0}
+                apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
+                origin={"https://www.youtube.com"}
+                // This logic needs work...
+                onChangeState={e => {
+                  if (e.state == "buffering") {
+                    this.setState({ buffering: true });
+                  } else if (e.state == "ended") {
+                    this.setState({ song: null });
+                  } else {
+                    this.setState({ buffering: false });
+                    this.refs.youtubePlayer.seekTo(song.startTime);
+                  }
+                  console.log(e);
+                }}
+                onReady={e => {
+                  console.log(e);
                   this.refs.youtubePlayer.seekTo(song.startTime);
-                }
-                console.log(e);
-              }}
-              onReady={e => {
-                console.log(e);
-                this.refs.youtubePlayer.seekTo(song.startTime);
-              }}
-              style={styles.player}
-            />
-            <Footer>
-              <FooterTab>
-                <Button>
-                  <Icon
-                    name={this.state.panelOpen ? "arrow-down" : "arrow-up"}
-                  />
-                </Button>
-              </FooterTab>
-            </Footer>
-          </Container>
-        );
-        console.log("youtube", song);
-        break;
-      case "soundcloud":
-        this.getScStream(song.songInfo.fkid).then(player => {
-          console.log(player);
-          //player handles duration of songs in ms, not seconds
-          player.seek(song.startTime * 1000, () => {
-            player.play();
+                }}
+                style={styles.player}
+              />
+              <Footer>
+                <FooterTab>
+                  <Button>
+                    <Icon name="arrow-up" />
+                  </Button>
+                </FooterTab>
+              </Footer>
+            </View>
+          );
+          console.log("youtube", song);
+          break;
+        case "soundcloud":
+          this.getScStream(song.songInfo.fkid).then(player => {
+            //player handles duration of songs in ms, not seconds
+            player.seek(song.startTime * 1000, () => {
+              player.play();
+            });
           });
-        });
-        return (
-          <Container>
+          return (
             <Footer>
               <FooterTab>
                 <Button>
-                  <Icon
-                    name={this.state.panelOpen ? "arrow-down" : "arrow-up"}
-                  />
+                  <Icon name="arrow-up" />
                 </Button>
               </FooterTab>
             </Footer>
-          </Container>
-        );
-        break;
-      default:
-        return null;
+          );
+          break;
+        default:
+          return null;
+      }
+    } else {
+      return (
+        <Footer>
+          <FooterTab>
+            <Text> Noone is playing right now </Text>
+          </FooterTab>
+        </Footer>
+      );
     }
   }
 
   render() {
     let song = this.state.song;
+    console.log("render", song);
     let room = this.state.room;
-    let playerContainer;
+    console.log(room);
     // let playerContainer = this.getPlayerContainer(song);
     if (room) {
-      if (song) {
-        playerContainer = this.getPlayerContainer(song);
-      }
-      return (
-        <View style={{ paddingBottom: 90 }}>
-          <SlidingUpPanel
-            ref={panel => {
-              this.panel = panel;
-            }}
-            containerMaximumHeight={height - 22}
-            containerHeight={height - 22}
-            handlerHeight={90}
-            allowStayMiddle={false}
-            handlerDefaultView={
-              playerContainer
-              // <Container>
-              //   <Button
-              //     onPress={() => {
-              //       this.player.play();
-              //     }}
-              //   >
-              //     <Text> Play </Text>
-              //   </Button>
+      let playerContainer = this.getPlayerContainer(song);
 
-              //   <Button
-              //     onPress={() => {
-              //       this.player.volume = 0;
-              //       this.player.pause();
-              //       // this.toggleRoomPanel();
-              //       // console.log(this.panel);
-              //       // this.panel.collapsePanel();
-              //     }}
-              //   >
-              //     <Text> Pause </Text>
-              //   </Button>
-              // </Container>
-            }
-          >
-            <View style={styles.frontContainer}>
-              <Text style={styles.panelText}>Hello guys!</Text>
-            </View>
-          </SlidingUpPanel>
-        </View>
-      );
+      return playerContainer;
     } else {
       return null;
     }
   }
 }
-
-//   return (
-//     <View style={styles.playerContainer}>
-//       {song
-// ? <YouTube
-//     ref="youtubePlayer"
-//     videoId={song.songInfo.fkid}
-//     play={playing}
-//     hidden={false}
-//     playsInline={true}
-//     showinfo={false}
-//     apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
-//     origin={"https://www.youtube.com"}
-//     onChangeState={e => {
-//       if (e.state == "buffering") {
-//         this.setState({ buffering: true });
-//       } else if (e.state == "ended") {
-//         this.setState({ song: null });
-//       } else {
-//         this.setState({ buffering: false });
-//         this.refs.youtubePlayer.seekTo(song.startTime);
-//       }
-//       console.log(e);
-//     }}
-//     onReady={e => {
-//       console.log(e);
-//       this.refs.youtubePlayer.seekTo(song.startTime);
-//       this.setState({ isReady: true });
-//     }}
-//     style={styles.player}
-//   />
-//         : null}
-//       <View style={styles.info}>
-//         <Text
-//           style={{ fontSize: 11, fontWeight: "bold" }}
-//           numberOfLines={1}
-//         >
-//           {room.name}
-//         </Text>
-//       </View>
-//       {song
-//         ? <View style={styles.info}>
-//             <Text style={{ fontSize: 11 }} numberOfLines={1}>
-//               {song.songInfo.name}
-//             </Text>
-//           </View>
-//         : null}
-//       <Footer style={{ borderTopWidth: 0 }}>
-//         <FooterTab>
-//           <Button
-//             onPress={() => {
-//               //updub the song
-//             }}
-//           >
-//             <Icon name="ios-arrow-up" />
-//           </Button>
-//           <Button
-//             onPress={() => {
-//               //downdub song
-//             }}
-//           >
-//             <Icon name="ios-arrow-down" />
-//           </Button>
-//           <Button
-//             onPress={() => {
-//               Actions.room({ title: room.name });
-//             }}
-//           >
-//             <Icon name="ios-chatbubbles" />
-//           </Button>
-//           <Button
-//             onPress={() => {
-//               if (playing) {
-//                 this.setState({ playing: false });
-//               } else {
-//                 this.getSongTime(room);
-//               }
-//             }}
-//           >
-//             {this.state.buffering
-//               ? <Spinner color="black" />
-//               : // <Icon name=".ion-loading-c"/>
-//                 <Icon
-//                   name={playing ? "ios-volume-up" : "ios-volume-off"}
-//                 />}
-//           </Button>
-//         </FooterTab>
-//       </Footer>
-//     </View>
-//   );
-// } else {
-//   return null;
-// }
-// }
-// }
 
 const styles = {
   container: {

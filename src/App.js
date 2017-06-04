@@ -5,6 +5,7 @@ import EventEmitter from "react-native-eventemitter";
 
 import { createNavigator } from "./Router";
 import Lobby from "./components/Lobby";
+import Socket from "./api/socket";
 import PrivateMessages from "./components/PrivateMessages";
 import PlayerContainer from "./components/PlayerContainer";
 
@@ -31,8 +32,11 @@ export default class App extends Component {
   componentWillMount() {
     AsyncStorage.getItem("user").then(user => {
       if (user) {
-        this.setState({ loggedIn: true, user: JSON.parse(user) });
+        let info = JSON.parse(user);
+        this.socket = new Socket(info._id);
+        this.setState({ loggedIn: true, user: info });
       } else {
+        this.socket = new Socket();
         this.setState({ loggedIn: false, user: {} });
       }
     });

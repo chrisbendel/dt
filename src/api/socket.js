@@ -4,8 +4,17 @@ import { AsyncStorage } from "react-native";
 export default class Socket {
   constructor(userid = null) {
     this.sock = null;
-
+    this.room = null;
     this.create(userid);
+
+    EventEmitter.on("joinRoom", id => {
+      if (this.room) {
+        this.leave(this.room);
+      }
+
+      this.join(id);
+      this.room = id;
+    });
   }
 
   create(userid) {
