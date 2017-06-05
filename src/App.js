@@ -19,7 +19,7 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false, user: {}, roomID: null };
+    this.state = { loggedIn: false, user: {} };
     EventEmitter.on('login', user => {
       this.setState({ loggedIn: true, user: user });
     });

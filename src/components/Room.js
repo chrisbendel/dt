@@ -35,12 +35,17 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 export default class Room extends Component {
 	constructor(props) {
 		super(props);
-
+		console.log(this.props.navigation);
 		this.state = {
 			messages: [],
-			roomID: this.props.navigation.state.params.room,
+			roomID: null,
+			// roomID: this.props.navigation.state.params.roomID,
 			mounted: false
 		};
+
+		// EventEmitter.on('joinRoom', id => {
+		// 	this.setState({ roomID: id });
+		// });
 
 		EventEmitter.on('chat', msg => {
 			getUserAvatar(msg.user._id).then(url => {
@@ -54,11 +59,16 @@ export default class Room extends Component {
 	}
 
 	componentWillMount() {
+		if (this.props.navigation.state.params) {
+			this.setState({
+				roomID: this.props.navigation.state.params.roomID
+			});
+		}
+
 		AsyncStorage.getItem('user').then(user => {
-			console.log(user);
+			console.log(JSON.parse(user));
 		});
 		//get room users here and load playlists and stuff with user info (Asyncstorage)
-		console.log(this.state);
 	}
 
 	renderItem({ item }) {
@@ -100,9 +110,9 @@ export default class Room extends Component {
 									<Input placeholder="Message ..." />
 								</Item>
 							</View>
-							<KeyboardSpacer topSpacing={-40} />
 
 						</View>
+						<KeyboardSpacer style={{ paddingTop: 20 }} />
 
 					</Tab>
 					<Tab heading="Users" />
@@ -110,7 +120,9 @@ export default class Room extends Component {
 				</Tabs>
 			);
 		} else {
-			return null;
+			return (
+				<Text> Join a room from the lobby to start listening! </Text>
+			);
 		}
 	}
 }

@@ -12,10 +12,9 @@ import {
 	Text,
 	Input
 } from 'native-base';
+
 import EventEmitter from 'react-native-eventemitter';
-
 import { getLobby } from './../api/requests';
-
 const defaultImage = require('./../images/dt.png');
 
 export default class Lobby extends Component {
@@ -27,7 +26,6 @@ export default class Lobby extends Component {
 			refreshing: false
 		};
 		console.log(this.props);
-		console.log(this.props.navigation);
 	}
 
 	componentWillMount() {
@@ -53,9 +51,10 @@ export default class Lobby extends Component {
 	}
 
 	pressRow(item) {
+		console.log(this);
 		this.props.navigation.navigate('Room', {
-			room: item._id,
-			name: item.name
+			name: item.name,
+			roomID: item._id
 		});
 		EventEmitter.emit('joinRoom', item._id);
 	}
@@ -107,22 +106,17 @@ export default class Lobby extends Component {
 						/>
 					</Item>
 				</Header>
-				{this.state.rooms.length
-					? <FlatList
-							refreshControl={
-								<RefreshControl
-									refreshing={this.state.refreshing}
-									onRefresh={this._onRefresh.bind(this)}
-								/>
-							}
-							data={this.state.rooms}
-							keyExtractor={item => item._id}
-							renderItem={this.renderItem.bind(this)}
+				<FlatList
+					refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh.bind(this)}
 						/>
-					: <Content>
-							<Text> No rooms with that name! </Text>
-						</Content>}
-
+					}
+					data={this.state.rooms}
+					keyExtractor={item => item._id}
+					renderItem={this.renderItem.bind(this)}
+				/>
 			</Container>
 		);
 	}

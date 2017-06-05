@@ -1,5 +1,3 @@
-/* @flow */
-
 import React, { Component } from 'react';
 import { Icon, Button, Image, Text, Thumbnail } from 'native-base';
 import {
@@ -97,41 +95,60 @@ const UserDrawerRoutes = {
 			headerVisible: false
 		})
 	},
+	Room: {
+		screen: Room,
+		title: 'Room',
+		navigationOptions: ({ navigation }) => ({
+			navigation: navigation,
+			drawerLabel: navigation.state.params
+				? navigation.state.params.name
+				: 'Room',
+			drawerIcon: <Icon name="chatbubbles" />,
+			title: navigation.state.params
+				? navigation.state.params.name
+				: 'Room',
+			headerVisible: false
+		})
+	},
 	Messages: {
 		screen: PrivateMessages,
 		title: 'Messages',
-		navigationOptions: {
+		navigationOptions: ({ navigation }) => ({
+			navigation: navigation,
 			drawerLabel: 'Messages',
 			drawerIcon: <Icon name="mail" />,
 			title: 'Messages',
 			headerVisible: false
-		}
+		})
 	}
-	// Room: {
-	// 	screen: Room,
-	// 	title: 'Room',
-	// 	navigationOptions: ({ navigation }) => ({
-	// 		drawerLabel: navigation.state.params
-	// 			? navigation.state.params.name
-	// 			: 'Room',
-	// 		drawerIcon: <Icon name="chatbubbles" />,
-	// 		title: navigation.state.params
-	// 			? navigation.state.params.name
-	// 			: 'Room',
-	// 		headerVisible: 'false'
-	// 	})
-	// }
 };
 
 const GuestDrawerRoutes = {
 	Lobby: {
 		screen: Lobby,
 		title: 'Lobby',
-		navigationOptions: {
+		navigationOptions: ({ navigation }) => ({
+			navigation: navigation,
 			drawerLabel: 'Lobby',
+			drawerIcon: <Icon name="apps" />,
 			title: 'Lobby',
 			headerVisible: false
-		}
+		})
+	},
+	Room: {
+		screen: Room,
+		title: 'Room',
+		navigationOptions: ({ navigation }) => ({
+			navigation: navigation,
+			drawerLabel: navigation.state.params
+				? navigation.state.params.name
+				: 'Room',
+			drawerIcon: <Icon name="chatbubbles" />,
+			title: navigation.state.params
+				? navigation.state.params.name
+				: 'Room',
+			headerVisible: false
+		})
 	},
 	Login: {
 		screen: Login,
@@ -161,15 +178,6 @@ export const createNavigator = (
 				contentComponent: props => MenuContent(props, user),
 				navigationOptions: ({ navigation }) => ({
 					headerLeft: <MenuButton navigation={navigation} />
-				})
-			},
-			Room: {
-				screen: Room,
-				title: 'Room',
-				navigationOptions: ({ navigation }) => ({
-					title: navigation.state.params
-						? navigation.state.params.name
-						: 'Room'
 				})
 			}
 		},
