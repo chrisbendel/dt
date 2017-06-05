@@ -1,8 +1,9 @@
-import React, { Component } from "react";
-import { FlatList, RefreshControl } from "react-native";
+import React, { Component } from 'react';
+import { FlatList, RefreshControl } from 'react-native';
 import {
 	Container,
 	Header,
+	Content,
 	ListItem,
 	Thumbnail,
 	Body,
@@ -10,21 +11,23 @@ import {
 	Icon,
 	Text,
 	Input
-} from "native-base";
-import EventEmitter from "react-native-eventemitter";
+} from 'native-base';
+import EventEmitter from 'react-native-eventemitter';
 
-import { getLobby } from "./../api/requests";
+import { getLobby } from './../api/requests';
 
-const defaultImage = require("./../images/dt.png");
+const defaultImage = require('./../images/dt.png');
 
 export default class Lobby extends Component {
 	constructor(props) {
 		super(props);
-		this.query = "";
+		this.query = '';
 		this.state = {
 			rooms: [],
 			refreshing: false
 		};
+		console.log(this.props);
+		console.log(this.props.navigation);
 	}
 
 	componentWillMount() {
@@ -44,16 +47,20 @@ export default class Lobby extends Component {
 	}
 
 	clearSearch() {
-		this.refs.search._root.setNativeProps({ text: "" });
-		this.query = "";
+		this.refs.search._root.setNativeProps({ text: '' });
+		this.query = '';
 		this.getLobby();
 	}
 
 	pressRow(item) {
-		EventEmitter.emit("joinRoom", item._id);
+		this.props.navigation.navigate('Room', {
+			room: item._id,
+			name: item.name
+		});
+		EventEmitter.emit('joinRoom', item._id);
 	}
 
-	renderItem = ({ item }) => {
+	renderItem({ item }) {
 		return (
 			<ListItem onPress={() => this.pressRow(item)}>
 				<Thumbnail
@@ -71,12 +78,12 @@ export default class Lobby extends Component {
 					<Text style={styles.textCenter} numberOfLines={2} note>
 						{item.currentSong
 							? item.currentSong.name
-							: "No one is playing"}
+							: 'No one is playing'}
 					</Text>
 				</Body>
 			</ListItem>
 		);
-	};
+	}
 
 	render() {
 		return (
@@ -90,7 +97,7 @@ export default class Lobby extends Component {
 						<Input
 							ref="search"
 							placeholder="Search rooms"
-							placeholderTextColor={"black"}
+							placeholderTextColor={'black'}
 							returnKeyType="search"
 							returnKeyLabel="search"
 							autoCapitalize="none"
@@ -100,17 +107,22 @@ export default class Lobby extends Component {
 						/>
 					</Item>
 				</Header>
-				<FlatList
-					refreshControl={
-						<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={this._onRefresh.bind(this)}
+				{this.state.rooms.length
+					? <FlatList
+							refreshControl={
+								<RefreshControl
+									refreshing={this.state.refreshing}
+									onRefresh={this._onRefresh.bind(this)}
+								/>
+							}
+							data={this.state.rooms}
+							keyExtractor={item => item._id}
+							renderItem={this.renderItem.bind(this)}
 						/>
-					}
-					data={this.state.rooms}
-					keyExtractor={item => item._id}
-					renderItem={this.renderItem.bind(this)}
-				/>
+					: <Content>
+							<Text> No rooms with that name! </Text>
+						</Content>}
+
 			</Container>
 		);
 	}
@@ -118,7 +130,7 @@ export default class Lobby extends Component {
 
 const styles = {
 	textCenter: {
-		justifyContent: "center",
-		textAlign: "center"
+		justifyContent: 'center',
+		textAlign: 'center'
 	}
 };

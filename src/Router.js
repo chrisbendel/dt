@@ -1,7 +1,7 @@
 /* @flow */
 
-import React, { Component } from "react";
-import { Icon, Button, Image, Text, Thumbnail } from "native-base";
+import React, { Component } from 'react';
+import { Icon, Button, Image, Text, Thumbnail } from 'native-base';
 import {
 	View,
 	TouchableOpacity,
@@ -9,19 +9,20 @@ import {
 	Platform,
 	ScrollView,
 	Alert
-} from "react-native";
+} from 'react-native';
 import {
 	DrawerNavigator,
 	DrawerView,
 	StackNavigator,
 	DrawerItems,
 	navigationOptions
-} from "react-navigation";
+} from 'react-navigation';
 
-import { logout } from "./api/requests";
-import Lobby from "./components/Lobby";
-import Login from "./components/Login";
-import PrivateMessages from "./components/PrivateMessages";
+import { logout } from './api/requests';
+import Lobby from './components/Lobby';
+import Login from './components/Login';
+import Room from './components/Room';
+import PrivateMessages from './components/PrivateMessages';
 
 //Return a view here with either the user profile image/logout or a login route
 const MenuContent = (props, user) => {
@@ -43,14 +44,14 @@ const MenuContent = (props, user) => {
 						full
 						transparent
 						onPress={() => {
-							Alert.alert("Logout?", null, [
-								{ text: "Cancel" },
-								{ text: "Logout", onPress: () => logout() }
+							Alert.alert('Logout?', null, [
+								{ text: 'Cancel' },
+								{ text: 'Logout', onPress: () => logout() }
 							]);
 						}}
 					>
 						<Icon name="log-out" />
-						<Text style={{ fontWeight: "bold" }}>Log Out</Text>
+						<Text style={{ fontWeight: 'bold' }}>Log Out</Text>
 					</Button>
 				</View>
 			</View>
@@ -71,10 +72,10 @@ const MenuButton = ({ navigation }) => {
 			<TouchableOpacity
 				onPress={() => {
 					const { routes, index } = navigation.state;
-					if (routes[index].routeName !== "DrawerClose") {
-						navigation.navigate("DrawerClose");
+					if (routes[index].routeName !== 'DrawerClose') {
+						navigation.navigate('DrawerClose');
 					} else {
-						navigation.navigate("DrawerOpen");
+						navigation.navigate('DrawerOpen');
 					}
 				}}
 			>
@@ -87,42 +88,57 @@ const MenuButton = ({ navigation }) => {
 const UserDrawerRoutes = {
 	Lobby: {
 		screen: Lobby,
-		title: "Lobby",
-		navigationOptions: {
-			drawerLabel: "Lobby",
+		title: 'Lobby',
+		navigationOptions: ({ navigation }) => ({
+			navigation: navigation,
+			drawerLabel: 'Lobby',
 			drawerIcon: <Icon name="apps" />,
-			title: "Lobby",
+			title: 'Lobby',
 			headerVisible: false
-		}
+		})
 	},
 	Messages: {
 		screen: PrivateMessages,
-		title: "Messages",
+		title: 'Messages',
 		navigationOptions: {
-			drawerLabel: "Messages",
+			drawerLabel: 'Messages',
 			drawerIcon: <Icon name="mail" />,
-			title: "Messages",
+			title: 'Messages',
 			headerVisible: false
 		}
 	}
+	// Room: {
+	// 	screen: Room,
+	// 	title: 'Room',
+	// 	navigationOptions: ({ navigation }) => ({
+	// 		drawerLabel: navigation.state.params
+	// 			? navigation.state.params.name
+	// 			: 'Room',
+	// 		drawerIcon: <Icon name="chatbubbles" />,
+	// 		title: navigation.state.params
+	// 			? navigation.state.params.name
+	// 			: 'Room',
+	// 		headerVisible: 'false'
+	// 	})
+	// }
 };
 
 const GuestDrawerRoutes = {
 	Lobby: {
 		screen: Lobby,
-		title: "Lobby",
+		title: 'Lobby',
 		navigationOptions: {
-			drawerLabel: "Lobby",
-			title: "Lobby",
+			drawerLabel: 'Lobby',
+			title: 'Lobby',
 			headerVisible: false
 		}
 	},
 	Login: {
 		screen: Login,
-		title: "Login",
+		title: 'Login',
 		navigationOptions: {
-			drawerLabel: "Log In",
-			title: "Log In",
+			drawerLabel: 'Log In',
+			title: 'Log In',
 			headerVisible: false
 		}
 	}
@@ -136,21 +152,30 @@ export const createNavigator = (
 	return StackNavigator(
 		{
 			Menu: {
-				name: "Menu",
+				name: 'Menu',
 				screen: DrawerNavigator(routes, {
-					mode: Platform.OS === "ios" ? "modal" : "card",
-					drawerWidth: 200,
+					mode: Platform.OS === 'ios' ? 'modal' : 'card',
+					drawerWidth: 300,
 					contentComponent: props => MenuContent(props, user)
 				}),
 				contentComponent: props => MenuContent(props, user),
 				navigationOptions: ({ navigation }) => ({
 					headerLeft: <MenuButton navigation={navigation} />
 				})
+			},
+			Room: {
+				screen: Room,
+				title: 'Room',
+				navigationOptions: ({ navigation }) => ({
+					title: navigation.state.params
+						? navigation.state.params.name
+						: 'Room'
+				})
 			}
 		},
 		{
 			navigationOptions: ({ navigation }) => ({
-				headerMode: "none"
+				headerMode: 'none'
 			})
 		}
 	);
@@ -161,12 +186,12 @@ const styles = {
 		marginLeft: 30
 	},
 	profileImage: {
-		alignItems: "center",
-		justifyContent: "center",
+		alignItems: 'center',
+		justifyContent: 'center',
 		marginTop: 20
 	},
 	center: {
-		alignItems: "center",
-		justifyContent: "center"
+		alignItems: 'center',
+		justifyContent: 'center'
 	}
 };

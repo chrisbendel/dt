@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import EventEmitter from "react-native-eventemitter";
+import React, { Component } from 'react';
+import EventEmitter from 'react-native-eventemitter';
 import {
   Container,
   Content,
@@ -12,7 +12,7 @@ import {
   Button,
   Icon,
   Text
-} from "native-base";
+} from 'native-base';
 import {
   AsyncStorage,
   Animated,
@@ -20,15 +20,15 @@ import {
   DeviceEventEmitter,
   TouchableOpacity,
   Dimensions
-} from "react-native";
-import SlidingUpPanel from "react-native-sliding-up-panel";
-import YouTube from "react-native-youtube";
-import Socket from "./../api/socket";
-import { currentSong, getRoomInfo } from "./../api/requests";
-import { Player, MediaStates } from "react-native-audio-toolkit";
+} from 'react-native';
+import SlidingUpPanel from 'react-native-sliding-up-panel';
+import YouTube from 'react-native-youtube';
+import Socket from './../api/socket';
+import { currentSong, getRoomInfo } from './../api/requests';
+import { Player, MediaStates } from 'react-native-audio-toolkit';
 // import MusicControl from "react-native-music-control";
 
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get('window');
 const MAXHEIGHT = height - 22;
 
 export default class PlayerContainer extends Component {
@@ -36,7 +36,7 @@ export default class PlayerContainer extends Component {
     super(props);
     let socket;
 
-    EventEmitter.on("joinRoom", id => {
+    EventEmitter.on('joinRoom', id => {
       getRoomInfo(id).then(room => {
         if (room.currentSong) {
           currentSong(room._id).then(song => {
@@ -57,14 +57,14 @@ export default class PlayerContainer extends Component {
   }
 
   _statusChanged(status) {
-    console.log(status);
+    console.log('status', status);
   }
 
   getScStream(id) {
     let url =
-      "https://api.soundcloud.com/tracks/" +
+      'https://api.soundcloud.com/tracks/' +
       id +
-      "/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
+      '/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs';
     return fetch(url).then(res => {
       return (this.player = new Player(res.url).prepare());
       // this.setState({ song: res.url });
@@ -77,32 +77,11 @@ export default class PlayerContainer extends Component {
   //   });
   // }
 
-  toggleRoomPanel() {
-    let height = this.panel.state.getContainerHeight();
-    console.log(height);
-    if (height == MAXHEIGHT) {
-      this.panel.collapsePanel();
-      this.setState({ panelOpen: false });
-    } else {
-      this.panel.reloadHeight(MAXHEIGHT);
-      this.setState({ panelOpen: true });
-    }
-
-    // if (this.panel.state.containerHeight == MAXHEIGHT) {
-    //   this.panel.collapsePanel();
-    //   this.setState({ panelOpen: false });
-    // } else {
-    //   this.panel.reloadHeight(MAXHEIGHT);
-    //   this.setState({ panelOpen: true });
-    // }
-  }
-
   //TODO Put media controls in here
   getPlayerContainer(song) {
-    console.log("inside getpc", song);
     if (song) {
       switch (song.songInfo.type) {
-        case "youtube":
+        case 'youtube':
           return (
             <View>
               <YouTube
@@ -113,13 +92,13 @@ export default class PlayerContainer extends Component {
                 showFullscreenButton={false}
                 showinfo={false}
                 controls={0}
-                apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
-                origin={"https://www.youtube.com"}
+                apiKey={'AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI'}
+                origin={'https://www.youtube.com'}
                 // This logic needs work...
                 onChangeState={e => {
-                  if (e.state == "buffering") {
+                  if (e.state == 'buffering') {
                     this.setState({ buffering: true });
-                  } else if (e.state == "ended") {
+                  } else if (e.state == 'ended') {
                     this.setState({ song: null });
                   } else {
                     this.setState({ buffering: false });
@@ -133,18 +112,13 @@ export default class PlayerContainer extends Component {
                 }}
                 style={styles.player}
               />
-              <Footer>
-                <FooterTab>
-                  <Button>
-                    <Icon name="arrow-up" />
-                  </Button>
-                </FooterTab>
-              </Footer>
+              <Button>
+                <Icon name="arrow-up" />
+              </Button>
             </View>
           );
-          console.log("youtube", song);
           break;
-        case "soundcloud":
+        case 'soundcloud':
           this.getScStream(song.songInfo.fkid).then(player => {
             //player handles duration of songs in ms, not seconds
             player.seek(song.startTime * 1000, () => {
@@ -152,13 +126,9 @@ export default class PlayerContainer extends Component {
             });
           });
           return (
-            <Footer>
-              <FooterTab>
-                <Button>
-                  <Icon name="arrow-up" />
-                </Button>
-              </FooterTab>
-            </Footer>
+            <Button>
+              <Icon name="arrow-up" />
+            </Button>
           );
           break;
         default:
@@ -166,25 +136,25 @@ export default class PlayerContainer extends Component {
       }
     } else {
       return (
-        <Footer>
-          <FooterTab>
-            <Text> Noone is playing right now </Text>
-          </FooterTab>
-        </Footer>
+        <Button>
+          <Text>Noone is playing right now</Text>
+        </Button>
       );
     }
   }
 
   render() {
     let song = this.state.song;
-    console.log("render", song);
     let room = this.state.room;
-    console.log(room);
-    // let playerContainer = this.getPlayerContainer(song);
     if (room) {
       let playerContainer = this.getPlayerContainer(song);
-
-      return playerContainer;
+      return (
+        <Footer>
+          <FooterTab>
+            {playerContainer}
+          </FooterTab>
+        </Footer>
+      );
     } else {
       return null;
     }
@@ -193,22 +163,22 @@ export default class PlayerContainer extends Component {
 
 const styles = {
   container: {
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   playerContainer: {
-    backgroundColor: "#f8f8f8",
+    backgroundColor: '#f8f8f8',
     height: 80
   },
   info: {
-    alignItems: "center"
+    alignItems: 'center'
   },
   controls: {
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   player: {
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     height: 1,
     width: 1
   }
