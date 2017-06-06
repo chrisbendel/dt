@@ -18,6 +18,8 @@ import {
 
 import EventEmitter from 'react-native-eventemitter';
 import { getLobby } from './../api/requests';
+import { Actions } from 'react-native-router-flux';
+
 const defaultImage = require('./../images/dt.png');
 
 export default class Lobby extends Component {
@@ -53,12 +55,9 @@ export default class Lobby extends Component {
 	}
 
 	pressRow(item) {
-		console.log(this);
-		// this.props.navigation.navigate('Room', {
-		// 	name: item.name,
-		// 	roomID: item._id
-		// });
 		EventEmitter.emit('joinRoom', item);
+		console.log(this);
+		Actions.Room({ room: item, title: item.name });
 	}
 
 	renderItem({ item }) {

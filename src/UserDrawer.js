@@ -22,7 +22,6 @@ class UserDrawer extends Component {
     getSideMenu() {
         let user = this.props.user;
         let room = this.state.room;
-        console.log(room);
         return (
             <View style={styles.drawerContainer}>
                 <Thumbnail source={{ uri: user.profileImage.secure_url }} />

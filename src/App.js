@@ -3,6 +3,7 @@ import {
   Container,
   Footer,
   Header,
+  Content,
   Icon,
   Button,
   Image,
@@ -27,17 +28,19 @@ console.disableYellowBox = true;
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false, user: null };
+    this.state = { loggedIn: false, user: null, room: null };
     EventEmitter.on('login', user => {
       this.socket = new Socket(user._id);
       this.setState({ user: user });
-      // Actions.user({ user: user });
     });
 
     EventEmitter.on('logout', () => {
       this.socket = new Socket();
       this.setState({ user: null });
-      // Actions.guest({ user: null });
+    });
+
+    EventEmitter.on('joinRoom', room => {
+      this.setState({ room: room });
     });
   }
 
@@ -48,38 +51,43 @@ export default class App extends Component {
         console.log(info);
         this.socket = new Socket(info._id);
         this.setState({ user: info });
-        // Actions.user({ user: info });
       } else {
         this.socket = new Socket();
         this.setState({ user: null });
-        // Actions.guest({ user: null });
       }
     });
   }
 
   render() {
     let user = this.state.user;
+    let room = this.state.room;
     return (
-      <Router key={user ? user._id : 'guest'}>
-        <Scene
-          key="drawer"
-          open={false}
-          gestureResponseDistance={200}
-          user={user}
-          component={user ? UserDrawer : GuestDrawer}
-        >
-          <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
-            <Scene key="Lobby" component={Lobby} title="Lobby" />
-            <Scene key="Room" component={Room} title="Room" />
-            <Scene
-              key="Messages"
-              component={PrivateMessages}
-              title="Messages"
-            />
-            <Scene key="Login" component={Login} title="Login" />
+      <Container>
+        <Router key={user ? user._id : 'guest'}>
+          <Scene
+            key="drawer"
+            open={false}
+            gestureResponseDistance={200}
+            room={room}
+            user={user}
+            component={user ? UserDrawer : GuestDrawer}
+          >
+            <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
+              <Scene key="Lobby" component={Lobby} title="Lobby" />
+              <Scene key="Room" component={Room} title="Room" />
+              <Scene
+                key="Messages"
+                component={PrivateMessages}
+                title="Messages"
+              />
+              <Scene key="Login" component={Login} title="Login" />
+            </Scene>
           </Scene>
-        </Scene>
-      </Router>
+        </Router>
+        <Footer>
+          <PlayerContainer />
+        </Footer>
+      </Container>
     );
   }
 }

@@ -10,18 +10,16 @@ class GuestDrawer extends Component {
     constructor(props) {
         super(props);
         console.log(this.props);
-        this.state = {
-            room: null
-        };
 
-        EventEmitter.on('joinRoom', room => {
-            this.setState({ room: room });
-        });
+        // EventEmitter.on('joinRoom', room => {
+        //     this.setState({ room: room });
+        // });
     }
 
     getSideMenu() {
         let user = this.props.user;
-        let room = this.state.room;
+        let room = this.props.room;
+        console.log(room);
         return (
             <View style={styles.drawerContainer}>
                 <View>
@@ -42,7 +40,10 @@ class GuestDrawer extends Component {
                               transparent
                               onPress={() => {
                                   this._drawer.close();
-                                  Actions.Room();
+                                  Actions.Room({
+                                      room: room,
+                                      title: room.name
+                                  });
                               }}
                           >
                               <Icon name="chatbubbles" />

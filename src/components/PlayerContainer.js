@@ -28,9 +28,6 @@ import { currentSong, getRoomInfo } from './../api/requests';
 import { Player, MediaStates } from 'react-native-audio-toolkit';
 // import MusicControl from "react-native-music-control";
 
-const { height, width } = Dimensions.get('window');
-const MAXHEIGHT = height - 22;
-
 export default class PlayerContainer extends Component {
   constructor(props) {
     super(props);
@@ -156,7 +153,15 @@ export default class PlayerContainer extends Component {
         </Footer>
       );
     } else {
-      return null;
+      return (
+        <Footer>
+          <FooterTab>
+            <Button>
+              <Text>Join a room from the lobby to start listening!</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      );
     }
   }
 }
