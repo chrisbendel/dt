@@ -31,13 +31,13 @@ export default class App extends Component {
     EventEmitter.on('login', user => {
       this.socket = new Socket(user._id);
       this.setState({ user: user });
-      Actions.UserDrawer({ user: user });
+      // Actions.user({ user: user });
     });
 
     EventEmitter.on('logout', () => {
+      this.socket = new Socket();
       this.setState({ user: null });
-      Actions.GuestDrawer({ user: null });
-      // Actions.drawer({ user: null, type:  });
+      // Actions.guest({ user: null });
     });
   }
 
@@ -45,13 +45,14 @@ export default class App extends Component {
     AsyncStorage.getItem('user').then(user => {
       if (user) {
         let info = JSON.parse(user);
+        console.log(info);
         this.socket = new Socket(info._id);
         this.setState({ user: info });
-        Actions.UserDrawer();
+        // Actions.user({ user: info });
       } else {
         this.socket = new Socket();
         this.setState({ user: null });
-        Actions.GuestDrawer({ user: null });
+        // Actions.guest({ user: null });
       }
     });
   }
@@ -59,32 +60,13 @@ export default class App extends Component {
   render() {
     let user = this.state.user;
     return (
-      <Router>
+      <Router key={user ? user._id : 'guest'}>
         <Scene
-          key="UserDrawer"
+          key="drawer"
           open={false}
           gestureResponseDistance={200}
           user={user}
-          component={UserDrawer}
-        >
-          <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
-            <Scene key="Lobby" component={Lobby} title="Lobby" />
-            <Scene key="Room" component={Room} title="Room" />
-            <Scene
-              key="Messages"
-              component={PrivateMessages}
-              title="Messages"
-            />
-            <Scene key="Login" component={Login} title="Login" />
-          </Scene>
-        </Scene>
-
-        <Scene
-          key="GuestDrawer"
-          open={false}
-          gestureResponseDistance={200}
-          user={user}
-          component={GuestDrawer}
+          component={user ? UserDrawer : GuestDrawer}
         >
           <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
             <Scene key="Lobby" component={Lobby} title="Lobby" />

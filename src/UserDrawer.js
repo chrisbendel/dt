@@ -13,6 +13,7 @@ class UserDrawer extends Component {
         this.state = {
             room: null
         };
+
         EventEmitter.on('joinRoom', room => {
             this.setState({ room: room });
         });
