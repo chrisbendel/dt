@@ -12,10 +12,13 @@ import { View, TouchableOpacity, AsyncStorage } from 'react-native';
 import EventEmitter from 'react-native-eventemitter';
 
 import Lobby from './components/Lobby';
+import Room from './components/Room';
+import Login from './components/Login';
+
 import Socket from './api/socket';
 import PrivateMessages from './components/PrivateMessages';
 import PlayerContainer from './components/PlayerContainer';
-import { Scene, Router } from 'react-native-router-flux';
+import { Scene, Router, Actions } from 'react-native-router-flux';
 import GuestDrawer from './GuestDrawer';
 import UserDrawer from './UserDrawer';
 
@@ -26,11 +29,15 @@ export default class App extends Component {
     super(props);
     this.state = { loggedIn: false, user: null };
     EventEmitter.on('login', user => {
-      this.setState({ loggedIn: true, user: user });
+      this.socket = new Socket(user._id);
+      this.setState({ user: user });
+      Actions.UserDrawer({ user: user });
     });
 
     EventEmitter.on('logout', () => {
-      this.setState({ loggedIn: false, user: {} });
+      this.setState({ user: null });
+      Actions.GuestDrawer({ user: null });
+      // Actions.drawer({ user: null, type:  });
     });
   }
 
@@ -39,43 +46,58 @@ export default class App extends Component {
       if (user) {
         let info = JSON.parse(user);
         this.socket = new Socket(info._id);
-        this.setState({ loggedIn: true, user: info });
+        this.setState({ user: info });
+        Actions.UserDrawer();
       } else {
         this.socket = new Socket();
-        this.setState({ loggedIn: false, user: {} });
+        this.setState({ user: null });
+        Actions.GuestDrawer({ user: null });
       }
     });
   }
 
   render() {
-    if (this.state.user) {
-      return (
-        <Router>
-
-          <Scene key="main" drawerIcon={<Icon name="menu" />}>
+    let user = this.state.user;
+    return (
+      <Router>
+        <Scene
+          key="UserDrawer"
+          open={false}
+          gestureResponseDistance={200}
+          user={user}
+          component={UserDrawer}
+        >
+          <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
+            <Scene key="Lobby" component={Lobby} title="Lobby" />
+            <Scene key="Room" component={Room} title="Room" />
             <Scene
-              key="drawer"
-              user={this.state.user}
-              component={this.state.user ? UserDrawer : GuestDrawer}
-            >
-              <Scene
-                renderBackButton={null}
-                key="Lobby"
-                component={Lobby}
-                title="Lobby"
-              />
-              <Scene
-                renderBackButton={null}
-                key="Messages"
-                component={PrivateMessages}
-                title="Messages"
-              />
-            </Scene>
+              key="Messages"
+              component={PrivateMessages}
+              title="Messages"
+            />
+            <Scene key="Login" component={Login} title="Login" />
           </Scene>
-        </Router>
-      );
-    } else {
-      return null;
-    }
+        </Scene>
+
+        <Scene
+          key="GuestDrawer"
+          open={false}
+          gestureResponseDistance={200}
+          user={user}
+          component={GuestDrawer}
+        >
+          <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
+            <Scene key="Lobby" component={Lobby} title="Lobby" />
+            <Scene key="Room" component={Room} title="Room" />
+            <Scene
+              key="Messages"
+              component={PrivateMessages}
+              title="Messages"
+            />
+            <Scene key="Login" component={Login} title="Login" />
+          </Scene>
+        </Scene>
+      </Router>
+    );
   }
 }

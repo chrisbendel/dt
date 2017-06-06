@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import { Thumbnail, Button, Icon } from 'native-base';
 import Drawer from 'react-native-drawer';
 import { Actions, DefaultRenderer } from 'react-native-router-flux';
+import EventEmitter from 'react-native-eventemitter';
+import { logout } from './api/requests';
 
-class MyDrawer extends Component {
+class UserDrawer extends Component {
     constructor(props) {
         super(props);
         console.log(this.props);
+        this.state = {
+            room: null
+        };
+        EventEmitter.on('joinRoom', room => {
+            this.setState({ room: room });
+        });
     }
+
     getSideMenu() {
         let user = this.props.user;
+        let room = this.state.room;
+        console.log(room);
         return (
             <View style={styles.drawerContainer}>
                 <Thumbnail source={{ uri: user.profileImage.secure_url }} />
@@ -27,6 +38,19 @@ class MyDrawer extends Component {
                         <Icon name="apps" />
                         <Text> Lobby </Text>
                     </Button>
+                    {room
+                        ? <Button
+                              iconLeft
+                              transparent
+                              onPress={() => {
+                                  this._drawer.close();
+                                  Actions.Room();
+                              }}
+                          >
+                              <Icon name="chatbubbles" />
+                              <Text>{room.name}</Text>
+                          </Button>
+                        : null}
                     <Button
                         iconLeft
                         transparent
@@ -37,6 +61,20 @@ class MyDrawer extends Component {
                     >
                         <Icon name="mail" />
                         <Text> Messages </Text>
+                    </Button>
+                    <Button
+                        iconLeft
+                        transparent
+                        onPress={() => {
+                            Alert.alert('Logout?', null, [
+                                { text: 'Cancel' },
+                                { text: 'Logout', onPress: () => logout() }
+                            ]);
+                            Actions.refresh();
+                        }}
+                    >
+                        <Icon name="log-out" />
+                        <Text> Log Out </Text>
                     </Button>
                 </View>
             </View>
@@ -57,7 +95,9 @@ class MyDrawer extends Component {
                 content={SideMenu}
                 tapToClose={true}
                 openDrawerOffset={0.4}
+                panOpenMask={0.35}
                 panCloseMask={0.4}
+                panThreshold={0.5}
                 negotiatePan={true}
                 tweenHandler={ratio => ({
                     main: { opacity: Math.max(0.54, 1 - ratio) }
@@ -81,4 +121,4 @@ const styles = {
     }
 };
 
-export default MyDrawer;
+export default UserDrawer;

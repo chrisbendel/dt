@@ -58,7 +58,7 @@ export default class Lobby extends Component {
 		// 	name: item.name,
 		// 	roomID: item._id
 		// });
-		EventEmitter.emit('joinRoom', item._id);
+		EventEmitter.emit('joinRoom', item);
 	}
 
 	renderItem({ item }) {

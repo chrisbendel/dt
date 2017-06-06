@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import EventEmitter from "react-native-eventemitter";
-import { Text, Dimensions, AsyncStorage, AlertIOS } from "react-native";
+import React, { Component } from 'react';
+import EventEmitter from 'react-native-eventemitter';
+import { Text, Dimensions, AsyncStorage, AlertIOS } from 'react-native';
 import {
   Container,
   Body,
@@ -9,22 +9,22 @@ import {
   Form,
   Item,
   Input
-} from "native-base";
+} from 'native-base';
 
-import Loading from "./Loading";
-import { login, logout } from "./../api/requests";
+import Loading from './Loading';
+import { login } from './../api/requests';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
 
-    EventEmitter.on("loginError", e => {
+    EventEmitter.on('loginError', e => {
       AlertIOS.alert(e);
     });
 
     this.state = {
-      username: "",
-      password: ""
+      username: '',
+      password: ''
     };
   }
   componentWillMount() {
@@ -32,10 +32,10 @@ export default class Login extends Component {
   }
 
   auth() {
-    AsyncStorage.getItem("user").then(user => {
+    AsyncStorage.getItem('user').then(user => {
       this.loading(false);
       this.setState({ user: JSON.parse(user) });
-      EventEmitter.emit("auth");
+      EventEmitter.emit('auth');
     });
   }
 
@@ -98,14 +98,14 @@ export default class Login extends Component {
   }
 }
 
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get('window');
 const styles = {
   Body: {
     flex: 1,
     marginTop: height / 4,
     // height: screenHeight,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   Form: {
@@ -114,16 +114,16 @@ const styles = {
 
   Box: {
     // justifyContent: 'center',
-    alignItems: "center"
+    alignItems: 'center'
   },
 
   Name: {
-    fontWeight: "bold"
+    fontWeight: 'bold'
     // justifyContent: 'center',
     // textAlign: 'center'
   },
 
   pholder: {
-    textAlign: "center"
+    textAlign: 'center'
   }
 };

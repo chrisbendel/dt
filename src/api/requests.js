@@ -31,6 +31,7 @@ export function login(username, password) {
   return fetch(base + 'auth/dubtrack', login)
     .then(res => res.json())
     .then(res => {
+      console.log(res);
       if (res.code == 200) {
         return getUserInfo(username).then(user => {
           AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
