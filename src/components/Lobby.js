@@ -6,6 +6,9 @@ import {
 	Content,
 	ListItem,
 	Thumbnail,
+	Footer,
+	FooterTab,
+	Button,
 	Body,
 	Item,
 	Icon,
@@ -25,7 +28,6 @@ export default class Lobby extends Component {
 			rooms: [],
 			refreshing: false
 		};
-		console.log(this.props);
 	}
 
 	componentWillMount() {
@@ -52,10 +54,10 @@ export default class Lobby extends Component {
 
 	pressRow(item) {
 		console.log(this);
-		this.props.navigation.navigate('Room', {
-			name: item.name,
-			roomID: item._id
-		});
+		// this.props.navigation.navigate('Room', {
+		// 	name: item.name,
+		// 	roomID: item._id
+		// });
 		EventEmitter.emit('joinRoom', item._id);
 	}
 

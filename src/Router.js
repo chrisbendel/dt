@@ -8,13 +8,6 @@ import {
 	ScrollView,
 	Alert
 } from 'react-native';
-import {
-	DrawerNavigator,
-	DrawerView,
-	StackNavigator,
-	DrawerItems,
-	navigationOptions
-} from 'react-navigation';
 
 import { logout } from './api/requests';
 import Lobby from './components/Lobby';
@@ -161,33 +154,42 @@ const GuestDrawerRoutes = {
 	}
 };
 
-export const createNavigator = (
-	loggedIn: boolean = false,
-	user: Object = {}
-) => {
+export const createNavigator = (loggedIn = false, user = null) => {
 	let routes = loggedIn ? UserDrawerRoutes : GuestDrawerRoutes;
-	return StackNavigator(
-		{
-			Menu: {
-				name: 'Menu',
-				screen: DrawerNavigator(routes, {
-					mode: Platform.OS === 'ios' ? 'modal' : 'card',
-					drawerWidth: 300,
-					contentComponent: props => MenuContent(props, user)
-				}),
-				contentComponent: props => MenuContent(props, user),
-				navigationOptions: ({ navigation }) => ({
-					headerLeft: <MenuButton navigation={navigation} />
-				})
-			}
-		},
-		{
-			navigationOptions: ({ navigation }) => ({
-				headerMode: 'none'
-			})
-		}
-	);
+	return DrawerNavigator(routes, {
+		mode: Platform.OS === 'ios' ? 'modal' : 'card',
+		drawerWidth: 300,
+		contentComponent: props => MenuContent(props, user)
+	});
 };
+
+// export const createNavigator = (
+// 	loggedIn: boolean = false,
+// 	user: Object = {}
+// ) => {
+// 	let routes = loggedIn ? UserDrawerRoutes : GuestDrawerRoutes;
+// 	return StackNavigator(
+// 		{
+// 			Menu: {
+// 				name: 'Menu',
+// 				screen: DrawerNavigator(routes, {
+// mode: Platform.OS === 'ios' ? 'modal' : 'card',
+// 					drawerWidth: 300,
+// 					contentComponent: props => MenuContent(props, user)
+// 				}),
+// 				contentComponent: props => MenuContent(props, user),
+// 				navigationOptions: ({ navigation }) => ({
+// 					headerLeft: <MenuButton navigation={navigation} />
+// 				})
+// 			}
+// 		},
+// 		{
+// 			navigationOptions: ({ navigation }) => ({
+// 				headerMode: 'none'
+// 			})
+// 		}
+// 	);
+// };
 
 const styles = {
 	menuButton: {

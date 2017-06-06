@@ -1,25 +1,30 @@
 import React, { Component } from 'react';
-import { Container, Footer, Icon, Button, Image, Text } from 'native-base';
+import {
+  Container,
+  Footer,
+  Header,
+  Icon,
+  Button,
+  Image,
+  Text
+} from 'native-base';
 import { View, TouchableOpacity, AsyncStorage } from 'react-native';
 import EventEmitter from 'react-native-eventemitter';
 
-import { createNavigator } from './Router';
 import Lobby from './components/Lobby';
 import Socket from './api/socket';
 import PrivateMessages from './components/PrivateMessages';
 import PlayerContainer from './components/PlayerContainer';
+import { Scene, Router } from 'react-native-router-flux';
+import GuestDrawer from './GuestDrawer';
+import UserDrawer from './UserDrawer';
 
 console.disableYellowBox = true;
 
 export default class App extends Component {
-  state = {
-    loggedIn: Boolean,
-    user: Object
-  };
-
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false, user: {} };
+    this.state = { loggedIn: false, user: null };
     EventEmitter.on('login', user => {
       this.setState({ loggedIn: true, user: user });
     });
@@ -43,12 +48,34 @@ export default class App extends Component {
   }
 
   render() {
-    let Layout = createNavigator(this.state.loggedIn, this.state.user);
-    return (
-      <Container>
-        <Layout />
-        <PlayerContainer />
-      </Container>
-    );
+    if (this.state.user) {
+      return (
+        <Router>
+
+          <Scene key="main" drawerIcon={<Icon name="menu" />}>
+            <Scene
+              key="drawer"
+              user={this.state.user}
+              component={this.state.user ? UserDrawer : GuestDrawer}
+            >
+              <Scene
+                renderBackButton={null}
+                key="Lobby"
+                component={Lobby}
+                title="Lobby"
+              />
+              <Scene
+                renderBackButton={null}
+                key="Messages"
+                component={PrivateMessages}
+                title="Messages"
+              />
+            </Scene>
+          </Scene>
+        </Router>
+      );
+    } else {
+      return null;
+    }
   }
 }

@@ -110,7 +110,6 @@ export default class Room extends Component {
 									<Input placeholder="Message ..." />
 								</Item>
 							</View>
-
 						</View>
 						<KeyboardSpacer style={{ paddingTop: 20 }} />
 
