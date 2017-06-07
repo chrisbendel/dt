@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
-import { View, Text, Alert } from 'react-native';
-import { Thumbnail, Button, Icon } from 'native-base';
-import Drawer from 'react-native-drawer';
-import { Actions, DefaultRenderer } from 'react-native-router-flux';
-import EventEmitter from 'react-native-eventemitter';
-import { logout } from './api/requests';
+import React, { Component } from "react";
+import { View, Text, Alert } from "react-native";
+import { Thumbnail, Button, Icon } from "native-base";
+import Drawer from "react-native-drawer";
+import { Actions, DefaultRenderer } from "react-native-router-flux";
+import EventEmitter from "react-native-eventemitter";
+import { logout } from "./api/requests";
 
 class UserDrawer extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
         this.state = {
             room: null
         };
 
-        EventEmitter.on('joinRoom', room => {
+        EventEmitter.on("joinRoom", room => {
             this.setState({ room: room });
         });
     }
@@ -44,7 +43,10 @@ class UserDrawer extends Component {
                               transparent
                               onPress={() => {
                                   this._drawer.close();
-                                  Actions.Room();
+                                  Actions.Room({
+                                      room: room,
+                                      title: room.name
+                                  });
                               }}
                           >
                               <Icon name="chatbubbles" />
@@ -66,9 +68,9 @@ class UserDrawer extends Component {
                         iconLeft
                         transparent
                         onPress={() => {
-                            Alert.alert('Logout?', null, [
-                                { text: 'Cancel' },
-                                { text: 'Logout', onPress: () => logout() }
+                            Alert.alert("Logout?", null, [
+                                { text: "Cancel" },
+                                { text: "Logout", onPress: () => logout() }
                             ]);
                             Actions.refresh();
                         }}
@@ -114,10 +116,10 @@ class UserDrawer extends Component {
 
 const styles = {
     drawerContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: "column"
     }
 };
 

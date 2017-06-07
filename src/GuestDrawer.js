@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
-import { View, Text, Alert } from 'react-native';
-import { Thumbnail, Button, Icon } from 'native-base';
-import Drawer from 'react-native-drawer';
-import { Actions, DefaultRenderer } from 'react-native-router-flux';
-import EventEmitter from 'react-native-eventemitter';
-import { logout } from './api/requests';
+import React, { Component } from "react";
+import { View, Text, Alert } from "react-native";
+import { Thumbnail, Button, Icon } from "native-base";
+import Drawer from "react-native-drawer";
+import { Actions, DefaultRenderer } from "react-native-router-flux";
+import EventEmitter from "react-native-eventemitter";
+import { logout } from "./api/requests";
 
 class GuestDrawer extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
 
-        // EventEmitter.on('joinRoom', room => {
-        //     this.setState({ room: room });
-        // });
+        EventEmitter.on("joinRoom", room => {
+            this.setState({ room: room });
+        });
     }
 
     getSideMenu() {
@@ -110,10 +109,10 @@ class GuestDrawer extends Component {
 
 const styles = {
     drawerContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: "column"
     }
 };
 

@@ -21,7 +21,6 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
-import SlidingUpPanel from 'react-native-sliding-up-panel';
 import YouTube from 'react-native-youtube';
 import Socket from './../api/socket';
 import { currentSong, getRoomInfo } from './../api/requests';
@@ -33,8 +32,8 @@ export default class PlayerContainer extends Component {
     super(props);
     let socket;
 
-    EventEmitter.on('joinRoom', id => {
-      getRoomInfo(id).then(room => {
+    EventEmitter.on('joinRoom', room => {
+      getRoomInfo(room._id).then(room => {
         if (room.currentSong) {
           currentSong(room._id).then(song => {
             this.setState({ room: room, song: song });
@@ -43,13 +42,11 @@ export default class PlayerContainer extends Component {
           this.setState({ room: room });
         }
       });
-      // this.toggleRoomPanel();
     });
 
     this.state = {
       room: null,
       song: null,
-      panelOpen: false
     };
   }
 

@@ -88,6 +88,7 @@ export default class Lobby extends Component {
 	render() {
 		return (
 			<Container>
+				<Header />
 				<Header searchBar rounded>
 					<Item>
 						<Icon
