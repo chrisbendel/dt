@@ -2,9 +2,9 @@ import EngineIOClient from "react-native-engine.io-client";
 import EventEmitter from "react-native-eventemitter";
 import { AsyncStorage } from "react-native";
 export default class Socket {
-  constructor(user = null, room = null) {
+  constructor(user = null, roomid) {
     this.sock = null;
-    this.create(user ? user._id : null, room ? room._id : null);
+    this.create(user ? user._id : null, roomid);
     return this.sock;
   }
 
@@ -12,6 +12,7 @@ export default class Socket {
     return fetch("https://api.dubtrack.fm/auth/token")
       .then(res => res.json())
       .then(json => {
+        console.log(json.data);
         return new EngineIOClient({
           hostname: "ws.dubtrack.fm",
           secure: true,
@@ -28,14 +29,8 @@ export default class Socket {
         if (userid) {
           this.connectUser(userid);
           this.user = userid;
-          // this.sock.send(
-          // JSON.stringify({ action: 10, channel: 'user:' + userid })
-          // );
         }
-        if (roomid) {
-          this.join(roomid);
-          this.room = roomid;
-        }
+        this.join(roomid);
         this.sock.on("message", msg => {
           msg = JSON.parse(msg);
           // console.log(msg);
@@ -74,32 +69,8 @@ export default class Socket {
     this.sock.send(JSON.stringify({ action: 10, channel: "user:" + id }));
   }
 
-  //possibly use this to leave current room when joining a new one.
-  // leave(id) {
-  //   this.sock.close();
-  //   console.log("leaving room");
-  //   this.sock.send(
-  //     JSON.stringify({
-  //       action: 14,
-  //       channel: "room:" + id,
-  //       presence: { action: 1, data: {} }
-  //     })
-  //   );
-  // }
-
   join(id) {
-    console.log(this.room, id);
-    // if (this.room != id) {
-    //   this.leave(this.room);
-    // }
     console.log("joining room");
     this.sock.send(JSON.stringify({ action: 10, channel: "room:" + id }));
-    // this.sock.send(
-    //   JSON.stringify({
-    //     action: 14,
-    //     channel: "room:" + id,
-    //     presence: { action: 0, data: {} }
-    //   })
-    // );
   }
 }

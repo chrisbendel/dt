@@ -17,7 +17,7 @@ import {
 } from "native-base";
 
 import EventEmitter from "react-native-eventemitter";
-import { getLobby, joinRoom } from "./../api/requests";
+import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 
 const defaultImage = require("./../images/dt.png");

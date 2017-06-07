@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import EventEmitter from 'react-native-eventemitter';
+import React, { Component } from "react";
+import EventEmitter from "react-native-eventemitter";
 import {
   Container,
   Content,
@@ -12,7 +12,7 @@ import {
   Button,
   Icon,
   Text
-} from 'native-base';
+} from "native-base";
 import {
   AsyncStorage,
   Animated,
@@ -20,11 +20,11 @@ import {
   DeviceEventEmitter,
   TouchableOpacity,
   Dimensions
-} from 'react-native';
-import YouTube from 'react-native-youtube';
-import Socket from './../api/socket';
-import { currentSong, getRoomInfo } from './../api/requests';
-import { Player, MediaStates } from 'react-native-audio-toolkit';
+} from "react-native";
+import YouTube from "react-native-youtube";
+import Socket from "./../api/socket";
+import { currentSong, getRoomInfo } from "./../api/requests";
+import { Player, MediaStates } from "react-native-audio-toolkit";
 // import MusicControl from "react-native-music-control";
 
 export default class PlayerContainer extends Component {
@@ -32,7 +32,7 @@ export default class PlayerContainer extends Component {
     super(props);
     let socket;
 
-    EventEmitter.on('joinRoom', room => {
+    EventEmitter.on("joinRoom", room => {
       getRoomInfo(room._id).then(room => {
         if (room.currentSong) {
           currentSong(room._id).then(song => {
@@ -46,19 +46,19 @@ export default class PlayerContainer extends Component {
 
     this.state = {
       room: null,
-      song: null,
+      song: null
     };
   }
 
   _statusChanged(status) {
-    console.log('status', status);
+    console.log("status", status);
   }
 
   getScStream(id) {
     let url =
-      'https://api.soundcloud.com/tracks/' +
+      "https://api.soundcloud.com/tracks/" +
       id +
-      '/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs';
+      "/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
     return fetch(url).then(res => {
       return (this.player = new Player(res.url).prepare());
       // this.setState({ song: res.url });
@@ -75,7 +75,7 @@ export default class PlayerContainer extends Component {
   getPlayerContainer(song) {
     if (song) {
       switch (song.songInfo.type) {
-        case 'youtube':
+        case "youtube":
           return (
             <View>
               <YouTube
@@ -86,13 +86,13 @@ export default class PlayerContainer extends Component {
                 showFullscreenButton={false}
                 showinfo={false}
                 controls={0}
-                apiKey={'AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI'}
-                origin={'https://www.youtube.com'}
+                apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
+                origin={"https://www.youtube.com"}
                 // This logic needs work...
                 onChangeState={e => {
-                  if (e.state == 'buffering') {
+                  if (e.state == "buffering") {
                     this.setState({ buffering: true });
-                  } else if (e.state == 'ended') {
+                  } else if (e.state == "ended") {
                     this.setState({ song: null });
                   } else {
                     this.setState({ buffering: false });
@@ -112,7 +112,7 @@ export default class PlayerContainer extends Component {
             </View>
           );
           break;
-        case 'soundcloud':
+        case "soundcloud":
           this.getScStream(song.songInfo.fkid).then(player => {
             //player handles duration of songs in ms, not seconds
             player.seek(song.startTime * 1000, () => {
@@ -165,22 +165,22 @@ export default class PlayerContainer extends Component {
 
 const styles = {
   container: {
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center"
   },
   playerContainer: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: "#f8f8f8",
     height: 80
   },
   info: {
-    alignItems: 'center'
+    alignItems: "center"
   },
   controls: {
-    flexDirection: 'row'
+    flexDirection: "row"
   },
   player: {
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     height: 1,
     width: 1
   }

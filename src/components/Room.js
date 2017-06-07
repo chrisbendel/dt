@@ -61,7 +61,6 @@ export default class Room extends Component {
 	}
 
 	onSend() {
-		console.log(this.state.room);
 		let room = this.state.room;
 		chat(this.chatMessage, room._id, room.realTimeChannel).then(() => {
 			this.chatMessage = "";

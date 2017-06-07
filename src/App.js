@@ -22,29 +22,45 @@ import PlayerContainer from "./components/PlayerContainer";
 import { Scene, Router, Actions } from "react-native-router-flux";
 import GuestDrawer from "./GuestDrawer";
 import UserDrawer from "./UserDrawer";
-import { login } from "./api/requests";
+import "./api/requests";
 
 console.disableYellowBox = true;
+
+const scenes = Actions.create(
+  <Scene key="main">
+    <Scene key="drawer" open={false} component={UserDrawer}>
+      <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
+        <Scene key="Lobby" component={Lobby} title="Lobby" />
+        <Scene key="Room" component={Room} title="Room" />
+        <Scene key="Messages" component={PrivateMessages} title="Messages" />
+        <Scene key="Login" component={Login} title="Login" />
+      </Scene>
+    </Scene>
+  </Scene>
+);
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false, user: null, room: null };
+    this.state = { user: null };
     this.socket = null;
-    EventEmitter.on("login", user => {
-      // this.socket = new Socket(user._id);
-      this.setState({ user: user });
-    });
+    // EventEmitter.on("login", user => {
+    //   // this.socket = new Socket(user._id);
+    //   this.setState({ user: user });
+    // });
 
-    EventEmitter.on("logout", () => {
-      // this.socket = new Socket();
-      this.setState({ user: null });
-    });
+    // EventEmitter.on("logout", () => {
+    //   // this.socket = new Socket();
+    //   this.setState({ user: null });
+    // });
 
     EventEmitter.on("joinRoom", room => {
       console.log(this.socket);
-      this.socket.sock.close();
-      this.setState({ room: room });
+      if (this.socket) {
+        console.log("previous socket");
+        this.socket.sock.close();
+      }
+      this.socket = new Socket(this.state.user, room._id);
     });
   }
 
@@ -52,7 +68,6 @@ export default class App extends Component {
     AsyncStorage.getItem("user").then(user => {
       if (user) {
         let info = JSON.parse(user);
-        console.log(info);
         // this.socket = new Socket(info._id);
         this.setState({ user: info });
       } else {
@@ -63,39 +78,23 @@ export default class App extends Component {
   }
 
   render() {
-    let user = this.state.user;
-    let room = this.state.room;
-    this.socket = new Socket(user, room);
-    console.log(user);
-    if (user) {
-      if (user.username && user.password) {
-        login(user.username, user.password);
-      }
-    }
+    // let user = this.state.user;
+    // console.log(user);
+    // if (user) {
+    //   if (user.username && user.password) {
+    //     login(user.username, user.password);
+    //     fetch("https://api.dubtrack.fm/auth/token")
+    //       .then(res => res.json())
+    //       .then(json => {
+    //         console.log(json);
+    //       });
+    //   }
+    // }
+
     return (
       <Container>
-        <Router key={user ? user._id : "guest"}>
-          <Scene
-            key="drawer"
-            open={false}
-            gestureResponseDistance={200}
-            room={room}
-            user={user}
-            component={user ? UserDrawer : GuestDrawer}
-          >
-            <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
-              <Scene key="Lobby" component={Lobby} title="Lobby" />
-              <Scene key="Room" component={Room} title="Room" />
-              <Scene
-                key="Messages"
-                component={PrivateMessages}
-                title="Messages"
-              />
-              <Scene key="Login" component={Login} title="Login" />
-            </Scene>
-          </Scene>
-        </Router>
-        <PlayerContainer room={room} />
+        <Router scenes={scenes} />
+        <PlayerContainer />
       </Container>
     );
   }

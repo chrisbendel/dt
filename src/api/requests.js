@@ -6,6 +6,15 @@ const base = "https://api.dubtrack.fm/";
 /* USER API CALLS */
 /******************/
 
+token = function() {
+  return fetch("https://api.dubtrack.fm/auth/session")
+    .then(res => res.json())
+    .then(json => {
+      console.log(json);
+      return json;
+    });
+};
+
 export function logout() {
   return fetch(base + "auth/logout").then(() => {
     AsyncStorage.removeItem("user").then(() => {
@@ -22,6 +31,7 @@ export function login(username, password) {
       "Content-Type": "application/json",
       Origin: ""
     },
+    credentials: "include",
     body: JSON.stringify({
       username: username,
       password: password
@@ -31,14 +41,13 @@ export function login(username, password) {
   return fetch(base + "auth/dubtrack", login)
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       if (res.code == 200) {
-        return getUserInfo(username).then(user => {
-          EventEmitter.emit("login", user);
+        return this.getUserInfo(username).then(user => {
           user.password = password;
-          AsyncStorage.setItem("user", JSON.stringify(user));
 
-          // AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {});
+          AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {
+            EventEmitter.emit("login", user);
+          });
         });
       } else {
         AsyncStorage.removeItem("user").then(() => {
@@ -52,7 +61,8 @@ export function login(username, password) {
     });
 }
 
-export function getUserInfo(user) {
+// export function getUserInfo(user) {
+getUserInfo = function(user) {
   return fetch(base + "user/" + user)
     .then(res => res.json())
     .then(json => {
@@ -61,7 +71,7 @@ export function getUserInfo(user) {
     .catch(e => {
       console.log(e);
     });
-}
+};
 
 export function getUserAvatar(id) {
   return fetch(base + "user/" + id + "/image").then(res => {
@@ -139,11 +149,8 @@ export function chat(message, room, realTimeChannel) {
 
   return fetch(base + "chat/" + room, obj)
     .then(res => res.text())
-    .then(body => {
-      console.log(body);
-    })
-    .catch(e => {
-      console.log(e);
+    .then(text => {
+      console.log(text);
     });
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, AsyncStorage } from "react-native";
 import { Thumbnail, Button, Icon } from "native-base";
 import Drawer from "react-native-drawer";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
@@ -10,21 +10,54 @@ class UserDrawer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            room: null
+            room: null,
+            user: null
         };
 
         EventEmitter.on("joinRoom", room => {
             this.setState({ room: room });
         });
+
+        EventEmitter.on("login", user => {
+            Actions.Lobby();
+            // this.socket = new Socket(user._id);
+            this.setState({ user: user });
+        });
+
+        EventEmitter.on("logout", () => {
+            Actions.Lobby();
+            // this.socket = new Socket();
+            this.setState({ user: null });
+        });
+    }
+
+    componentWillMount() {
+        AsyncStorage.getItem("user").then(user => {
+            if (user) {
+                let info = JSON.parse(user);
+                console.log(info);
+                // this.socket = new Socket(info._id);
+                this.setState({ user: info });
+            } else {
+                // this.socket = new Socket();
+                this.setState({ user: null });
+            }
+        });
     }
 
     getSideMenu() {
-        let user = this.props.user;
+        let user = this.state.user;
         let room = this.state.room;
         return (
             <View style={styles.drawerContainer}>
-                <Thumbnail source={{ uri: user.profileImage.secure_url }} />
-                <Text> {user.username} </Text>
+                {user
+                    ? <View>
+                          <Thumbnail
+                              source={{ uri: user.profileImage.secure_url }}
+                          />
+                          <Text> {user.username} </Text>
+                      </View>
+                    : null}
                 <View>
                     <Button
                         iconLeft
@@ -53,31 +86,48 @@ class UserDrawer extends Component {
                               <Text>{room.name}</Text>
                           </Button>
                         : null}
-                    <Button
-                        iconLeft
-                        transparent
-                        onPress={() => {
-                            this._drawer.close();
-                            Actions.Messages();
-                        }}
-                    >
-                        <Icon name="mail" />
-                        <Text> Messages </Text>
-                    </Button>
-                    <Button
-                        iconLeft
-                        transparent
-                        onPress={() => {
-                            Alert.alert("Logout?", null, [
-                                { text: "Cancel" },
-                                { text: "Logout", onPress: () => logout() }
-                            ]);
-                            Actions.refresh();
-                        }}
-                    >
-                        <Icon name="log-out" />
-                        <Text> Log Out </Text>
-                    </Button>
+                    {user
+                        ? <Button
+                              iconLeft
+                              transparent
+                              onPress={() => {
+                                  this._drawer.close();
+                                  Actions.Messages();
+                              }}
+                          >
+                              <Icon name="mail" />
+                              <Text> Messages </Text>
+                          </Button>
+                        : null}
+                    {user
+                        ? <Button
+                              iconLeft
+                              transparent
+                              onPress={() => {
+                                  Alert.alert("Logout?", null, [
+                                      { text: "Cancel" },
+                                      {
+                                          text: "Logout",
+                                          onPress: () => logout()
+                                      }
+                                  ]);
+                                  Actions.refresh();
+                              }}
+                          >
+                              <Icon name="log-out" />
+                              <Text> Log Out </Text>
+                          </Button>
+                        : <Button
+                              iconLeft
+                              transparent
+                              onPress={() => {
+                                  this._drawer.close();
+                                  Actions.Login();
+                              }}
+                          >
+                              <Icon name="log-in" />
+                              <Text> Log In </Text>
+                          </Button>}
                 </View>
             </View>
         );
@@ -91,8 +141,8 @@ class UserDrawer extends Component {
             <Drawer
                 ref={ref => (this._drawer = ref)}
                 open={state.open}
-                onOpen={() => Actions.refresh({ key: state.key, open: true })}
-                onClose={() => Actions.refresh({ key: state.key, open: false })}
+                // onOpen={() => Actions.refresh({ key: state.key, open: true })}
+                // onClose={() => Actions.refresh({ key: state.key, open: false })}
                 type="displace"
                 content={SideMenu}
                 tapToClose={true}
