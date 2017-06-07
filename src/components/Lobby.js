@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import React, { Component } from "react";
+import { FlatList, RefreshControl } from "react-native";
 import {
 	Container,
 	Header,
@@ -14,18 +14,18 @@ import {
 	Icon,
 	Text,
 	Input
-} from 'native-base';
+} from "native-base";
 
-import EventEmitter from 'react-native-eventemitter';
-import { getLobby } from './../api/requests';
-import { Actions } from 'react-native-router-flux';
+import EventEmitter from "react-native-eventemitter";
+import { getLobby, joinRoom } from "./../api/requests";
+import { Actions } from "react-native-router-flux";
 
-const defaultImage = require('./../images/dt.png');
+const defaultImage = require("./../images/dt.png");
 
 export default class Lobby extends Component {
 	constructor(props) {
 		super(props);
-		this.query = '';
+		this.query = "";
 		this.state = {
 			rooms: [],
 			refreshing: false
@@ -49,15 +49,17 @@ export default class Lobby extends Component {
 	}
 
 	clearSearch() {
-		this.refs.search._root.setNativeProps({ text: '' });
-		this.query = '';
+		this.refs.search._root.setNativeProps({ text: "" });
+		this.query = "";
 		this.getLobby();
 	}
 
 	pressRow(item) {
-		EventEmitter.emit('joinRoom', item);
-		console.log(this);
-		Actions.Room({ room: item, title: item.name });
+		EventEmitter.emit("joinRoom", item);
+		joinRoom(item._id).then(() => {
+			Actions.Room({ room: item, title: item.name });
+		});
+		// Actions.Room({ room: item, title: item.name });
 	}
 
 	renderItem({ item }) {
@@ -78,7 +80,7 @@ export default class Lobby extends Component {
 					<Text style={styles.textCenter} numberOfLines={2} note>
 						{item.currentSong
 							? item.currentSong.name
-							: 'No one is playing'}
+							: "No one is playing"}
 					</Text>
 				</Body>
 			</ListItem>
@@ -98,7 +100,7 @@ export default class Lobby extends Component {
 						<Input
 							ref="search"
 							placeholder="Search rooms"
-							placeholderTextColor={'black'}
+							placeholderTextColor={"black"}
 							returnKeyType="search"
 							returnKeyLabel="search"
 							autoCapitalize="none"
@@ -126,7 +128,7 @@ export default class Lobby extends Component {
 
 const styles = {
 	textCenter: {
-		justifyContent: 'center',
-		textAlign: 'center'
+		justifyContent: "center",
+		textAlign: "center"
 	}
 };

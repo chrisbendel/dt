@@ -22,6 +22,7 @@ import PlayerContainer from "./components/PlayerContainer";
 import { Scene, Router, Actions } from "react-native-router-flux";
 import GuestDrawer from "./GuestDrawer";
 import UserDrawer from "./UserDrawer";
+import { login } from "./api/requests";
 
 console.disableYellowBox = true;
 
@@ -29,8 +30,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loggedIn: false, user: null, room: null };
-    // this.socket = ();
-    console.log("constructor called in rerender!?!?");
+    this.socket = null;
     EventEmitter.on("login", user => {
       // this.socket = new Socket(user._id);
       this.setState({ user: user });
@@ -42,11 +42,8 @@ export default class App extends Component {
     });
 
     EventEmitter.on("joinRoom", room => {
-      // if (this.state.user) {
-      //   this.socket = new Socket(this.state.user._id);
-      // } else {
-      //   this.socket = new Socket();
-      // }
+      console.log(this.socket);
+      this.socket.sock.close();
       this.setState({ room: room });
     });
   }
@@ -55,6 +52,7 @@ export default class App extends Component {
     AsyncStorage.getItem("user").then(user => {
       if (user) {
         let info = JSON.parse(user);
+        console.log(info);
         // this.socket = new Socket(info._id);
         this.setState({ user: info });
       } else {
@@ -68,6 +66,12 @@ export default class App extends Component {
     let user = this.state.user;
     let room = this.state.room;
     this.socket = new Socket(user, room);
+    console.log(user);
+    if (user) {
+      if (user.username && user.password) {
+        login(user.username, user.password);
+      }
+    }
     return (
       <Container>
         <Router key={user ? user._id : "guest"}>

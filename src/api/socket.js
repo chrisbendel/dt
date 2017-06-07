@@ -4,9 +4,8 @@ import { AsyncStorage } from "react-native";
 export default class Socket {
   constructor(user = null, room = null) {
     this.sock = null;
-    this.user = user;
-    this.room = room;
     this.create(user ? user._id : null, room ? room._id : null);
+    return this.sock;
   }
 
   create(userid, roomid) {
@@ -27,15 +26,15 @@ export default class Socket {
           console.log(e);
         });
         if (userid) {
-          this.user = userid;
           this.connectUser(userid);
+          this.user = userid;
           // this.sock.send(
           // JSON.stringify({ action: 10, channel: 'user:' + userid })
           // );
         }
         if (roomid) {
-          this.room = roomid;
           this.join(roomid);
+          this.room = roomid;
         }
         this.sock.on("message", msg => {
           msg = JSON.parse(msg);
@@ -76,29 +75,31 @@ export default class Socket {
   }
 
   //possibly use this to leave current room when joining a new one.
-  leave(id) {
-    console.log("leaving room");
-    this.sock.send(
-      JSON.stringify({
-        action: 14,
-        channel: "room:" + id,
-        presence: { action: 1, data: {} }
-      })
-    );
-  }
+  // leave(id) {
+  //   this.sock.close();
+  //   console.log("leaving room");
+  //   this.sock.send(
+  //     JSON.stringify({
+  //       action: 14,
+  //       channel: "room:" + id,
+  //       presence: { action: 1, data: {} }
+  //     })
+  //   );
+  // }
 
   join(id) {
-    if (this.room != id) {
-      this.leave(this.room);
-    }
+    console.log(this.room, id);
+    // if (this.room != id) {
+    //   this.leave(this.room);
+    // }
     console.log("joining room");
     this.sock.send(JSON.stringify({ action: 10, channel: "room:" + id }));
-    this.sock.send(
-      JSON.stringify({
-        action: 14,
-        channel: "room:" + id,
-        presence: { action: 0, data: {} }
-      })
-    );
+    // this.sock.send(
+    //   JSON.stringify({
+    //     action: 14,
+    //     channel: "room:" + id,
+    //     presence: { action: 0, data: {} }
+    //   })
+    // );
   }
 }

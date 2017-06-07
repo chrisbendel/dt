@@ -97,7 +97,7 @@ class UserDrawer extends Component {
                 content={SideMenu}
                 tapToClose={true}
                 openDrawerOffset={0.4}
-                panOpenMask={0.35}
+                panOpenMask={0}
                 panCloseMask={0.4}
                 panThreshold={0.5}
                 negotiatePan={true}
