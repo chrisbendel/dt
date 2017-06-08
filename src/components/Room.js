@@ -141,6 +141,7 @@ export default class Room extends Component {
 											borderWidth: 0,
 											borderBottomWidth: 0
 										}}
+										autoCorrect={false}
 										onChangeText={message =>
 											(this.chatMessage = message)}
 										onSubmitEditing={this.onSend.bind(this)}

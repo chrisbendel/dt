@@ -90,12 +90,6 @@ export default class PlayerContainer extends Component {
     //   "/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
     let key = "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
     this.player = new Player(url + key).prepare();
-    // return fetch(url).then(res => {
-    //   this.player = new Player(res.url, {
-    //     autoDestroy: true,
-    //     continuesToPlayInBackground: true
-    //   }).prepare();
-    // });
   }
 
   //TODO Put media controls in here
@@ -149,8 +143,6 @@ export default class PlayerContainer extends Component {
         break;
       case "soundcloud":
         this.getScStream(song.songInfo.streamUrl);
-        // .then(() => {
-        //player handles duration of songs in ms, not seconds
         this.player.seek(song.startTime * 1000, () => {
           this.player.play();
           return (
@@ -169,7 +161,6 @@ export default class PlayerContainer extends Component {
               </Button>
             </View>
           );
-          // });
         });
         break;
       default:
@@ -181,13 +172,21 @@ export default class PlayerContainer extends Component {
     let song = this.state.song;
     let room = this.state.room;
     if (room && song) {
+      console.log(song);
+      console.log(room);
       let playerContainer = this.getPlayerContainer(song);
       return (
-        <Footer>
-          <FooterTab>
-            {playerContainer}
-          </FooterTab>
-        </Footer>
+        <View style={styles.playerContainer}>
+          <Text numberOfLines={1}>{room.name}</Text>
+          <Text numberOfLines={2}>
+            {song.songInfo.name}
+          </Text>
+          <Footer>
+            <FooterTab>
+              {playerContainer}
+            </FooterTab>
+          </Footer>
+        </View>
       );
     } else {
       return (
@@ -210,8 +209,9 @@ const styles = {
     justifyContent: "center"
   },
   playerContainer: {
-    backgroundColor: "#f8f8f8",
-    height: 80
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f8f8f8"
   },
   info: {
     alignItems: "center"
