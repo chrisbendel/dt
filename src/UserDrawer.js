@@ -19,13 +19,13 @@ class UserDrawer extends Component {
         });
 
         EventEmitter.on("login", user => {
-            Actions.Lobby();
+            Actions.Lobby({ type: "reset" });
             // this.socket = new Socket(user._id);
             this.setState({ user: user });
         });
 
         EventEmitter.on("logout", () => {
-            Actions.Lobby();
+            Actions.Lobby({ type: "reset" });
             // this.socket = new Socket();
             this.setState({ user: null });
         });
@@ -50,15 +50,16 @@ class UserDrawer extends Component {
         let room = this.state.room;
         return (
             <View style={styles.drawerContainer}>
-                {user
-                    ? <View>
-                          <Thumbnail
-                              source={{ uri: user.profileImage.secure_url }}
-                          />
-                          <Text> {user.username} </Text>
-                      </View>
-                    : null}
                 <View>
+                    {user
+                        ? <Button iconLeft transparent>
+                              <Thumbnail
+                                  small
+                                  source={{ uri: user.profileImage.secure_url }}
+                              />
+                              <Text> {user.username} </Text>
+                          </Button>
+                        : null}
                     <Button
                         iconLeft
                         transparent
@@ -108,10 +109,12 @@ class UserDrawer extends Component {
                                       { text: "Cancel" },
                                       {
                                           text: "Logout",
-                                          onPress: () => logout()
+                                          onPress: () => {
+                                              logout();
+                                              Actions.refresh();
+                                          }
                                       }
                                   ]);
-                                  Actions.refresh();
                               }}
                           >
                               <Icon name="log-out" />
@@ -170,6 +173,10 @@ const styles = {
         alignItems: "center",
         flex: 1,
         flexDirection: "column"
+    },
+    center: {
+        justifyContent: "center",
+        alignItems: "center"
     }
 };
 

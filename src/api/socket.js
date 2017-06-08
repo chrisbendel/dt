@@ -12,7 +12,6 @@ export default class Socket {
     return fetch("https://api.dubtrack.fm/auth/token")
       .then(res => res.json())
       .then(json => {
-        console.log(json.data);
         return new EngineIOClient({
           hostname: "ws.dubtrack.fm",
           secure: true,
@@ -33,7 +32,7 @@ export default class Socket {
         this.join(roomid);
         this.sock.on("message", msg => {
           msg = JSON.parse(msg);
-          // console.log(msg);
+          console.log(msg.message);
           switch (msg.action) {
             case 15:
               switch (msg.message.name) {
@@ -47,13 +46,19 @@ export default class Socket {
                   break;
                 case "room_playlist-update":
                   msg = JSON.parse(msg.message.data);
+                  console.log(msg);
                   EventEmitter.emit("newSong", msg);
                   break;
                 case "chat-skip":
                   msg = JSON.parse(msg.message.data);
                   EventEmitter.emit("skipSong", msg);
                   break;
+                case "user-pause-queue":
+                  msg = JSON.parse(msg.message.data);
+                  EventEmitter.emit("pauseQueue", msg);
+                  break;
                 default:
+                  console.log(msg);
                   console.log(msg.message.name);
               }
               break;

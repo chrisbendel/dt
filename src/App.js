@@ -27,7 +27,7 @@ import "./api/requests";
 console.disableYellowBox = true;
 
 const scenes = Actions.create(
-  <Scene key="main">
+  <Scene key="main" type="reset">
     <Scene key="drawer" open={false} component={UserDrawer}>
       <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
         <Scene key="Lobby" component={Lobby} title="Lobby" />

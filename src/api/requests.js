@@ -7,16 +7,30 @@ const base = "https://api.dubtrack.fm/";
 /******************/
 
 token = function() {
-  return fetch("https://api.dubtrack.fm/auth/session")
+  return fetch(base + "auth/token", {
+    method: "GET",
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
-      console.log(json);
+      return json;
+    });
+};
+
+session = function() {
+  return fetch(base + "auth/session", {
+    method: "GET",
+    credentials: "include"
+  })
+    .then(res => res.json())
+    .then(json => {
       return json;
     });
 };
 
 export function logout() {
   return fetch(base + "auth/logout").then(() => {
+    console.log("logged out");
     AsyncStorage.removeItem("user").then(() => {
       EventEmitter.emit("logout");
     });
@@ -26,29 +40,32 @@ export function logout() {
 export function login(username, password) {
   let login = {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Origin: ""
-    },
     credentials: "include",
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
+    body: `username=${username}&password=${password}`,
+    headers: {
+      origin: "",
+      Accept: "application/json",
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
   };
+  let token = null;
+  let userInfo = null;
 
   return fetch(base + "auth/dubtrack", login)
     .then(res => res.json())
     .then(res => {
+      console.log(res);
       if (res.code == 200) {
-        return this.getUserInfo(username).then(user => {
-          user.password = password;
-
-          AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {
-            EventEmitter.emit("login", user);
+        return this.getUserInfo(username)
+          .then(user => {
+            userInfo = user;
+          })
+          .then(() => {
+            return AsyncStorage.setItem("user", JSON.stringify(userInfo));
+          })
+          .then(() => {
+            EventEmitter.emit("login", userInfo);
           });
-        });
       } else {
         AsyncStorage.removeItem("user").then(() => {
           if (res.data.details.message.message) {
@@ -134,6 +151,7 @@ export function getRoomUsers(room) {
 export function chat(message, room, realTimeChannel) {
   let obj = {
     method: "POST",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -147,16 +165,13 @@ export function chat(message, room, realTimeChannel) {
     })
   };
 
-  return fetch(base + "chat/" + room, obj)
-    .then(res => res.text())
-    .then(text => {
-      console.log(text);
-    });
+  return fetch(base + "chat/" + room, obj);
 }
 
 export function joinRoom(id) {
   let obj = {
     method: "POST",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

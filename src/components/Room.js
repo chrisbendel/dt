@@ -11,6 +11,7 @@ import {
 	Right,
 	Button,
 	Image,
+	Footer,
 	Text,
 	Input,
 	Item,
@@ -45,9 +46,16 @@ export default class Room extends Component {
 			getUserAvatar(msg.user._id).then(url => {
 				msg.avatar = url;
 				msg.humanTime = new Date(msg.time).toLocaleTimeString();
+				let messages = this.state.messages;
+				if (messages.length > 100) {
+					messages.splice(100);
+				}
 				this.setState(previousState => ({
 					messages: [...previousState.messages, msg]
 				}));
+				if (messages.length > 6) {
+					this._chatroom.scrollToEnd();
+				}
 			});
 			//maybe else to store messages
 		});
@@ -74,7 +82,10 @@ export default class Room extends Component {
 			<ListItem
 				avatar
 				key={key}
-				style={{ borderTopWidth: 0, borderBottomWidth: 0 }}
+				style={{
+					borderWidth: 0,
+					borderBottomWidth: 0
+				}}
 			>
 				<Left>
 					<Thumbnail small source={{ uri: item.avatar }} />
@@ -96,19 +107,39 @@ export default class Room extends Component {
 				<Header />
 				<Tabs>
 					<Tab heading="Chat">
-						<View style={{ flex: 1, flexDirection: "column" }}>
-							<View style={{ flex: 0.9 }}>
+						<View
+							style={{
+								flex: 10,
+								flexGrow: 1,
+								flexDirection: "column",
+								justifyContent: "space-around"
+							}}
+						>
+							<View style={{ flex: 9 }}>
 								<FlatList
+									ref={c => {
+										this._chatroom = c;
+									}}
+									extraData={this.state}
 									data={this.state.messages}
 									keyExtractor={item => item.time}
 									renderItem={this.renderItem.bind(this)}
 								/>
 							</View>
-							<View style={{ flex: 0.1 }}>
-								<Item style={{ flex: 1 }}>
+							<View style={{ flex: 1 }}>
+								<Item
+									style={{
+										borderWidth: 0,
+										borderBottomWidth: 0
+									}}
+								>
 									<Input
 										ref={chat => {
 											this._chat = chat;
+										}}
+										style={{
+											borderWidth: 0,
+											borderBottomWidth: 0
 										}}
 										onChangeText={message =>
 											(this.chatMessage = message)}
