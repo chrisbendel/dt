@@ -78,7 +78,7 @@ export default class Room extends Component {
 	}
 
 	renderItem({ item }) {
-		let key = item.time + item.user.created;
+		let key = item.time;
 		return (
 			<ListItem
 				avatar
@@ -139,29 +139,25 @@ export default class Room extends Component {
 											this._chat = chat;
 										}}
 										style={{
+											paddingLeft: 20,
 											borderWidth: 0,
 											borderBottomWidth: 0
 										}}
-										autoCorrect={false}
 										onChangeText={message =>
 											(this.chatMessage = message)}
 										onSubmitEditing={this.onSend.bind(this)}
 										returnKeyType="send"
 										placeholder="Send a message ..."
 									/>
-									<Button
-										transparent
-										onPress={this.onSend.bind(this)}
-									>
-										<Text>Send</Text>
-									</Button>
 								</Item>
 							</View>
 						</View>
-						<KeyboardSpacer topSpacing={-40} />
+						<KeyboardSpacer />
+
 					</Tab>
 					<Tab heading="Users" />
 					<Tab heading="Playlists" />
+
 				</Tabs>
 			</Container>
 		);

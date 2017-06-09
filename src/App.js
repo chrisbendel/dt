@@ -48,10 +48,12 @@ export default class App extends Component {
     //   this.setState({ user: user });
     // });
 
-    // EventEmitter.on("logout", () => {
-    //   // this.socket = new Socket();
-    //   this.setState({ user: null });
-    // });
+    EventEmitter.on("logout", () => {
+      if (this.socket) {
+        console.log(this.socket);
+        this.socket.sock.close();
+      }
+    });
 
     EventEmitter.on("joinRoom", room => {
       console.log(this.socket);

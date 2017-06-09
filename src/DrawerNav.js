@@ -131,12 +131,6 @@ class DrawerNav extends Component {
                               <Icon name="log-in" />
                               <Text> Log In </Text>
                           </Button>}
-                    <AdMobBanner
-                        bannerSize="banner"
-                        adUnitID="ca-app-pub-7092420459681661/2210957236"
-                        testDeviceID="EMULATOR"
-                        didFailToReceiveAdWithError={this.bannerError}
-                    />
                 </View>
             </View>
         );

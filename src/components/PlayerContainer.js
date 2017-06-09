@@ -66,6 +66,15 @@ export default class PlayerContainer extends Component {
     });
   }
 
+  componentWillMount() {
+    if (this.player) {
+      this.player.destroy();
+    }
+    // } else {
+    //   this.player = null;
+    // }
+  }
+
   getSong(roomID) {
     currentSong(roomID).then(song => {
       if (this.player) {
@@ -84,10 +93,6 @@ export default class PlayerContainer extends Component {
   }
 
   getScStream(url) {
-    // let url =
-    //   "https://api.soundcloud.com/tracks/" +
-    //   id +
-    //   "/stream?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
     let key = "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
     this.player = new Player(url + key).prepare();
   }
@@ -126,16 +131,16 @@ export default class PlayerContainer extends Component {
               }}
               style={styles.player}
             />
-            <Button transparent>
+            <Button>
               <Icon name="arrow-up" />
             </Button>
-            <Button transparent>
+            <Button>
               <Icon name="arrow-down" />
             </Button>
-            <Button transparent>
+            <Button>
               <Icon name="volume-up" />
             </Button>
-            <Button transparent>
+            <Button>
               <Icon name="arrow-up" />
             </Button>
           </View>
@@ -177,7 +182,6 @@ export default class PlayerContainer extends Component {
       let playerContainer = this.getPlayerContainer(song);
       return (
         <View style={styles.playerContainer}>
-
           <Text numberOfLines={1}>{room.name}</Text>
           <Text numberOfLines={1}>
             {song.songInfo.name}

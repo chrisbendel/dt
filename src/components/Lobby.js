@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, RefreshControl } from "react-native";
+import { RefreshControl, FlatList } from "react-native";
 import {
 	Container,
 	Header,
@@ -22,64 +22,13 @@ import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 
 const defaultImage = require("./../images/dt.png");
-const ad1 = (
-	<AdMobBanner
-		key={"ca-app-pub-7092420459681661/2210957236"}
-		bannerSize="fullBanner"
-		adUnitID="ca-app-pub-7092420459681661/2210957236"
-		testDeviceID="EMULATOR"
-		didFailToReceiveAdWithError={this.bannerError}
-	/>
-);
-
-const ad2 = (
-	<AdMobBanner
-		key={"ca-app-pub-7092420459681661/7140684436"}
-		bannerSize="fullBanner"
-		adUnitID="ca-app-pub-7092420459681661/7140684436"
-		testDeviceID="EMULATOR"
-		didFailToReceiveAdWithError={this.bannerError}
-	/>
-);
-
-const ad3 = (
-	<AdMobBanner
-		key={"ca-app-pub-7092420459681661/1094150833"}
-		bannerSize="fullBanner"
-		adUnitID="ca-app-pub-7092420459681661/1094150833"
-		testDeviceID="EMULATOR"
-		didFailToReceiveAdWithError={this.bannerError}
-	/>
-);
-
-const ad4 = (
-	<AdMobBanner
-		key={"ca-app-pub-7092420459681661/2570884037"}
-		bannerSize="fullBanner"
-		adUnitID="ca-app-pub-7092420459681661/2570884037"
-		testDeviceID="EMULATOR"
-		didFailToReceiveAdWithError={this.bannerError}
-	/>
-);
-
-const ad5 = (
-	<AdMobBanner
-		key={"ca-app-pub-7092420459681661/4047617236"}
-		bannerSize="fullBanner"
-		adUnitID="ca-app-pub-7092420459681661/4047617236"
-		testDeviceID="EMULATOR"
-		didFailToReceiveAdWithError={this.bannerError}
-	/>
-);
-
-const adkeys = [ad1, ad2, ad3, ad4, ad5];
 
 export default class Lobby extends Component {
 	constructor(props) {
 		super(props);
 		this.query = "";
 		this.state = {
-			rooms: [],
+			rooms: ["test"],
 			refreshing: false
 		};
 	}
@@ -91,14 +40,6 @@ export default class Lobby extends Component {
 	getLobby(room = null) {
 		this.setState({ refreshing: true });
 		getLobby(room).then(rooms => {
-			let count = 0;
-			for (let i = 0; i < rooms.length; i++) {
-				if (i % 5 == 0) {
-					rooms.splice(i, 0, adkeys[count]);
-					console.log(rooms.length);
-					count++;
-				}
-			}
 			this.setState({ rooms: rooms, refreshing: false });
 		});
 	}
@@ -123,14 +64,8 @@ export default class Lobby extends Component {
 	}
 
 	renderItem({ item }) {
-		console.log(item);
-		if (!item._id) {
-			item.key = item.props.adUnitID;
-			return item;
-		}
-		item.key = item._id;
 		return (
-			<ListItem onPress={() => this.pressRow(item)}>
+			<ListItem key={item._id} onPress={() => this.pressRow(item)}>
 				<Thumbnail
 					size={60}
 					source={
@@ -176,8 +111,14 @@ export default class Lobby extends Component {
 						/>
 					</Item>
 				</Header>
-
+				<AdMobBanner
+					bannerSize="fullBanner"
+					adUnitID="ca-app-pub-7092420459681661/2210957236"
+					testDeviceID="EMULATOR"
+				/>
 				<FlatList
+					removeClippedSubviews={false}
+					initialNumToRender={this.state.rooms.length}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}
@@ -185,7 +126,7 @@ export default class Lobby extends Component {
 						/>
 					}
 					data={this.state.rooms}
-					// keyExtractor={item => item._id}
+					keyExtractor={item => item._id}
 					renderItem={this.renderItem.bind(this)}
 				/>
 			</Container>
