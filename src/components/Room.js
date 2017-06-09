@@ -32,6 +32,7 @@ import {
 import { navigationOptions } from "react-navigation";
 import { getUserAvatar, chat } from "./../api/requests";
 import KeyboardSpacer from "react-native-keyboard-spacer";
+import Autolink from "react-native-autolink";
 
 export default class Room extends Component {
 	constructor(props) {
@@ -92,7 +93,7 @@ export default class Room extends Component {
 				</Left>
 				<Body>
 					<Text note>{item.user.username}</Text>
-					<Text>{item.message}</Text>
+					<Autolink stripPrefix={false} text={item.message} />
 				</Body>
 				<Right>
 					<Text note>{item.humanTime}</Text>
@@ -157,7 +158,7 @@ export default class Room extends Component {
 								</Item>
 							</View>
 						</View>
-						<KeyboardSpacer />
+						<KeyboardSpacer topSpacing={-40} />
 					</Tab>
 					<Tab heading="Users" />
 					<Tab heading="Playlists" />

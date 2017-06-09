@@ -177,10 +177,12 @@ export default class PlayerContainer extends Component {
       let playerContainer = this.getPlayerContainer(song);
       return (
         <View style={styles.playerContainer}>
+
           <Text numberOfLines={1}>{room.name}</Text>
-          <Text numberOfLines={2}>
+          <Text numberOfLines={1}>
             {song.songInfo.name}
           </Text>
+
           <Footer>
             <FooterTab>
               {playerContainer}

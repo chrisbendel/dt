@@ -3,6 +3,7 @@ package com.dt;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.sbugert.rnadmob.RNAdMobPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.tanguyantoine.react.MusicControl;
 import com.futurice.rctaudiotoolkit.AudioPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNAdMobPackage(),
             new ReactNativeYouTube(),
             new MusicControl(),
             new AudioPackage(),
