@@ -7,15 +7,17 @@ import {
   ListItem,
   Header,
   Body,
+  Input,
   Title,
   Text,
   Left,
   Right
 } from "native-base";
-import { FlatList, AsyncStorage } from "react-native";
-import { getConversation } from "./../api/requests";
+import { FlatList, AsyncStorage, View } from "react-native";
+import { getConversation, sendPM } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 import Autolink from "react-native-autolink";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 
 export default class Conversation extends Component {
   constructor(props) {
@@ -23,23 +25,37 @@ export default class Conversation extends Component {
     this.state = {
       messages: []
     };
+    this.chatMessage = "";
     this.id = this.props.id;
+    this.ee = this.props.ee;
+
+    this.ee.addListener("newMessage", () => {
+      this.list();
+    });
   }
 
   list() {
     getConversation(this.id).then(messages => {
-      console.log(messages.length);
       this.setState({ messages: messages });
     });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState)
-    );
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return (
+  //     !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState)
+  //   );
+  // }
 
   componentWillMount() {
+    this.list();
+  }
+
+  onSend() {
+    sendPM(this.id, this.chatMessage).then(res => {
+      console.log(res);
+      this.chatMessage = "";
+      this._chat._root.clear();
+    });
     this.list();
   }
 
@@ -75,15 +91,45 @@ export default class Conversation extends Component {
     return (
       <Container>
         <Header />
-        <FlatList
-          ref={c => {
-            this._messages = c;
+        <View
+          style={{
+            flex: 10,
+            flexGrow: 1,
+            flexDirection: "column",
+            justifyContent: "space-around"
           }}
-          style={{ transform: [{ scaleY: -1 }] }}
-          data={this.state.messages}
-          keyExtractor={(item, index) => index}
-          renderItem={this.renderItem.bind(this)}
-        />
+        >
+          <View style={{ flex: 9 }}>
+            <FlatList
+              ref={c => {
+                this._messages = c;
+              }}
+              style={{ transform: [{ scaleY: -1 }] }}
+              data={this.state.messages}
+              keyExtractor={(item, index) => index}
+              renderItem={this.renderItem.bind(this)}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Input
+              ref={chat => {
+                this._chat = chat;
+              }}
+              style={{
+                paddingLeft: 20,
+                borderWidth: 0,
+                borderBottomWidth: 0
+              }}
+              onChangeText={message => (this.chatMessage = message)}
+              onSubmitEditing={this.onSend.bind(this)}
+              returnKeyType="send"
+              placeholder="Type a message..."
+            />
+          </View>
+          <KeyboardSpacer topSpacing={-25} />
+
+        </View>
+
       </Container>
     );
   }

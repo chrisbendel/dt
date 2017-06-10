@@ -253,36 +253,6 @@ export function markAsRead(id) {
   return fetch(base + "message/" + id + "/read", obj);
 }
 
-export function newPM(usersid) {
-  if (usersid.length > 10) {
-    console.log("conversations are up to 10 people.");
-    return;
-  }
-
-  let obj = {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Origin: ""
-    },
-    body: JSON.stringify({
-      usersid: usersid
-    })
-  };
-
-  return fetch(base + "message", obj)
-    .then(res => res.json())
-    .then(json => {
-      console.log("json inside pm.get()");
-      console.log(json);
-      return json;
-    })
-    .catch(e => {
-      console.log(e);
-    });
-}
-
 export function checkNew() {
   return fetch(base + "message/new")
     .then(res => res.json())
@@ -297,6 +267,7 @@ export function checkNew() {
 export function sendPM(id, message) {
   let obj = {
     method: "POST",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -311,7 +282,7 @@ export function sendPM(id, message) {
   return fetch(base + "message/" + id, obj)
     .then(res => res.json())
     .then(json => {
-      return json;
+      return json.data;
     })
     .catch(e => {
       console.log(e);
