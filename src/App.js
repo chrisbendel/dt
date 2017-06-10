@@ -68,13 +68,15 @@ export default class App extends Component {
     });
 
     ee.addListener("joinRoom", room => {
-      this.socket.joinRoom(room._id);
+      this.socket.close();
+      this.socket = new Socket(ee, this.state.user, room._id);
     });
   }
 
   componentWillMount() {
     AsyncStorage.getItem("user").then(user => {
-      this.socket = new Socket(ee, user);
+      this.socket = new Socket(ee, JSON.parse(user));
+      this.setState({ user: JSON.parse(user) });
     });
   }
 

@@ -211,7 +211,7 @@ class DrawerNav extends Component {
                         }}
                     >
                         <Icon name="videocam" />
-                        <Text>Watch a quick ad to help support me</Text>
+                        <Text>Watch a quick ad to support this app</Text>
                     </Button>
                 </View>
             </View>
@@ -232,7 +232,7 @@ class DrawerNav extends Component {
                 content={SideMenu}
                 tapToClose={true}
                 openDrawerOffset={0.4}
-                panOpenMask={0}
+                panOpenMask={0.2}
                 panCloseMask={0.4}
                 panThreshold={0.5}
                 negotiatePan={true}

@@ -17,6 +17,7 @@
 		02E114AF773347D6A26AB0A3 /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B0B1BEEDD2B4C2AB3F8C7A7 /* Rubik-Regular.ttf */; };
 		0529D679DF3E42B7BA6C039A /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A73C80F394A949BE9999E8EC /* libRNVectorIcons.a */; };
 		070F03E18F654EFBA2095D8B /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF5E5C0F28344259A926F9F5 /* FontAwesome.ttf */; };
+		079432A3871540F2B207683D /* libReactNativeVolumeController.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C0F24CF7C3104E65A53CDEDC /* libReactNativeVolumeController.a */; };
 		112C916A54364C97B93A6024 /* Rubik-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF2618ADCCDD4233B59AFD0D /* Rubik-MediumItalic.ttf */; };
 		117D61B44CE34AEC87403020 /* Rubik-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5944A6E44DE54D7BA29385A9 /* Rubik-LightItalic.ttf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -297,6 +298,13 @@
 			remoteGlobalIDString = A96DA7741C146D7200FC639B;
 			remoteInfo = RNAdMobManager;
 		};
+		83B626A61EECB52000ECDEDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7F57DCC1A744239B86562AD /* ReactNativeVolumeController.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A1DF0B771E90288A00B9A176;
+			remoteInfo = ReactNativeVolumeController;
+		};
 		83CF0DB11EDCFBBB0042AE7D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CF0DAD1EDCFBBB0042AE7D /* ReactNativeAudioToolkit.xcodeproj */;
@@ -393,6 +401,7 @@
 		B77EF3218B394637A2382C03 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		B9D85B7CBAEC4F18A21201CF /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		BC545CA86B6C41259FEE8FDC /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		C0F24CF7C3104E65A53CDEDC /* libReactNativeVolumeController.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeVolumeController.a; sourceTree = "<group>"; };
 		C10999B8EF724A54ABEC4B2C /* Rubik-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Black.ttf"; path = "../node_modules/native-base/Fonts/Rubik-Black.ttf"; sourceTree = "<group>"; };
 		C1F0717FA17E4E7D82DF5016 /* Courier New.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Courier New.ttf"; path = "../node_modules/native-base/Fonts/Courier New.ttf"; sourceTree = "<group>"; };
 		C32AF6B2D18849FD92CBFDE9 /* RCTYouTube.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTYouTube.xcodeproj; path = "../node_modules/react-native-youtube/RCTYouTube.xcodeproj"; sourceTree = "<group>"; };
@@ -405,6 +414,7 @@
 		DF5E5C0F28344259A926F9F5 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/native-base/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		E08CCD33F8024E4C9CD75EAF /* Skia.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Skia.ttf; path = "../node_modules/native-base/Fonts/Skia.ttf"; sourceTree = "<group>"; };
 		E13A08076C7D4548BF623E1D /* Andale Mono.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Andale Mono.ttf"; path = "../node_modules/native-base/Fonts/Andale Mono.ttf"; sourceTree = "<group>"; };
+		E7F57DCC1A744239B86562AD /* ReactNativeVolumeController.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeVolumeController.xcodeproj; path = "../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController.xcodeproj"; sourceTree = "<group>"; };
 		E92F975F7636439580685EDA /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
 		EF2618ADCCDD4233B59AFD0D /* Rubik-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-MediumItalic.ttf"; path = "../node_modules/native-base/Fonts/Rubik-MediumItalic.ttf"; sourceTree = "<group>"; };
 		F58D6B9C39E64D918984DE9D /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/native-base/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
@@ -445,6 +455,7 @@
 				A73CD4BB1BA44A7FA3FEC997 /* libRCTYouTube.a in Frameworks */,
 				8396DFC61EE9FB01007E0246 /* GoogleMobileAds.framework in Frameworks */,
 				29AE531300B14CDD8D7E658E /* libRNAdMobManager.a in Frameworks */,
+				079432A3871540F2B207683D /* libReactNativeVolumeController.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -672,6 +683,7 @@
 				CD13CCF7AE584BFCBDABD61C /* MusicControl.xcodeproj */,
 				C32AF6B2D18849FD92CBFDE9 /* RCTYouTube.xcodeproj */,
 				1506DABCBBA44610A3901036 /* RNAdMobManager.xcodeproj */,
+				E7F57DCC1A744239B86562AD /* ReactNativeVolumeController.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -707,6 +719,14 @@
 				8396DFC51EE9FB01007E0246 /* GoogleMobileAds.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		83B626861EECB52000ECDEDF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83B626A71EECB52000ECDEDF /* libReactNativeVolumeController.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		83CBB9F61A601CBA00E9B192 = {
@@ -933,6 +953,10 @@
 					ProjectRef = 83CF0DAD1EDCFBBB0042AE7D /* ReactNativeAudioToolkit.xcodeproj */;
 				},
 				{
+					ProductGroup = 83B626861EECB52000ECDEDF /* Products */;
+					ProjectRef = E7F57DCC1A744239B86562AD /* ReactNativeVolumeController.xcodeproj */;
+				},
+				{
 					ProductGroup = 8396DF9B1EE9F8BA007E0246 /* Products */;
 					ProjectRef = 1506DABCBBA44610A3901036 /* RNAdMobManager.xcodeproj */;
 				},
@@ -1139,6 +1163,13 @@
 			fileType = archive.ar;
 			path = libRNAdMobManager.a;
 			remoteRef = 8396DFBB1EE9F8BA007E0246 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		83B626A71EECB52000ECDEDF /* libReactNativeVolumeController.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeVolumeController.a;
+			remoteRef = 83B626A61EECB52000ECDEDF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		83CF0DB21EDCFBBB0042AE7D /* libReactNativeAudioToolkit.a */ = {
@@ -1366,12 +1397,14 @@
 					"$(SRCROOT)/../node_modules/react-native-music-control/ios",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController",
 				);
 				INFOPLIST_FILE = dtTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1399,12 +1432,14 @@
 					"$(SRCROOT)/../node_modules/react-native-music-control/ios",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController",
 				);
 				INFOPLIST_FILE = dtTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1437,6 +1472,7 @@
 					"$(SRCROOT)/../node_modules/react-native-music-control/ios",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController",
 				);
 				INFOPLIST_FILE = dt/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1474,6 +1510,7 @@
 					"$(SRCROOT)/../node_modules/react-native-music-control/ios",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController",
 				);
 				INFOPLIST_FILE = dt/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1511,11 +1548,13 @@
 					"$(SRCROOT)/../node_modules/react-native-music-control/ios",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController",
 				);
 				INFOPLIST_FILE = "dt-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1550,11 +1589,13 @@
 					"$(SRCROOT)/../node_modules/react-native-music-control/ios",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-volume-controller/ios/ReactNativeVolumeController",
 				);
 				INFOPLIST_FILE = "dt-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1585,6 +1626,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.dt-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1609,6 +1651,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.dt-tvOSTests";

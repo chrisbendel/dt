@@ -29,13 +29,15 @@ export default class Conversation extends Component {
     this.id = this.props.id;
     this.ee = this.props.ee;
 
-    this.ee.addListener("newMessage", () => {
+    this.ee.addListener("privateMessage", msg => {
+      console.log(msg);
       this.list();
     });
   }
 
   list() {
     getConversation(this.id).then(messages => {
+      messages.splice(50, 100);
       this.setState({ messages: messages });
     });
   }

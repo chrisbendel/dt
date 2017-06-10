@@ -3,12 +3,15 @@ import EngineIOClient from "react-native-engine.io-client";
 import { AsyncStorage } from "react-native";
 import { token } from "./requests";
 export default class Socket {
-  constructor(ee, user = null) {
+  constructor(ee, user = null, room = null) {
     this.ee = ee;
     this.setSocket().then(() => {
       this.listeners();
       if (user) {
         this.connectUser(user._id);
+      }
+      if (room) {
+        this.joinRoom(room);
       }
       console.log(this.sock);
       return this.sock;
@@ -34,10 +37,12 @@ export default class Socket {
   }
 
   connectUser(id) {
+    console.log("connecting user");
     this.sock.send(JSON.stringify({ action: 10, channel: "user:" + id }));
   }
 
   joinRoom(id) {
+    console.log("joining room");
     this.sock.send(JSON.stringify({ action: 10, channel: "room:" + id }));
   }
 
@@ -54,12 +59,12 @@ export default class Socket {
           switch (msg.message.name) {
             case "chat-message":
               msg = JSON.parse(msg.message.data);
-              // EventEmitter.emit("chat", msg);
               this.ee.emit("chat", msg);
               break;
             case "new-message":
               msg = JSON.parse(msg.message.data);
-              this.ee.emit("pm", msg);
+              console.log(msg);
+              this.ee.emit("privateMessage", msg);
               break;
             case "room_playlist-update":
               msg = JSON.parse(msg.message.data);
@@ -80,7 +85,7 @@ export default class Socket {
           }
           break;
         default:
-        // console.log('fallthrough', msg);
+          console.log("fallthrough", msg);
       }
     });
   }

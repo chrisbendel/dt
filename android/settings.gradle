@@ -1,3 +1,5 @@
 rootProject.name = 'dt'
+include ':react-native-volume-controller'
+project(':react-native-volume-controller').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-volume-controller/android')
 
 include ':app'

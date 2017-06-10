@@ -158,7 +158,6 @@ export default class Room extends Component {
 								</Item>
 							</View>
 							<KeyboardSpacer topSpacing={-25} />
-
 						</View>
 					</Tab>
 					<Tab heading="Users" />

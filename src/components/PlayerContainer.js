@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import {
   Container,
   Content,
-  Col,
-  Grid,
-  Row,
   Footer,
   FooterTab,
-  Spinner,
   Button,
   Icon,
   Text
@@ -19,14 +15,12 @@ import {
   TouchableOpacity,
   Dimensions
 } from "react-native";
-
 import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
-import Loading from "./Loading";
-
 import { currentSong, getRoomInfo, session } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
 // import MusicControl from "react-native-music-control";
+import { SliderVolumeController } from "react-native-volume-controller";
 
 export default class PlayerContainer extends Component {
   constructor(props) {
@@ -37,41 +31,35 @@ export default class PlayerContainer extends Component {
       room: null,
       song: null
     };
+
     this.ee = this.props.ee;
     this.player = null;
 
     this.ee.addListener("joinRoom", room => {
-      this.getSong(room._id);
-      this.setState({ room: room });
+      console.log(room);
+      this.song = null;
+      this.getSong(room);
     });
 
     this.ee.addListener("newSong", song => {
-      this.getSong(this.state.room._id);
+      this.getSong(this.state.room);
     });
 
     this.ee.addListener("pauseQueue", msg => {
-      this.getSong(this.state.room._id);
+      this.getSong(this.state.room);
     });
   }
 
-  componentWillMount() {
-    if (this.player) {
-      this.player.destroy();
-    }
-    // } else {
-    //   this.player = null;
-    // }
-  }
-
-  getSong(roomID) {
-    currentSong(roomID).then(song => {
+  getSong(room) {
+    currentSong(room._id).then(song => {
       // if (this.player) {
+      //   console.log(this.player);
       //   this.player.destroy();
       // }
       if (song) {
-        this.setState({ song: song });
+        this.setState({ song: song, room: room });
       } else {
-        this.setState({ song: null });
+        this.setState({ song: null, room: room });
       }
     });
   }
@@ -82,112 +70,65 @@ export default class PlayerContainer extends Component {
 
   getScStream(url) {
     let key = "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs";
+    if (this.player) {
+      console.log(this.player);
+      this.player.destroy();
+    }
     this.player = new Player(url + key).prepare();
   }
 
   //TODO Put media controls in here
   getPlayerContainer(song) {
-    console.log(song);
-
-    switch (song.songInfo.type) {
-      case "youtube":
-        return (
-          <View>
-            <YouTube
-              ref="youtubePlayer"
-              videoId={song.songInfo.fkid}
-              play={true}
-              rel={false}
-              showFullscreenButton={false}
-              showinfo={false}
-              controls={0}
-              apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
-              origin={"https://www.youtube.com"}
-              // This logic needs work...
-              onChangeState={e => {
-                if (e.state == "buffering") {
-                  this.setState({ buffering: true });
-                } else if (e.state == "ended") {
-                  this.setState({ song: null });
-                } else {
-                  this.setState({ buffering: false });
-                  this.refs.youtubePlayer.seekTo(song.startTime);
-                }
-                console.log(e);
-              }}
-              onReady={e => {
-                console.log(e);
-                this.refs.youtubePlayer.seekTo(song.startTime);
-              }}
-              style={styles.youtube}
-            />
-            <Footer>
-              <FooterTab>
-                <Button>
-                  <Icon name="menu" />
-                </Button>
-                <Button>
-                  <Icon name="cash" />
-                </Button>
-                <Button>
-                  <Icon name="volume-off" />
-                </Button>
-                <Button>
-                  <Icon name="arrow-up" />
-                </Button>
-              </FooterTab>
-            </Footer>
-          </View>
-        );
-        break;
-      case "soundcloud":
-        this.getScStream(song.songInfo.streamUrl);
-        this.player.seek(song.startTime * 1000, () => {
-          this.player.play();
+    console.log(this.player);
+    if (song.songInfo) {
+      console.log("songinfo", song.songInfo);
+      switch (song.songInfo.type) {
+        case "youtube":
+          if (this.player) {
+            console.log("destroying", this.player);
+            this.player.destroy();
+          }
           return (
-            <Footer>
-              <FooterTab>
-                {" "}<Button>
-                  <Icon name="menu" />
-                </Button>
-                <Button>
-                  <Icon name="cash" />
-                </Button>
-                <Button>
-                  <Icon name="volume-off" />
-                </Button>
-                <Button>
-                  <Icon name="arrow-up" />
-                </Button>
-              </FooterTab>
-            </Footer>
+            <View>
+              <YouTube
+                ref="youtubePlayer"
+                videoId={song.songInfo.fkid}
+                play={true}
+                rel={false}
+                showFullscreenButton={false}
+                showinfo={false}
+                controls={0}
+                apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
+                origin={"https://www.youtube.com"}
+                // This logic needs work...
+                onChangeState={e => {
+                  if (e.state == "buffering") {
+                    this.setState({ buffering: true });
+                  } else if (e.state == "ended") {
+                    this.setState({ song: null });
+                  } else {
+                    this.setState({ buffering: false });
+                    this.refs.youtubePlayer.seekTo(song.startTime);
+                  }
+                  console.log(e);
+                }}
+                onReady={e => {
+                  console.log(e);
+                  this.refs.youtubePlayer.seekTo(song.startTime);
+                }}
+                style={styles.youtube}
+              />
+            </View>
           );
-        });
-        break;
-      default:
-        console.log("returning null");
-        return null;
-    }
-  }
-
-  render() {
-    let song = this.state.song;
-    let room = this.state.room;
-    if (room && song) {
-      console.log(song);
-      console.log(room);
-      let playerContainer = this.getPlayerContainer(song);
-      return (
-        <View style={styles.playerContainer}>
-          <View style={{ alignItems: "center" }}>
-            <Text numberOfLines={1}>{room.name}</Text>
-            <Text numberOfLines={1}>
-              {song.songInfo.name}
-            </Text>
-          </View>
-          {playerContainer}
-        </View>
-      );
+          break;
+        case "soundcloud":
+          this.getScStream(song.songInfo.streamUrl);
+          this.player.seek(song.startTime * 1000, () => {
+            this.player.play();
+          });
+          return <View />;
+          break;
+      }
     } else {
       return (
         <Footer>
@@ -204,22 +145,56 @@ export default class PlayerContainer extends Component {
       );
     }
   }
+
+  render() {
+    let song = this.state.song;
+    let room = this.state.room;
+    let Player;
+    if (room) {
+      console.log(song);
+      let Player = this.getPlayerContainer(song);
+      return (
+        <View style={styles.playerContainer}>
+          <View style={{ alignItems: "center" }}>
+            <Text numberOfLines={1}>{room.name}</Text>
+            {song.songInfo
+              ? <Text numberOfLines={1}>
+                  {song.songInfo.name}
+                </Text>
+              : null}
+            {song.songInfo
+              ? <SliderVolumeController style={{ marginTop: 10 }} />
+              : null}
+          </View>
+
+          {Player}
+        </View>
+      );
+    } else {
+      return null;
+    }
+    // } else {
+    //   return (
+    //     <Footer>
+    //       <FooterTab>
+    //         <Button
+    //           onPress={() => {
+    //             session();
+    //           }}
+    //         >
+    //           <Text>Noone is playing right now</Text>
+    //         </Button>
+    //       </FooterTab>
+    //     </Footer>
+    //   );
+    // }
+  }
 }
 
 const styles = {
-  container: {
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   playerContainer: {
-    backgroundColor: "#f8f8f8"
-  },
-  info: {
-    alignItems: "center"
-  },
-  controls: {
-    flexDirection: "row"
+    backgroundColor: "#f8f8f8",
+    height: 70
   },
   youtube: {
     alignSelf: "stretch",
