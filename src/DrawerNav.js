@@ -3,44 +3,43 @@ import { View, Text, Alert, AsyncStorage } from "react-native";
 import { Thumbnail, Button, Icon } from "native-base";
 import Drawer from "react-native-drawer";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
-import EventEmitter from "react-native-eventemitter";
 import { logout } from "./api/requests";
 import { AdMobBanner } from "react-native-admob";
 class DrawerNav extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             room: null,
             user: null
         };
 
-        EventEmitter.on("joinRoom", room => {
+        this.ee = this.props.ee;
+
+        this.ee.addListener("joinRoom", room => {
             this.setState({ room: room });
         });
 
-        EventEmitter.on("login", user => {
-            Actions.Lobby({ type: "reset" });
-            // this.socket = new Socket(user._id);
-            this.setState({ user: user });
+        this.ee.addListener("login", user => {
+            this.setState({ user });
         });
+    }
 
-        EventEmitter.on("logout", () => {
-            Actions.Lobby({ type: "reset" });
-            // this.socket = new Socket();
-            this.setState({ user: null });
+    logout() {
+        this.ee.emit("logout");
+        logout();
+        Actions.refresh({
+            type: "reset"
         });
+        this.setState({ user: null });
     }
 
     componentWillMount() {
         AsyncStorage.getItem("user").then(user => {
             if (user) {
                 let info = JSON.parse(user);
-                console.log(info);
                 // this.socket = new Socket(info._id);
                 this.setState({ user: info });
-            } else {
-                // this.socket = new Socket();
-                this.setState({ user: null });
             }
         });
     }
@@ -65,7 +64,7 @@ class DrawerNav extends Component {
                         transparent
                         onPress={() => {
                             this._drawer.close();
-                            Actions.Lobby();
+                            Actions.Lobby({ type: "reset" });
                         }}
                     >
                         <Icon name="apps" />
@@ -77,9 +76,11 @@ class DrawerNav extends Component {
                               transparent
                               onPress={() => {
                                   this._drawer.close();
-                                  Actions.Room({
-                                      room: room,
-                                      title: room.name
+                                  joinRoom(room._id).then(() => {
+                                      Actions.Room({
+                                          room: room,
+                                          title: room.name
+                                      });
                                   });
                               }}
                           >
@@ -93,7 +94,7 @@ class DrawerNav extends Component {
                               transparent
                               onPress={() => {
                                   this._drawer.close();
-                                  Actions.Messages();
+                                  Actions.Messages({ type: "reset" });
                               }}
                           >
                               <Icon name="mail" />
@@ -110,8 +111,8 @@ class DrawerNav extends Component {
                                       {
                                           text: "Logout",
                                           onPress: () => {
-                                              logout();
-                                              Actions.refresh();
+                                              this._drawer.close();
+                                              this.logout();
                                           }
                                       }
                                   ]);

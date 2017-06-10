@@ -10,7 +10,8 @@ import {
   Text
 } from "native-base";
 import { View, TouchableOpacity, AsyncStorage } from "react-native";
-import EventEmitter from "react-native-eventemitter";
+// import EventEmitter from "react-native-eventemitter";
+import EventEmitter from "EventEmitter";
 
 import Lobby from "./components/Lobby";
 import Room from "./components/Room";
@@ -25,14 +26,21 @@ import "./api/requests";
 
 console.disableYellowBox = true;
 
+const ee = new EventEmitter();
+
 const scenes = Actions.create(
   <Scene key="main" type="reset">
-    <Scene key="drawer" open={false} component={DrawerNav}>
+    <Scene key="drawer" open={false} ee={ee} component={DrawerNav}>
       <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
-        <Scene key="Lobby" component={Lobby} title="Lobby" />
-        <Scene key="Room" component={Room} title="Room" />
-        <Scene key="Messages" component={PrivateMessages} title="Messages" />
-        <Scene key="Login" component={Login} title="Login" />
+        <Scene key="Lobby" ee={ee} component={Lobby} title="Lobby" />
+        <Scene key="Room" ee={ee} component={Room} title="Room" />
+        <Scene
+          key="Messages"
+          ee={ee}
+          component={PrivateMessages}
+          title="Messages"
+        />
+        <Scene key="Login" ee={ee} component={Login} title="Login" />
       </Scene>
     </Scene>
   </Scene>
@@ -41,38 +49,27 @@ const scenes = Actions.create(
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: null };
     this.socket = null;
-    // EventEmitter.on("login", user => {
-    //   // this.socket = new Socket(user._id);
-    //   this.setState({ user: user });
-    // });
 
-    EventEmitter.on("logout", () => {
-      if (this.socket) {
-        console.log(this.socket);
-        this.socket.sock.close();
-      }
+    ee.addListener("logout", () => {
+      this.socket.close();
+      this.socket = new Socket(ee);
     });
 
-    EventEmitter.on("joinRoom", room => {
-      console.log(this.socket);
-      if (this.socket) {
-        console.log("previous socket");
-        this.socket.sock.close();
-      }
-      this.socket = new Socket(this.state.user, room._id);
+    ee.addListener("login", user => {
+      this.socket.close();
+      this.socket = new Socket(ee, user);
+    });
+
+    ee.addListener("joinRoom", room => {
+      this.socket.joinRoom(room._id);
     });
   }
 
   componentWillMount() {
     AsyncStorage.getItem("user").then(user => {
-      if (user) {
-        let info = JSON.parse(user);
-        this.setState({ user: info });
-      } else {
-        this.setState({ user: null });
-      }
+      this.socket = new Socket(ee, user);
+      console.log(this.socket);
     });
   }
 
@@ -80,7 +77,7 @@ export default class App extends Component {
     return (
       <Container>
         <Router scenes={scenes} />
-        <PlayerContainer />
+        <PlayerContainer ee={ee} />
       </Container>
     );
   }

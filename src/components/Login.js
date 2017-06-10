@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import EventEmitter from "react-native-eventemitter";
-import { Text, Dimensions, AsyncStorage, AlertIOS } from "react-native";
+import { Text, Dimensions, AsyncStorage, Alert } from "react-native";
 import {
   Container,
   Body,
@@ -10,6 +10,7 @@ import {
   Item,
   Input
 } from "native-base";
+import { Actions } from "react-native-router-flux";
 
 import Loading from "./Loading";
 import { login } from "./../api/requests";
@@ -18,25 +19,13 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
 
-    EventEmitter.on("loginError", e => {
-      AlertIOS.alert(e);
-    });
+    this.ee = this.props.ee;
 
     this.state = {
       username: "",
       password: ""
     };
   }
-  componentWillMount() {
-    // this.auth();
-  }
-
-  // auth() {
-  //   AsyncStorage.getItem("user").then(user => {
-  //     this.loading(false);
-  //     this.setState({ user: JSON.parse(user) });
-  //   });
-  // }
 
   loading(isloading = true) {
     isloading
@@ -82,7 +71,22 @@ export default class Login extends Component {
                 bordered
                 onPress={() => {
                   this.loading();
-                  login(this.state.username, this.state.password);
+                  login(this.state.username, this.state.password).then(res => {
+                    console.log(res);
+                    if (res.code) {
+                      Alert.alert(
+                        res.data.details.message ||
+                          res.data.details.message.message
+                      );
+                      this.loading(false);
+                    } else {
+                      Actions.Lobby({
+                        type: "reset"
+                      });
+                      this.loading(false);
+                      this.ee.emit("login", res);
+                    }
+                  });
                 }}
               >
                 <Text>Login</Text>
@@ -100,26 +104,15 @@ const styles = {
   Body: {
     flex: 1,
     marginTop: height / 4,
-    // height: screenHeight,
     justifyContent: "center",
     alignItems: "center"
   },
-
   Form: {
     width: 200
   },
-
   Box: {
-    // justifyContent: 'center',
     alignItems: "center"
   },
-
-  Name: {
-    fontWeight: "bold"
-    // justifyContent: 'center',
-    // textAlign: 'center'
-  },
-
   pholder: {
     textAlign: "center"
   }

@@ -37,36 +37,48 @@ import Autolink from "react-native-autolink";
 export default class Room extends Component {
 	constructor(props) {
 		super(props);
+		this.mounted = false;
 		this.state = {
 			messages: [],
 			room: this.props.room
 		};
 		this.chatMessage = "";
-
-		EventEmitter.on("chat", msg => {
-			getUserAvatar(msg.user._id).then(url => {
-				msg.avatar = url;
-				msg.humanTime = new Date(msg.time).toLocaleTimeString();
-				let messages = this.state.messages;
-				if (messages.length > 100) {
-					messages.splice(100);
-				}
-				this.setState(previousState => ({
-					messages: [...previousState.messages, msg]
-				}));
-				if (messages.length > 6) {
-					this._chatroom.scrollToEnd();
-				}
-			});
+		this.ee = this.props.ee;
+		this.ee.addListener("chat", msg => {
+			console.log(msg);
+			if (this.mounted) {
+				getUserAvatar(msg.user._id).then(url => {
+					console.log(url);
+					msg.avatar = url;
+					msg.humanTime = new Date(msg.time).toLocaleTimeString();
+					let messages = this.state.messages;
+					if (messages.length > 100) {
+						messages.splice(100);
+					}
+					this.setState(previousState => ({
+						messages: [...previousState.messages, msg]
+					}));
+					if (messages.length > 6) {
+						this._chatroom.scrollToEnd();
+					}
+				});
+			}
 			//maybe else to store messages
 		});
 	}
 
 	componentWillMount() {
+		//maybe do auth session in here instead from api/requests
 		//get room users here and load playlists and stuff with user info (Asyncstorage)
 		AsyncStorage.getItem("user").then(user => {
-			console.log(JSON.parse(user));
+			this.mounted = true;
+			this.setState({ user: JSON.parse(user) });
 		});
+	}
+
+	componentWillUnmount() {
+		console.log("unmounting");
+		this.mounted = false;
 	}
 
 	onSend() {
@@ -151,13 +163,12 @@ export default class Room extends Component {
 									/>
 								</Item>
 							</View>
-						</View>
-						<KeyboardSpacer />
+							<KeyboardSpacer topSpacing={-25} />
 
+						</View>
 					</Tab>
 					<Tab heading="Users" />
 					<Tab heading="Playlists" />
-
 				</Tabs>
 			</Container>
 		);

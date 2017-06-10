@@ -6,34 +6,35 @@ const base = "https://api.dubtrack.fm/";
 /* USER API CALLS */
 /******************/
 
-token = function() {
+export function token() {
   return fetch(base + "auth/token", {
     method: "GET",
     credentials: "include"
   })
     .then(res => res.json())
     .then(json => {
-      return json;
+      return json.data.token;
     });
-};
+}
 
-session = function() {
+export function session() {
   return fetch(base + "auth/session", {
     method: "GET",
     credentials: "include"
   })
     .then(res => res.json())
     .then(json => {
+      console.log(json);
       return json;
     });
-};
+}
 
 export function logout() {
-  return fetch(base + "auth/logout").then(() => {
-    console.log("logged out");
-    AsyncStorage.removeItem("user").then(() => {
-      EventEmitter.emit("logout");
-    });
+  return fetch(base + "auth/logout", {
+    method: "GET",
+    credentials: "include"
+  }).then(() => {
+    AsyncStorage.removeItem("user");
   });
 }
 
@@ -48,31 +49,19 @@ export function login(username, password) {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   };
-  let token = null;
-  let userInfo = null;
 
   return fetch(base + "auth/dubtrack", login)
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       if (res.code == 200) {
-        return this.getUserInfo(username)
-          .then(user => {
-            userInfo = user;
-          })
-          .then(() => {
-            return AsyncStorage.setItem("user", JSON.stringify(userInfo));
-          })
-          .then(() => {
-            EventEmitter.emit("login", userInfo);
+        return this.getUserInfo(username).then(user => {
+          return AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {
+            return user;
           });
+        });
       } else {
-        AsyncStorage.removeItem("user").then(() => {
-          if (res.data.details.message.message) {
-            EventEmitter.emit("loginError", res.data.details.message.message);
-          } else {
-            EventEmitter.emit("loginError", res.data.details.message);
-          }
+        return AsyncStorage.removeItem("user").then(() => {
+          return res;
         });
       }
     });
@@ -102,7 +91,9 @@ export function getUserAvatar(id) {
 
 export function getLobby(room = null) {
   if (room) {
-    return fetch("https://api.dubtrack.fm/room/term/" + room)
+    return fetch("https://api.dubtrack.fm/room/term/" + room, {
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(json => {
         return json.data;
@@ -111,7 +102,7 @@ export function getLobby(room = null) {
         console.log(e);
       });
   } else {
-    return fetch("https://api.dubtrack.fm/room")
+    return fetch("https://api.dubtrack.fm/room", { credentials: "include" })
       .then(res => res.json())
       .then(json => {
         return json.data;

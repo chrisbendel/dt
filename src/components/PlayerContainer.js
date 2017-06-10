@@ -23,7 +23,7 @@ import {
 } from "react-native";
 import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
-import { currentSong, getRoomInfo } from "./../api/requests";
+import { currentSong, getRoomInfo, session } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
 // import MusicControl from "react-native-music-control";
 
@@ -99,6 +99,7 @@ export default class PlayerContainer extends Component {
 
   //TODO Put media controls in here
   getPlayerContainer(song) {
+    console.log(song);
     switch (song.songInfo.type) {
       case "youtube":
         return (
@@ -176,7 +177,8 @@ export default class PlayerContainer extends Component {
   render() {
     let song = this.state.song;
     let room = this.state.room;
-    if (room && song) {
+    console.log(this.state.song);
+    if (room && song && !song.err) {
       console.log(song);
       console.log(room);
       let playerContainer = this.getPlayerContainer(song);
@@ -198,8 +200,12 @@ export default class PlayerContainer extends Component {
       return (
         <Footer>
           <FooterTab>
-            <Button>
-              <Text>Noone is playing right now.</Text>
+            <Button
+              onPress={() => {
+                session();
+              }}
+            >
+              <Text>Noone is playing right now</Text>
             </Button>
           </FooterTab>
         </Footer>

@@ -17,7 +17,6 @@ import {
 } from "native-base";
 import { AdMobBanner } from "react-native-admob";
 
-import EventEmitter from "react-native-eventemitter";
 import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 
@@ -31,9 +30,14 @@ export default class Lobby extends Component {
 			rooms: ["test"],
 			refreshing: false
 		};
+		this.ee = this.props.ee;
 	}
 
 	componentWillMount() {
+		this.getLobby();
+	}
+
+	componentWillReceiveProps() {
 		this.getLobby();
 	}
 
@@ -56,11 +60,10 @@ export default class Lobby extends Component {
 	}
 
 	pressRow(item) {
-		EventEmitter.emit("joinRoom", item);
+		this.ee.emit("joinRoom", item);
 		joinRoom(item._id).then(() => {
 			Actions.Room({ room: item, title: item.name });
 		});
-		// Actions.Room({ room: item, title: item.name });
 	}
 
 	renderItem({ item }) {
@@ -90,14 +93,14 @@ export default class Lobby extends Component {
 
 	render() {
 		return (
-			<Container>
-				<Header />
+			<Container style={{ marginTop: 50 }}>
 				<Header searchBar rounded>
-					<Item>
-						<Icon
-							onPress={this.clearSearch.bind(this)}
-							name="close"
-						/>
+					<Item
+						style={{
+							paddingLeft: 20,
+							paddingRight: 5
+						}}
+					>
 						<Input
 							ref="search"
 							placeholder="Search rooms"
@@ -108,6 +111,10 @@ export default class Lobby extends Component {
 							autoCorrect={false}
 							onChangeText={search => (this.query = search)}
 							onSubmitEditing={() => this.getLobby(this.query)}
+						/>
+						<Icon
+							onPress={this.clearSearch.bind(this)}
+							name="close"
 						/>
 					</Item>
 				</Header>
@@ -126,7 +133,7 @@ export default class Lobby extends Component {
 						/>
 					}
 					data={this.state.rooms}
-					keyExtractor={item => item._id}
+					keyExtractor={(item, index) => index}
 					renderItem={this.renderItem.bind(this)}
 				/>
 			</Container>
