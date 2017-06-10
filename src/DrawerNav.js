@@ -11,7 +11,7 @@ import { Thumbnail, Button, Icon } from "native-base";
 import Drawer from "react-native-drawer";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
 import { logout, joinRoom } from "./api/requests";
-import { AdMobBanner } from "react-native-admob";
+import { AdMobRewarded } from "react-native-admob";
 
 class DrawerNav extends Component {
     constructor(props) {
@@ -31,6 +31,34 @@ class DrawerNav extends Component {
         this.ee.addListener("login", user => {
             this.setState({ user });
         });
+
+        AdMobRewarded.setTestDeviceID("EMULATOR");
+        AdMobRewarded.setAdUnitID("ca-app-pub-7092420459681661/6015374839");
+
+        AdMobRewarded.addEventListener(
+            "rewardedVideoDidRewardUser",
+            (type, amount) =>
+                console.log("rewardedVideoDidRewardUser", type, amount)
+        );
+        AdMobRewarded.addEventListener("rewardedVideoDidLoad", () =>
+            console.log("rewardedVideoDidLoad")
+        );
+        AdMobRewarded.addEventListener("rewardedVideoDidFailToLoad", error =>
+            console.log("rewardedVideoDidFailToLoad", error)
+        );
+        AdMobRewarded.addEventListener("rewardedVideoDidOpen", () =>
+            console.log("rewardedVideoDidOpen")
+        );
+        AdMobRewarded.addEventListener("rewardedVideoDidClose", () => {
+            console.log("rewardedVideoDidClose");
+            AdMobRewarded.requestAd(error => error && console.log(error));
+        });
+        AdMobRewarded.addEventListener(
+            "rewardedVideoWillLeaveApplication",
+            () => console.log("rewardedVideoWillLeaveApplication")
+        );
+
+        AdMobRewarded.requestAd(error => error && console.log(error));
     }
 
     logout() {
@@ -52,6 +80,8 @@ class DrawerNav extends Component {
         });
     }
 
+    componentDidMount() {}
+
     getSideMenu() {
         let user = this.state.user;
         let room = this.state.room;
@@ -59,7 +89,11 @@ class DrawerNav extends Component {
             <View style={styles.drawerContainer}>
                 <View>
                     {user
-                        ? <Button iconLeft transparent>
+                        ? <Button
+                              style={{ marginBottom: 20 }}
+                              iconLeft
+                              transparent
+                          >
                               <Thumbnail
                                   small
                                   source={{ uri: user.profileImage.secure_url }}
@@ -139,7 +173,22 @@ class DrawerNav extends Component {
                               <Icon name="log-in" />
                               <Text> Log In </Text>
                           </Button>}
+                    {user
+                        ? null
+                        : <Button
+                              iconLeft
+                              transparent
+                              onPress={() => {
+                                  Linking.openURL(
+                                      "https://www.dubtrack.fm/signup"
+                                  );
+                              }}
+                          >
+                              <Icon name="person-add" />
+                              <Text> Sign Up </Text>
+                          </Button>}
                     <Button
+                        style={{ marginTop: 30 }}
                         iconLeft
                         transparent
                         onPress={() => {
@@ -152,7 +201,16 @@ class DrawerNav extends Component {
                     <Button transparent>
                         <Text note> or </Text>
                     </Button>
-                    <Button transparent>
+                    <Button
+                        transparent
+                        iconLeft
+                        onPress={() => {
+                            AdMobRewarded.showAd(
+                                error => error && console.log(error)
+                            );
+                        }}
+                    >
+                        <Icon name="videocam" />
                         <Text>Watch a quick ad to help support me</Text>
                     </Button>
                 </View>

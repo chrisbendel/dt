@@ -37,6 +37,32 @@ export function logout() {
   });
 }
 
+export function signup(email, username) {
+  let signup = {
+    method: "POST",
+    credentials: "include",
+    body: `email=${email}&username=${username}`,
+    headers: {
+      origin: "",
+      Accept: "application/json",
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  };
+
+  return fetch(base + "auth/signup", signup)
+    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      if (res.code == 200) {
+        console.log(res);
+        console.log("check your email to verify account");
+      } else {
+        console.log(res);
+        //handle username/email taken errors
+      }
+    });
+}
+
 export function login(username, password) {
   let login = {
     method: "POST",

@@ -16,7 +16,6 @@ import EventEmitter from "EventEmitter";
 import Lobby from "./components/Lobby";
 import Room from "./components/Room";
 import Login from "./components/Login";
-
 import Socket from "./api/socket";
 import PrivateMessages from "./components/PrivateMessages";
 import PlayerContainer from "./components/PlayerContainer";
@@ -40,7 +39,7 @@ const scenes = Actions.create(
           component={PrivateMessages}
           title="Messages"
         />
-        <Scene key="Login" ee={ee} component={Login} title="Login" />
+        <Scene key="Login" ee={ee} component={Login} title="Log In" />
       </Scene>
     </Scene>
   </Scene>

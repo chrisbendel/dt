@@ -10,6 +10,7 @@ export default class Socket {
       if (user) {
         this.connectUser(user._id);
       }
+      console.log(this.sock);
       return this.sock;
     });
 

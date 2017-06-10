@@ -79,16 +79,16 @@ export default class Login extends Component {
                       );
                       this.loading(false);
                     } else {
+                      this.loading(false);
                       Actions.Lobby({
                         type: "reset"
                       });
-                      this.loading(false);
                       this.ee.emit("login", res);
                     }
                   });
                 }}
               >
-                <Text>Login</Text>
+                <Text>Log In</Text>
               </Button>
             </Form>
           </Body>
