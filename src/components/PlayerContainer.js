@@ -163,7 +163,7 @@ export default class PlayerContainer extends Component {
                 </Text>
               : null}
             {song.songInfo
-              ? <SliderVolumeController style={{ marginTop: 10 }} />
+              ? <SliderVolumeController style={{ marginTop: 15 }} />
               : null}
           </View>
 
@@ -194,7 +194,7 @@ export default class PlayerContainer extends Component {
 const styles = {
   playerContainer: {
     backgroundColor: "#f8f8f8",
-    height: 70
+    height: 80
   },
   youtube: {
     alignSelf: "stretch",
