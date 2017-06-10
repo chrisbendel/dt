@@ -187,7 +187,10 @@ export function currentSong(id) {
 /******************/
 
 export function getMessages() {
-  return fetch(base + "message")
+  return fetch(base + "message", {
+    method: "GET",
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
       return json.data;

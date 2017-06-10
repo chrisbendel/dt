@@ -149,6 +149,12 @@ class DrawerNav extends Component {
                         <Icon name="cash" />
                         <Text note>Buy me a coffee or five</Text>
                     </Button>
+                    <Button transparent>
+                        <Text note> or </Text>
+                    </Button>
+                    <Button transparent>
+                        <Text>Watch a quick ad to help support me</Text>
+                    </Button>
                 </View>
             </View>
         );

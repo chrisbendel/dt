@@ -12,7 +12,7 @@ import {
   Left,
   Right
 } from "native-base";
-
+import { FlatList } from "react-native";
 import { getMessages } from "./../api/requests";
 
 export default class Messages extends Component {
@@ -24,22 +24,21 @@ export default class Messages extends Component {
   }
 
   componentWillMount() {
-    getMessages().then(messages => {
+    getMessages().then(conversations => {
       this.setState({
-        conversations: messages
+        conversations: conversations
       });
     });
   }
 
   renderRow(item) {
-    console.log(item);
     return (
       <ListItem
         thumbnail
         button
         onPress={() => {
           app.user.markAsRead(item._id);
-          Actions.pm({ id: item._id, title: item.usersid[0].username });
+          // Actions.pm({ id: item._id, title: item.usersid[0].username });
         }}
       >
         <Left>
