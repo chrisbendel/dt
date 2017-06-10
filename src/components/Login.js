@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import EventEmitter from "react-native-eventemitter";
 import { Text, Dimensions, AsyncStorage, Alert } from "react-native";
 import {
   Container,

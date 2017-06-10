@@ -1,5 +1,3 @@
-import EventEmitter from "react-native-eventemitter";
-
 import React, { Component } from "react";
 import {
 	Icon,

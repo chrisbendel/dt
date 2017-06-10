@@ -69,7 +69,6 @@ export default class App extends Component {
   componentWillMount() {
     AsyncStorage.getItem("user").then(user => {
       this.socket = new Socket(ee, user);
-      console.log(this.socket);
     });
   }
 

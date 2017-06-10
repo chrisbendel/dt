@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import EventEmitter from "react-native-eventemitter";
 import {
   Container,
   Content,
@@ -17,7 +16,6 @@ import {
   AsyncStorage,
   Animated,
   View,
-  DeviceEventEmitter,
   TouchableOpacity,
   Dimensions
 } from "react-native";
@@ -36,33 +34,20 @@ export default class PlayerContainer extends Component {
       room: null,
       song: null
     };
-
+    this.ee = this.props.ee;
     this.player = null;
 
-    EventEmitter.on("joinRoom", room => {
+    this.ee.addListener("joinRoom", room => {
       this.getSong(room._id);
       this.setState({ room: room });
-      // getRoomInfo(room._id).then(room => {
-      //   if (room.currentSong) {
-      //     currentSong(room._id).then(song => {
-      //       this.setState({ room: room, song: song });
-      //     });
-      //   } else {
-      //     this.setState({ room: room });
-      //   }
-      // });
     });
 
-    EventEmitter.on("newSong", song => {
+    this.ee.addListener("newSong", song => {
       this.getSong(this.state.room._id);
-      // console.log(song);
-      // this.setState({ song: song });
     });
 
-    EventEmitter.on("pauseQueue", msg => {
+    this.ee.addListener("pauseQueue", msg => {
       this.getSong(this.state.room._id);
-      // console.log(msg);
-      // this.setState({ song: null });
     });
   }
 
@@ -77,9 +62,9 @@ export default class PlayerContainer extends Component {
 
   getSong(roomID) {
     currentSong(roomID).then(song => {
-      if (this.player) {
-        this.player.destroy();
-      }
+      // if (this.player) {
+      //   this.player.destroy();
+      // }
       if (song) {
         this.setState({ song: song });
       } else {
@@ -100,6 +85,7 @@ export default class PlayerContainer extends Component {
   //TODO Put media controls in here
   getPlayerContainer(song) {
     console.log(song);
+
     switch (song.songInfo.type) {
       case "youtube":
         return (
@@ -130,20 +116,24 @@ export default class PlayerContainer extends Component {
                 console.log(e);
                 this.refs.youtubePlayer.seekTo(song.startTime);
               }}
-              style={styles.player}
+              style={styles.youtube}
             />
-            <Button>
-              <Icon name="arrow-up" />
-            </Button>
-            <Button>
-              <Icon name="arrow-down" />
-            </Button>
-            <Button>
-              <Icon name="volume-up" />
-            </Button>
-            <Button>
-              <Icon name="arrow-up" />
-            </Button>
+            <Footer>
+              <FooterTab>
+                <Button>
+                  <Icon name="menu" />
+                </Button>
+                <Button>
+                  <Icon name="cash" />
+                </Button>
+                <Button>
+                  <Icon name="volume-off" />
+                </Button>
+                <Button>
+                  <Icon name="arrow-up" />
+                </Button>
+              </FooterTab>
+            </Footer>
           </View>
         );
         break;
@@ -152,24 +142,27 @@ export default class PlayerContainer extends Component {
         this.player.seek(song.startTime * 1000, () => {
           this.player.play();
           return (
-            <View>
-              <Button transparent>
-                <Icon name="arrow-up" />
-              </Button>
-              <Button transparent>
-                <Icon name="arrow-up" />
-              </Button>
-              <Button transparent>
-                <Icon name="arrow-up" />
-              </Button>
-              <Button transparent>
-                <Icon name="arrow-up" />
-              </Button>
-            </View>
+            <Footer>
+              <FooterTab>
+                {" "}<Button>
+                  <Icon name="menu" />
+                </Button>
+                <Button>
+                  <Icon name="cash" />
+                </Button>
+                <Button>
+                  <Icon name="volume-off" />
+                </Button>
+                <Button>
+                  <Icon name="arrow-up" />
+                </Button>
+              </FooterTab>
+            </Footer>
           );
         });
         break;
       default:
+        console.log("returning null");
         return null;
     }
   }
@@ -177,23 +170,19 @@ export default class PlayerContainer extends Component {
   render() {
     let song = this.state.song;
     let room = this.state.room;
-    console.log(this.state.song);
-    if (room && song && !song.err) {
+    if (room && song) {
       console.log(song);
       console.log(room);
       let playerContainer = this.getPlayerContainer(song);
       return (
         <View style={styles.playerContainer}>
-          <Text numberOfLines={1}>{room.name}</Text>
-          <Text numberOfLines={1}>
-            {song.songInfo.name}
-          </Text>
-
-          <Footer>
-            <FooterTab>
-              {playerContainer}
-            </FooterTab>
-          </Footer>
+          <View style={{ alignItems: "center" }}>
+            <Text numberOfLines={1}>{room.name}</Text>
+            <Text numberOfLines={1}>
+              {song.songInfo.name}
+            </Text>
+          </View>
+          {playerContainer}
         </View>
       );
     } else {
@@ -221,8 +210,6 @@ const styles = {
     justifyContent: "center"
   },
   playerContainer: {
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#f8f8f8"
   },
   info: {
@@ -231,7 +218,7 @@ const styles = {
   controls: {
     flexDirection: "row"
   },
-  player: {
+  youtube: {
     alignSelf: "stretch",
     height: 1,
     width: 1

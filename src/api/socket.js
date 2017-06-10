@@ -33,24 +33,21 @@ export default class Socket {
   }
 
   connectUser(id) {
-    console.log("connecting user");
     this.sock.send(JSON.stringify({ action: 10, channel: "user:" + id }));
   }
 
   joinRoom(id) {
-    console.log("joining room");
     this.sock.send(JSON.stringify({ action: 10, channel: "room:" + id }));
   }
 
   close() {
-    console.log("closing socket");
     this.sock.close();
   }
 
   listeners() {
     this.sock.on("message", msg => {
       msg = JSON.parse(msg);
-      console.log(msg.message);
+      console.log(msg);
       switch (msg.action) {
         case 15:
           switch (msg.message.name) {

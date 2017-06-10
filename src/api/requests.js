@@ -1,4 +1,3 @@
-import EventEmitter from "react-native-eventemitter";
 import { AsyncStorage } from "react-native";
 const base = "https://api.dubtrack.fm/";
 

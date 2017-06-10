@@ -1,10 +1,18 @@
 import React, { Component } from "react";
-import { View, Text, Alert, AsyncStorage } from "react-native";
+import {
+    View,
+    Text,
+    Alert,
+    AsyncStorage,
+    WebView,
+    Linking
+} from "react-native";
 import { Thumbnail, Button, Icon } from "native-base";
 import Drawer from "react-native-drawer";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
-import { logout } from "./api/requests";
+import { logout, joinRoom } from "./api/requests";
 import { AdMobBanner } from "react-native-admob";
+
 class DrawerNav extends Component {
     constructor(props) {
         super(props);
@@ -75,7 +83,6 @@ class DrawerNav extends Component {
                               iconLeft
                               transparent
                               onPress={() => {
-                                  this._drawer.close();
                                   joinRoom(room._id).then(() => {
                                       Actions.Room({
                                           room: room,
@@ -132,6 +139,16 @@ class DrawerNav extends Component {
                               <Icon name="log-in" />
                               <Text> Log In </Text>
                           </Button>}
+                    <Button
+                        iconLeft
+                        transparent
+                        onPress={() => {
+                            Linking.openURL("https://paypal.me/chrissbendel");
+                        }}
+                    >
+                        <Icon name="cash" />
+                        <Text note>Buy me a coffee or five</Text>
+                    </Button>
                 </View>
             </View>
         );
