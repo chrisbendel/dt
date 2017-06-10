@@ -17,6 +17,7 @@ import Lobby from "./components/Lobby";
 import Room from "./components/Room";
 import Login from "./components/Login";
 import Socket from "./api/socket";
+import Conversation from "./components/Conversation";
 import PrivateMessages from "./components/PrivateMessages";
 import PlayerContainer from "./components/PlayerContainer";
 import { Scene, Router, Actions } from "react-native-router-flux";
@@ -38,6 +39,12 @@ const scenes = Actions.create(
           ee={ee}
           component={PrivateMessages}
           title="Messages"
+        />
+        <Scene
+          key="Conversation"
+          ee={ee}
+          component={Conversation}
+          title="Conversation"
         />
         <Scene key="Login" ee={ee} component={Login} title="Log In" />
       </Scene>

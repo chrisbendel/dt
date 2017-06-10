@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Text, Dimensions, AsyncStorage, Alert } from "react-native";
+import {
+  Text,
+  Dimensions,
+  AsyncStorage,
+  Alert,
+  Linking,
+  View
+} from "react-native";
 import {
   Container,
   Body,
@@ -91,6 +98,7 @@ export default class Login extends Component {
                 <Text>Log In</Text>
               </Button>
             </Form>
+
           </Body>
         </Content>
       </Container>

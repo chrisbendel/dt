@@ -227,10 +227,13 @@ export function getMessages() {
 }
 
 export function getConversation(id) {
-  return fetch(base + "message/" + id)
+  return fetch(base + "message/" + id, {
+    method: "GET",
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
-      return json;
+      return json.data;
     })
     .catch(e => {
       console.log(e);

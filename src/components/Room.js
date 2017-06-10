@@ -46,19 +46,11 @@ export default class Room extends Component {
 			console.log(msg);
 			if (this.mounted) {
 				getUserAvatar(msg.user._id).then(url => {
-					console.log(url);
 					msg.avatar = url;
 					msg.humanTime = new Date(msg.time).toLocaleTimeString();
-					let messages = this.state.messages;
-					if (messages.length > 100) {
-						messages.splice(100);
-					}
 					this.setState(previousState => ({
-						messages: [...previousState.messages, msg]
+						messages: [msg, ...previousState.messages]
 					}));
-					if (messages.length > 6) {
-						this._chatroom.scrollToEnd();
-					}
 				});
 			}
 			//maybe else to store messages
@@ -94,6 +86,7 @@ export default class Room extends Component {
 				avatar
 				key={key}
 				style={{
+					transform: [{ scaleY: -1 }],
 					borderWidth: 0,
 					borderBottomWidth: 0
 				}}
@@ -130,6 +123,9 @@ export default class Room extends Component {
 								<FlatList
 									ref={c => {
 										this._chatroom = c;
+									}}
+									style={{
+										transform: [{ scaleY: -1 }]
 									}}
 									extraData={this.state}
 									data={this.state.messages}

@@ -19,8 +19,11 @@ import {
   TouchableOpacity,
   Dimensions
 } from "react-native";
+
 import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
+import Loading from "./Loading";
+
 import { currentSong, getRoomInfo, session } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
 // import MusicControl from "react-native-music-control";
