@@ -121,7 +121,6 @@ export default class Lobby extends Component {
 				<AdMobBanner
 					bannerSize="fullBanner"
 					adUnitID="ca-app-pub-7092420459681661/2210957236"
-					testDeviceID="EMULATOR"
 				/>
 				<FlatList
 					removeClippedSubviews={false}

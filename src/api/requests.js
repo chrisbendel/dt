@@ -154,7 +154,10 @@ export function getRoomInfo(room) {
 }
 
 export function getRoomUsers(room) {
-  return fetch(base + "room/" + room + "/users")
+  return fetch(base + "room/" + room + "/users", {
+    method: "GET",
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
       return json.data;

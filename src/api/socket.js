@@ -79,6 +79,10 @@ export default class Socket {
               msg = JSON.parse(msg.message.data);
               this.ee.emit("pauseQueue", msg);
               break;
+            case "user-join":
+              msg = JSON.parse(msg.message.data);
+              this.ee.emit("userJoin", msg);
+              break;
             default:
               console.log(msg);
               console.log(msg.message.name);
