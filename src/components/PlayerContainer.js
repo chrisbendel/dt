@@ -50,6 +50,10 @@ export default class PlayerContainer extends Component {
     });
   }
 
+  componentWillMount() {
+    console.log(this.state);
+  }
+
   getSong(room) {
     currentSong(room._id).then(song => {
       // if (this.player) {
@@ -173,21 +177,6 @@ export default class PlayerContainer extends Component {
     } else {
       return null;
     }
-    // } else {
-    //   return (
-    //     <Footer>
-    //       <FooterTab>
-    //         <Button
-    //           onPress={() => {
-    //             session();
-    //           }}
-    //         >
-    //           <Text>Noone is playing right now</Text>
-    //         </Button>
-    //       </FooterTab>
-    //     </Footer>
-    //   );
-    // }
   }
 }
 
