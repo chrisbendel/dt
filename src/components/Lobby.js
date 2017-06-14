@@ -114,7 +114,7 @@ export default class Lobby extends Component {
 						/>
 						<Icon
 							onPress={this.clearSearch.bind(this)}
-							name="close"
+							name="refresh"
 						/>
 					</Item>
 				</Header>

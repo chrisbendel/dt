@@ -10,7 +10,6 @@ import {
   Text
 } from "native-base";
 import { View, TouchableOpacity, AsyncStorage } from "react-native";
-// import EventEmitter from "react-native-eventemitter";
 import EventEmitter from "EventEmitter";
 
 import Lobby from "./components/Lobby";
@@ -68,7 +67,9 @@ export default class App extends Component {
     });
 
     ee.addListener("joinRoom", room => {
-      this.socket.close();
+      if (this.socket) {
+        this.socket.close();
+      }
       this.socket = new Socket(ee, this.state.user, room._id);
     });
   }

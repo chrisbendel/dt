@@ -105,7 +105,9 @@ getUserInfo = function(user) {
 };
 
 export function getUserAvatar(id) {
-  return fetch(base + "user/" + id + "/image").then(res => {
+  return fetch(base + "user/" + id + "/image", {
+    credentials: "include"
+  }).then(res => {
     return res.url;
   });
 }
@@ -138,12 +140,38 @@ export function getLobby(room = null) {
   }
 }
 
+/**********************/
+/* PLAYLIST API CALLS */
+/**********************/
+
+export function myPlaylists() {
+  return fetch(base + "playlist", { method: "GET", credentials: "include" })
+    .then(res => res.json())
+    .then(json => {
+      return json.data;
+    });
+}
+
+export function myPlaylist(id) {
+  return fetch(base + "playlist/" + id, {
+    method: "GET",
+    credentials: "include"
+  })
+    .then(res => res.json())
+    .then(json => {
+      return json.data;
+    });
+}
+
 /******************/
 /* ROOM API CALLS */
 /******************/
 
 export function getRoomInfo(room) {
-  return fetch(base + "room/" + room)
+  return fetch(base + "room/" + room, {
+    method: "GET",
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
       return json.data;
@@ -201,7 +229,10 @@ export function joinRoom(id) {
 }
 
 export function currentSong(id) {
-  return fetch("https://api.dubtrack.fm/room/" + id + "/playlist/active")
+  return fetch("https://api.dubtrack.fm/room/" + id + "/playlist/active", {
+    method: "GET",
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
       return json.data;
@@ -246,6 +277,7 @@ export function getConversation(id) {
 export function markAsRead(id) {
   let obj = {
     method: "POST",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -257,7 +289,9 @@ export function markAsRead(id) {
 }
 
 export function checkNew() {
-  return fetch(base + "message/new")
+  return fetch(base + "message/new", {
+    credentials: "include"
+  })
     .then(res => res.json())
     .then(json => {
       return json.data;

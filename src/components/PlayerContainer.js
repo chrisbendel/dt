@@ -17,10 +17,11 @@ import {
 } from "react-native";
 import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
-import { currentSong, getRoomInfo, session } from "./../api/requests";
+import { currentSong, getRoomInfo, session, joinRoom } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
 // import MusicControl from "react-native-music-control";
 import { SliderVolumeController } from "react-native-volume-controller";
+import { Actions } from "react-native-router-flux";
 
 export default class PlayerContainer extends Component {
   constructor(props) {
@@ -36,34 +37,27 @@ export default class PlayerContainer extends Component {
     this.player = null;
 
     this.ee.addListener("joinRoom", room => {
-      console.log(room);
       this.song = null;
       this.getSong(room);
     });
 
     this.ee.addListener("newSong", song => {
+      this.song = null;
       this.getSong(this.state.room);
     });
 
     this.ee.addListener("pauseQueue", msg => {
+      this.song = null;
       this.getSong(this.state.room);
     });
   }
 
-  componentWillMount() {
-    console.log(this.state);
-  }
-
   getSong(room) {
     currentSong(room._id).then(song => {
-      // if (this.player) {
-      //   console.log(this.player);
-      //   this.player.destroy();
-      // }
-      if (song) {
-        this.setState({ song: song, room: room });
-      } else {
+      if (song.err) {
         this.setState({ song: null, room: room });
+      } else {
+        this.setState({ song: song, room: room });
       }
     });
   }
@@ -83,9 +77,7 @@ export default class PlayerContainer extends Component {
 
   //TODO Put media controls in here
   getPlayerContainer(song) {
-    console.log(this.player);
-    if (song.songInfo) {
-      console.log("songinfo", song.songInfo);
+    if (song) {
       switch (song.songInfo.type) {
         case "youtube":
           if (this.player) {
@@ -154,22 +146,31 @@ export default class PlayerContainer extends Component {
     let song = this.state.song;
     let room = this.state.room;
     let Player;
-    if (room) {
-      console.log(song);
-      let Player = this.getPlayerContainer(song);
+
+    if (this.state.room) {
+      let Player = this.getPlayerContainer(this.state.song);
       return (
         <View style={styles.playerContainer}>
-          <View style={{ alignItems: "center" }}>
-            <Text numberOfLines={1}>{room.name}</Text>
-            {song.songInfo
+          <TouchableOpacity
+            style={{ alignItems: "center" }}
+            onPress={() => {
+              Actions.Room({
+                room: this.state.room,
+                title: this.state.room.name
+              });
+            }}
+          >
+            <Text numberOfLines={1}>{this.state.room.name}</Text>
+
+            {this.state.song
               ? <Text numberOfLines={1}>
-                  {song.songInfo.name}
+                  {this.state.song.songInfo.name}
                 </Text>
               : null}
-            {song.songInfo
+            {this.state.song
               ? <SliderVolumeController style={{ marginTop: 15 }} />
               : null}
-          </View>
+          </TouchableOpacity>
 
           {Player}
         </View>

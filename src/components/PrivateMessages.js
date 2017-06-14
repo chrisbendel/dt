@@ -61,9 +61,11 @@ export default class Messages extends Component {
       <ListItem
         avatar
         onPress={() => {
-          Actions.Conversation({
-            id: conversation._id,
-            title: otherUser.username
+          markAsRead(conversation._id).then(() => {
+            Actions.Conversation({
+              id: conversation._id,
+              title: otherUser.username
+            });
           });
         }}
       >

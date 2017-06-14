@@ -33,7 +33,6 @@ class DrawerNav extends Component {
     });
 
     AdMobRewarded.setAdUnitID("ca-app-pub-7092420459681661/6015374839");
-
     AdMobRewarded.addEventListener(
       "rewardedVideoDidRewardUser",
       (type, amount) =>
@@ -48,23 +47,6 @@ class DrawerNav extends Component {
           ]
         )
     );
-    AdMobRewarded.addEventListener("rewardedVideoDidLoad", () =>
-      console.log("rewardedVideoDidLoad")
-    );
-    AdMobRewarded.addEventListener("rewardedVideoDidFailToLoad", error =>
-      console.log("rewardedVideoDidFailToLoad", error)
-    );
-    AdMobRewarded.addEventListener("rewardedVideoDidOpen", () =>
-      console.log("rewardedVideoDidOpen")
-    );
-    AdMobRewarded.addEventListener("rewardedVideoDidClose", () => {
-      console.log("rewardedVideoDidClose");
-      AdMobRewarded.requestAd(error => error && console.log(error));
-    });
-    AdMobRewarded.addEventListener("rewardedVideoWillLeaveApplication", () =>
-      console.log("rewardedVideoWillLeaveApplication")
-    );
-
     AdMobRewarded.requestAd(error => error && console.log(error));
   }
 
@@ -116,24 +98,6 @@ class DrawerNav extends Component {
             <Icon name="apps" />
             <Text> Lobby </Text>
           </Button>
-          {room
-            ? <Button
-                iconLeft
-                block
-                transparent
-                onPress={() => {
-                  joinRoom(room._id).then(() => {
-                    Actions.Room({
-                      room: room,
-                      title: room.name
-                    });
-                  });
-                }}
-              >
-                <Icon name="chatbubbles" />
-                <Text>{room.name}</Text>
-              </Button>
-            : null}
           {user
             ? <Button
                 iconLeft

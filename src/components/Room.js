@@ -12,13 +12,13 @@ import {
 	Text,
 	Input,
 	Item,
+	TabHeading,
 	ListItem,
 	Thumbnail,
 	Container,
 	Content
 } from "native-base";
 import { View, AsyncStorage, RefreshControl, FlatList } from "react-native";
-import { navigationOptions } from "react-navigation";
 import { getUserAvatar, chat, getRoomUsers } from "./../api/requests";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import Autolink from "react-native-autolink";
@@ -33,14 +33,14 @@ export default class Room extends Component {
 		this.mounted = false;
 		this.state = {
 			messages: [],
-			room: this.props.room,
-			refreshing: false
+			refreshing: false,
+			user: null
 		};
 
 		this.chatMessage = "";
 		this.ee = this.props.ee;
+
 		this.ee.addListener("chat", msg => {
-			console.log(msg);
 			if (this.mounted) {
 				getUserAvatar(msg.user._id).then(url => {
 					msg.avatar = url;
@@ -49,12 +49,20 @@ export default class Room extends Component {
 						messages: [msg, ...previousState.messages]
 					}));
 				});
+			} else {
+				getUserAvatar(msg.user._id).then(url => {
+					msg.avatar = url;
+					msg.humanTime = new Date(msg.time).toLocaleTimeString();
+					AsyncStorage.getItem("messages").then(messages => {
+						msgs = JSON.parse(messages);
+						msgs.unshift(msg);
+						AsyncStorage.setItem("messages", JSON.stringify(msgs));
+					});
+				});
 			}
-			//maybe else to store messages
 		});
 
 		this.ee.addListener("userJoin", msg => {
-			console.log(msg);
 			if (this.mounted) {
 				getRoomUsers(this.props.room._id).then(users => {
 					this.setState({ users: users });
@@ -64,10 +72,47 @@ export default class Room extends Component {
 	}
 
 	componentWillMount() {
-		AsyncStorage.getItem("user").then(user => {
-			this.mounted = true;
-			getRoomUsers(this.props.room._id).then(users => {
-				this.setState({ user: JSON.parse(user), users: users });
+		this.mounted = true;
+		// holy logic
+		AsyncStorage.getAllKeys((err, keys) => {
+			AsyncStorage.multiGet(keys, (err, stores) => {
+				stores.map((result, i, store) => {
+					let key = store[i][0];
+					let value = store[i][1];
+				});
+				let messages, user, roomID;
+				for (key in stores) {
+					let k = stores[key][0];
+					let v = stores[key][1];
+					switch (k) {
+						case "roomID":
+							roomID = v;
+							break;
+						case "messages":
+							messages = JSON.parse(v);
+							break;
+						case "user":
+							user = JSON.parse(v);
+							break;
+					}
+					if (roomID == this.props.room._id) {
+						getRoomUsers(this.props.room._id).then(users => {
+							this.setState({
+								user: user,
+								users: users,
+								messages: messages
+							});
+						});
+					} else {
+						getRoomUsers(this.props.room._id).then(users => {
+							this.setState({
+								user: user,
+								users: users,
+								messages: []
+							});
+						});
+					}
+				}
 			});
 		});
 	}
@@ -81,10 +126,15 @@ export default class Room extends Component {
 	componentWillUnmount() {
 		console.log("unmounting");
 		this.mounted = false;
+		let messages = JSON.stringify(this.state.messages);
+		AsyncStorage.multiSet([
+			["messages", messages],
+			["roomID", this.props.room._id]
+		]);
 	}
 
 	onSend() {
-		let room = this.state.room;
+		let room = this.props.room;
 		chat(this.chatMessage, room._id, room.realTimeChannel).then(() => {
 			this.chatMessage = "";
 			this._chat._root.clear();
@@ -92,7 +142,7 @@ export default class Room extends Component {
 	}
 
 	renderMessage({ item }) {
-		let key = item.time;
+		let key = item._id;
 		return (
 			<ListItem
 				avatar
@@ -118,9 +168,9 @@ export default class Room extends Component {
 	}
 
 	renderUser({ item }) {
-		console.log(item);
+		let key = item._id;
 		return (
-			<ListItem avatar>
+			<ListItem key={key} avatar>
 				<Left>
 					<Thumbnail
 						small
@@ -164,38 +214,41 @@ export default class Room extends Component {
 									style={{
 										transform: [{ scaleY: -1 }]
 									}}
-									extraData={this.state}
 									data={this.state.messages}
-									keyExtractor={item => item.time}
-									renderItem={this.renderMessage.bind(this)}
+									// keyExtractor={item => item._id}
+									renderItem={this.renderMessage}
 								/>
 							</View>
-							<View style={{ flex: 1 }}>
-								<Item
-									style={{
-										borderWidth: 0,
-										borderBottomWidth: 0
-									}}
-								>
-									<Input
-										ref={chat => {
-											this._chat = chat;
-										}}
-										style={{
-											paddingLeft: 20,
-											borderWidth: 0,
-											borderBottomWidth: 0
-										}}
-										autoFocus={true}
-										onChangeText={message =>
-											(this.chatMessage = message)}
-										onSubmitEditing={this.onSend.bind(this)}
-										returnKeyType="send"
-										placeholder="Send a message ..."
-									/>
-								</Item>
-							</View>
-							<KeyboardSpacer topSpacing={-25} />
+							{this.state.user
+								? <View style={{ flex: 1 }}>
+										<Item
+											style={{
+												borderWidth: 0,
+												borderBottomWidth: 0
+											}}
+										>
+											<Input
+												ref={chat => {
+													this._chat = chat;
+												}}
+												style={{
+													paddingLeft: 20,
+													borderWidth: 0,
+													borderBottomWidth: 0
+												}}
+												autoFocus={true}
+												onChangeText={message =>
+													(this.chatMessage = message)}
+												onSubmitEditing={this.onSend.bind(
+													this
+												)}
+												returnKeyType="send"
+												placeholder="Send a message ..."
+											/>
+										</Item>
+										<KeyboardSpacer topSpacing={-25} />
+									</View>
+								: null}
 						</View>
 					</Tab>
 					<Tab heading="Users">
@@ -203,7 +256,6 @@ export default class Room extends Component {
 							ref={c => {
 								this._users = c;
 							}}
-							extraData={this.state}
 							refreshControl={
 								<RefreshControl
 									refreshing={this.state.refreshing}
@@ -211,11 +263,11 @@ export default class Room extends Component {
 								/>
 							}
 							data={this.state.users}
-							keyExtractor={item => item._id}
-							renderItem={this.renderUser.bind(this)}
+							// keyExtractor={item => item._id}
+							renderItem={this.renderUser}
 						/>
 					</Tab>
-					<Tab heading="Playlists" />
+					{this.state.user ? <Tab heading="Playlists" /> : null}
 				</Tabs>
 			</Container>
 		);

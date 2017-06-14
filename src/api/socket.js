@@ -1,5 +1,4 @@
 import EngineIOClient from "react-native-engine.io-client";
-// import EventEmitter from "react-native-eventemitter";
 import { AsyncStorage } from "react-native";
 import { token } from "./requests";
 export default class Socket {
@@ -13,10 +12,9 @@ export default class Socket {
       if (room) {
         this.joinRoom(room);
       }
-      console.log(this.sock);
       return this.sock;
     });
-
+    this.room = null;
     this.setSocket = this.setSocket.bind(this);
     this.connectUser = this.connectUser.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
@@ -37,12 +35,16 @@ export default class Socket {
   }
 
   connectUser(id) {
+    if (this.room) {
+      this.joinRoom(this.room._id);
+    }
     console.log("connecting user");
     this.sock.send(JSON.stringify({ action: 10, channel: "user:" + id }));
   }
 
   joinRoom(id) {
     console.log("joining room");
+    this.room = id;
     this.sock.send(JSON.stringify({ action: 10, channel: "room:" + id }));
   }
 
@@ -53,7 +55,7 @@ export default class Socket {
   listeners() {
     this.sock.on("message", msg => {
       msg = JSON.parse(msg);
-      console.log(msg);
+      // console.log(msg);
       switch (msg.action) {
         case 15:
           switch (msg.message.name) {
@@ -84,12 +86,12 @@ export default class Socket {
               this.ee.emit("userJoin", msg);
               break;
             default:
-              console.log(msg);
-              console.log(msg.message.name);
+            // console.log(msg);
+            // console.log(msg.message.name);
           }
           break;
         default:
-          console.log("fallthrough", msg);
+        // console.log("fallthrough", msg);
       }
     });
   }
