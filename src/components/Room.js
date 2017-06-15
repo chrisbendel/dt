@@ -236,7 +236,6 @@ export default class Room extends Component {
 													borderWidth: 0,
 													borderBottomWidth: 0
 												}}
-												autoFocus={true}
 												onChangeText={message =>
 													(this.chatMessage = message)}
 												onSubmitEditing={this.onSend.bind(
@@ -246,9 +245,9 @@ export default class Room extends Component {
 												placeholder="Send a message ..."
 											/>
 										</Item>
-										<KeyboardSpacer topSpacing={-25} />
 									</View>
 								: null}
+							<KeyboardSpacer topSpacing={-25} />
 						</View>
 					</Tab>
 					<Tab heading="Users">
