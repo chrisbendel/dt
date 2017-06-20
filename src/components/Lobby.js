@@ -15,7 +15,6 @@ import {
 	Text,
 	Input
 } from "native-base";
-import { AdMobBanner } from "react-native-admob";
 
 import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
@@ -118,10 +117,6 @@ export default class Lobby extends Component {
 						/>
 					</Item>
 				</Header>
-				<AdMobBanner
-					bannerSize="fullBanner"
-					adUnitID="ca-app-pub-7092420459681661/2210957236"
-				/>
 				<FlatList
 					removeClippedSubviews={false}
 					initialNumToRender={this.state.rooms.length}

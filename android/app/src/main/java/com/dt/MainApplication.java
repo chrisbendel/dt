@@ -3,8 +3,10 @@ package com.dt;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.audioStreaming.ReactNativeAudioStreamingPackage;
+import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.tavernari.volumecontroller.ReactNativeVolumeControllerPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.futurice.rctaudiotoolkit.AudioPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -25,8 +27,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ReactNativeAudioStreamingPackage(),
-            new ReactNativeVolumeControllerPackage()
+            new ReactNativeYouTube(),
+            new ReactNativeVolumeControllerPackage(),
+            new VectorIconsPackage(),
+            new AudioPackage()
       );
     }
   };

@@ -11,7 +11,6 @@ import { Thumbnail, Button, Icon } from "native-base";
 import Drawer from "react-native-drawer";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
 import { logout, joinRoom } from "./api/requests";
-import { AdMobRewarded } from "react-native-admob";
 
 class DrawerNav extends Component {
   constructor(props) {
@@ -31,23 +30,6 @@ class DrawerNav extends Component {
     this.ee.addListener("login", user => {
       this.setState({ user });
     });
-
-    AdMobRewarded.setAdUnitID("ca-app-pub-7092420459681661/6015374839");
-    AdMobRewarded.addEventListener(
-      "rewardedVideoDidRewardUser",
-      (type, amount) =>
-        Alert.alert(
-          "Thanks!",
-          "Thanks for supporting me by sitting through a 30 second ad. Dubtrack Mobile was built entirely in my free time and all the small support helps!",
-          [
-            {
-              text: "Close",
-              style: "cancel"
-            }
-          ]
-        )
-    );
-    AdMobRewarded.requestAd(error => error && console.log(error));
   }
 
   logout() {
@@ -174,17 +156,6 @@ class DrawerNav extends Component {
             <Icon name="cash" />
             <Text note>Buy me a coffee</Text>
           </Button>
-          <Button
-            transparent
-            iconLeft
-            block
-            onPress={() => {
-              AdMobRewarded.showAd(error => error && console.log(error));
-            }}
-          >
-            <Icon name="videocam" />
-            <Text>Watch a quick ad</Text>
-          </Button>
         </View>
       </View>
     );
@@ -198,8 +169,6 @@ class DrawerNav extends Component {
       <Drawer
         ref={ref => (this._drawer = ref)}
         open={state.open}
-        // onOpen={() => Actions.refresh({ key: state.key, open: true })}
-        // onClose={() => Actions.refresh({ key: state.key, open: false })}
         type="displace"
         content={SideMenu}
         tapToClose={true}

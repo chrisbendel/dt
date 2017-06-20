@@ -79,7 +79,7 @@ export function login(username, password) {
     .then(res => res.json())
     .then(res => {
       if (res.code == 200) {
-        return this.getUserInfo(username).then(user => {
+        return this.userInfo(username).then(user => {
           return AsyncStorage.setItem("user", JSON.stringify(user)).then(() => {
             return user;
           });
@@ -93,7 +93,18 @@ export function login(username, password) {
 }
 
 // export function getUserInfo(user) {
-getUserInfo = function(user) {
+userInfo = function(user) {
+  return fetch(base + "user/" + user)
+    .then(res => res.json())
+    .then(json => {
+      return json.data;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
+
+export function getUserInfo(user) {
   return fetch(base + "user/" + user)
     .then(res => res.json())
     .then(json => {
@@ -107,10 +118,12 @@ getUserInfo = function(user) {
 export function getUserAvatar(id) {
   return fetch(base + "user/" + id + "/image", {
     credentials: "include"
-  }).then(res => {
-    return res.url;
+  })
+  .then(res => res.text())
+  .then(text => {
+    console.log(text);
   });
-}
+};
 
 /******************/
 /* LOBBY API CALLS */

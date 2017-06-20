@@ -55,7 +55,6 @@ export default class Socket {
   listeners() {
     this.sock.on("message", msg => {
       msg = JSON.parse(msg);
-      // console.log(msg);
       switch (msg.action) {
         case 15:
           switch (msg.message.name) {
@@ -65,12 +64,10 @@ export default class Socket {
               break;
             case "new-message":
               msg = JSON.parse(msg.message.data);
-              console.log(msg);
               this.ee.emit("privateMessage", msg);
               break;
             case "room_playlist-update":
               msg = JSON.parse(msg.message.data);
-              console.log(msg);
               this.ee.emit("newSong", msg);
               break;
             case "chat-skip":

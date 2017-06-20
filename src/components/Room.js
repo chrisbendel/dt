@@ -19,10 +19,9 @@ import {
 	Content
 } from "native-base";
 import { View, AsyncStorage, RefreshControl, FlatList } from "react-native";
-import { getUserAvatar, chat, getRoomUsers } from "./../api/requests";
+import { getUserAvatar, getUserInfo, chat, getRoomUsers } from "./../api/requests";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import Autolink from "react-native-autolink";
-import { AdMobBanner } from "react-native-admob";
 
 const defaultImage =
 	"https://res.cloudinary.com/hhberclba/image/upload/v1464461630/user/default.png";
@@ -42,8 +41,8 @@ export default class Room extends Component {
 
 		this.ee.addListener("chat", msg => {
 			if (this.mounted) {
-				getUserAvatar(msg.user._id).then(url => {
-					msg.avatar = url;
+				getUserInfo(msg.user._id).then(user => {
+					msg.avatar = user.profileImage.secure_url;
 					msg.humanTime = new Date(msg.time).toLocaleTimeString();
 					this.setState(previousState => ({
 						messages: [msg, ...previousState.messages]
@@ -192,10 +191,6 @@ export default class Room extends Component {
 		return (
 			<Container>
 				<Header />
-				<AdMobBanner
-					bannerSize="fullBanner"
-					adUnitID="ca-app-pub-7092420459681661/9298415230"
-				/>
 				<Tabs>
 					<Tab heading="Chat">
 						<View
@@ -262,7 +257,6 @@ export default class Room extends Component {
 								/>
 							}
 							data={this.state.users}
-							// keyExtractor={item => item._id}
 							renderItem={this.renderUser}
 						/>
 					</Tab>
