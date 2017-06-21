@@ -26,7 +26,7 @@ export default class Lobby extends Component {
 		super(props);
 		this.query = "";
 		this.state = {
-			rooms: ["test"],
+			rooms: [],
 			refreshing: false
 		};
 		this.ee = this.props.ee;
@@ -118,8 +118,6 @@ export default class Lobby extends Component {
 					</Item>
 				</Header>
 				<FlatList
-					removeClippedSubviews={false}
-					initialNumToRender={this.state.rooms.length}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}

@@ -19,7 +19,6 @@ import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
 import { currentSong, getRoomInfo, session, joinRoom } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
-// import MusicControl from "react-native-music-control";
 import { SliderVolumeController } from "react-native-volume-controller";
 import { Actions } from "react-native-router-flux";
 

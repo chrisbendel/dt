@@ -20,7 +20,7 @@
     "react-native-keyboard-spacer": "^0.3.1",
     "react-native-router-flux": "^3.39.2",
     "react-native-vector-icons": "^4.1.1",
-    "react-native-volume-controller": "^1.1.5",
+    "react-native-volume-controller": "^1.1.6",
     "react-native-youtube": "^1.0.0-alpha.4"
   },
   "devDependencies": {
