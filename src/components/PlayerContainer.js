@@ -19,8 +19,8 @@ import YouTube from "react-native-youtube";
 import Socket from "./../api/socket";
 import { currentSong, getRoomInfo, session, joinRoom } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
-import { SliderVolumeController } from "react-native-volume-controller";
 import { Actions } from "react-native-router-flux";
+import VolumeSlider from "react-native-volume-slider";
 
 export default class PlayerContainer extends Component {
   constructor(props) {
@@ -124,20 +124,6 @@ export default class PlayerContainer extends Component {
           return <View />;
           break;
       }
-    } else {
-      return (
-        <Footer>
-          <FooterTab>
-            <Button
-              onPress={() => {
-                session();
-              }}
-            >
-              <Text>Noone is playing right now</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
-      );
     }
   }
 
@@ -146,7 +132,7 @@ export default class PlayerContainer extends Component {
     let room = this.state.room;
     let Player;
 
-    if (this.state.room) {
+    if (this.state.song) {
       let Player = this.getPlayerContainer(this.state.song);
       return (
         <View style={styles.playerContainer}>
@@ -160,15 +146,19 @@ export default class PlayerContainer extends Component {
             }}
           >
             <Text numberOfLines={1}>{this.state.room.name}</Text>
-
-            {this.state.song
-              ? <Text numberOfLines={1}>
-                  {this.state.song.songInfo.name}
-                </Text>
-              : null}
-            {this.state.song
-              ? <SliderVolumeController style={{ marginTop: 15 }} />
-              : null}
+            <Text numberOfLines={1}>
+              {this.state.song.songInfo.name}
+            </Text>
+            <VolumeSlider
+              style={styles.slider}
+              thumbSize={{
+                width: 8,
+                height: 8
+              }}
+              thumbTintColor="rgb(146,146,157)"
+              minimumTrackTintColor="rgb(146,146,157)"
+              maximumTrackTintColor="rgba(255,255,255, 0.1)"
+            />
           </TouchableOpacity>
 
           {Player}
@@ -189,47 +179,9 @@ const styles = {
     alignSelf: "stretch",
     height: 1,
     width: 1
+  },
+  slider: {
+    height: 30,
+    marginLeft: 7
   }
 };
-
-// Ignored for now, get_video_info issue needs resolving with copyright stuff
-// Add this back to the class if it ever works again
-// getYoutubeStream(id) {
-//   let url = "https://www.youtube.com/get_video_info?video_id=" + id;
-//   return fetch(url, headers).then(res => {
-//     res.text().then(body => {
-//       console.log(body);
-//       let info = qsToJson(body);
-//       var tmp = info["adaptive_fmts"];
-//       if (tmp) {
-//         tmp = tmp.split(",");
-//         for (i in tmp) {
-//           tmp[i] = qsToJson(tmp[i]);
-//         }
-//         info["adaptive_fmts"] = tmp;
-//         for (var link of info["adaptive_fmts"]) {
-//           console.log(link);
-//           if (link.type.includes("audio/mp4")) {
-// this.player = new Player(link.url).prepare();
-//             // if (link.type.includes("audio/orvis")) {
-//             // console.log(link.url);
-//             this.setState({ song: link.url });
-//           }
-//         }
-//       }
-//     });
-//   });
-// }
-
-// function qsToJson(qs) {
-//   var res = {};
-//   var pars = qs.split("&");
-//   var kv, k, v;
-//   for (i in pars) {
-//     kv = pars[i].split("=");
-//     k = kv[0];
-//     v = kv[1];
-//     res[k] = decodeURIComponent(v);
-//   }
-//   return res;
-// }

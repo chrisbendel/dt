@@ -113,17 +113,17 @@ export function getUserInfo(user) {
     .catch(e => {
       console.log(e);
     });
-};
+}
 
 export function getUserAvatar(id) {
   return fetch(base + "user/" + id + "/image", {
     credentials: "include"
   })
-  .then(res => res.text())
-  .then(text => {
-    console.log(text);
-  });
-};
+    .then(res => res.text())
+    .then(text => {
+      console.log(text);
+    });
+}
 
 /******************/
 /* LOBBY API CALLS */
@@ -157,7 +157,7 @@ export function getLobby(room = null) {
 /* PLAYLIST API CALLS */
 /**********************/
 
-export function myPlaylists() {
+export function playlists() {
   return fetch(base + "playlist", { method: "GET", credentials: "include" })
     .then(res => res.json())
     .then(json => {
@@ -165,7 +165,7 @@ export function myPlaylists() {
     });
 }
 
-export function myPlaylist(id) {
+export function playlist(id) {
   return fetch(base + "playlist/" + id, {
     method: "GET",
     credentials: "include"

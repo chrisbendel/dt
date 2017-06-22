@@ -21,7 +21,8 @@ import PrivateMessages from "./components/PrivateMessages";
 import PlayerContainer from "./components/PlayerContainer";
 import { Scene, Router, Actions } from "react-native-router-flux";
 import DrawerNav from "./DrawerNav";
-import "./api/requests";
+import KeyboardSpacer from "react-native-keyboard-spacer";
+import KeyboardSpace from "react-native-keyboard-space";
 
 console.disableYellowBox = true;
 
@@ -86,6 +87,7 @@ export default class App extends Component {
       <Container>
         <Router scenes={scenes} />
         <PlayerContainer ee={ee} />
+        <KeyboardSpace />
       </Container>
     );
   }

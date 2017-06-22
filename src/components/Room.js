@@ -19,7 +19,15 @@ import {
 	Content
 } from "native-base";
 import { View, AsyncStorage, RefreshControl, FlatList } from "react-native";
-import { getUserAvatar, getUserInfo, chat, getRoomUsers } from "./../api/requests";
+import {
+	getUserAvatar,
+	getUserInfo,
+	chat,
+	getRoomUsers,
+	playlists,
+	platlist
+} from "./../api/requests";
+import Playlists from "./room/Playlists";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import Autolink from "react-native-autolink";
 
@@ -49,8 +57,8 @@ export default class Room extends Component {
 					}));
 				});
 			} else {
-				getUserAvatar(msg.user._id).then(url => {
-					msg.avatar = url;
+				getUserInfo(msg.user._id).then(user => {
+					msg.avatar = user.profileImage.secure_url;
 					msg.humanTime = new Date(msg.time).toLocaleTimeString();
 					AsyncStorage.getItem("messages").then(messages => {
 						msgs = JSON.parse(messages);
@@ -72,7 +80,6 @@ export default class Room extends Component {
 
 	componentWillMount() {
 		this.mounted = true;
-		// holy logic
 		AsyncStorage.getAllKeys((err, keys) => {
 			AsyncStorage.multiGet(keys, (err, stores) => {
 				stores.map((result, i, store) => {
@@ -94,23 +101,13 @@ export default class Room extends Component {
 							user = JSON.parse(v);
 							break;
 					}
-					if (roomID == this.props.room._id) {
-						getRoomUsers(this.props.room._id).then(users => {
-							this.setState({
-								user: user,
-								users: users,
-								messages: messages
-							});
+					getRoomUsers(this.props.room._id).then(users => {
+						this.setState({
+							user: user,
+							users: users,
+							messages: roomID == this.props.room._id ? messages : []
 						});
-					} else {
-						getRoomUsers(this.props.room._id).then(users => {
-							this.setState({
-								user: user,
-								users: users,
-								messages: []
-							});
-						});
-					}
+					});
 				}
 			});
 		});
@@ -123,7 +120,6 @@ export default class Room extends Component {
 	}
 
 	componentWillUnmount() {
-		console.log("unmounting");
 		this.mounted = false;
 		let messages = JSON.stringify(this.state.messages);
 		AsyncStorage.multiSet([
@@ -141,11 +137,10 @@ export default class Room extends Component {
 	}
 
 	renderMessage({ item }) {
-		let key = item._id;
 		return (
 			<ListItem
 				avatar
-				key={key}
+				key={item._id}
 				style={{
 					transform: [{ scaleY: -1 }],
 					borderWidth: 0,
@@ -167,9 +162,8 @@ export default class Room extends Component {
 	}
 
 	renderUser({ item }) {
-		let key = item._id;
 		return (
-			<ListItem key={key} avatar>
+			<ListItem key={item._id} avatar>
 				<Left>
 					<Thumbnail
 						small
@@ -231,18 +225,15 @@ export default class Room extends Component {
 													borderWidth: 0,
 													borderBottomWidth: 0
 												}}
-												onChangeText={message =>
-													(this.chatMessage = message)}
-												onSubmitEditing={this.onSend.bind(
-													this
-												)}
+												onChangeText={message => (this.chatMessage = message)}
+												onSubmitEditing={this.onSend.bind(this)}
 												returnKeyType="send"
 												placeholder="Send a message ..."
 											/>
 										</Item>
 									</View>
 								: null}
-							<KeyboardSpacer topSpacing={-25} />
+
 						</View>
 					</Tab>
 					<Tab heading="Users">
@@ -260,7 +251,11 @@ export default class Room extends Component {
 							renderItem={this.renderUser}
 						/>
 					</Tab>
-					{this.state.user ? <Tab heading="Playlists" /> : null}
+					{this.state.user
+						? <Tab heading="Playlists">
+								<Playlists id={this.props.room._id} />
+							</Tab>
+						: null}
 				</Tabs>
 			</Container>
 		);
