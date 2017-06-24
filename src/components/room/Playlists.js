@@ -14,7 +14,6 @@ export default class Playlists extends Component {
   componentWillMount() {
     playlists(this.props.id).then(playlists => {
       this.setState({ playlists: playlists });
-      console.log(playlists);
     });
   }
 

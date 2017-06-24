@@ -84,7 +84,7 @@ export default class PlayerContainer extends Component {
             this.player.destroy();
           }
           return (
-            <View>
+            <View style={{ opacity: 0 }}>
               <YouTube
                 ref="youtubePlayer"
                 videoId={song.songInfo.fkid}
@@ -177,8 +177,8 @@ const styles = {
   },
   youtube: {
     alignSelf: "stretch",
-    height: 1,
-    width: 1
+    height: 300,
+    width: 300
   },
   slider: {
     height: 30,

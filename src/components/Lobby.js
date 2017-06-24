@@ -118,6 +118,8 @@ export default class Lobby extends Component {
 					</Item>
 				</Header>
 				<FlatList
+					removeClippedSubviews={false}
+					initialNumToRender={20}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}
