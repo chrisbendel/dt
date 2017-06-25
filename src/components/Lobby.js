@@ -71,9 +71,7 @@ export default class Lobby extends Component {
 				<Thumbnail
 					size={60}
 					source={
-						item.background
-							? { uri: item.background.secure_url }
-							: defaultImage
+						item.background ? { uri: item.background.secure_url } : defaultImage
 					}
 				/>
 				<Body>
@@ -81,9 +79,7 @@ export default class Lobby extends Component {
 						{item.name}
 					</Text>
 					<Text style={styles.textCenter} numberOfLines={2} note>
-						{item.currentSong
-							? item.currentSong.name
-							: "No one is playing"}
+						{item.currentSong ? item.currentSong.name : "No one is playing"}
 					</Text>
 				</Body>
 			</ListItem>
@@ -111,10 +107,7 @@ export default class Lobby extends Component {
 							onChangeText={search => (this.query = search)}
 							onSubmitEditing={() => this.getLobby(this.query)}
 						/>
-						<Icon
-							onPress={this.clearSearch.bind(this)}
-							name="refresh"
-						/>
+						<Icon onPress={this.clearSearch.bind(this)} name="refresh" />
 					</Item>
 				</Header>
 				<FlatList
