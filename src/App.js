@@ -18,7 +18,6 @@ import Login from "./components/Login";
 import Socket from "./api/socket";
 import Conversation from "./components/Conversation";
 import PrivateMessages from "./components/PrivateMessages";
-import PlayerContainer from "./components/PlayerContainer";
 import { Scene, Router, Actions } from "react-native-router-flux";
 import DrawerNav from "./DrawerNav";
 import KeyboardSpacer from "react-native-keyboard-spacer";
@@ -32,7 +31,15 @@ const scenes = Actions.create(
   <Scene key="main" type="reset">
     <Scene key="drawer" open={false} ee={ee} component={DrawerNav}>
       <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
-        <Scene key="Lobby" ee={ee} component={Lobby} title="Lobby" />
+        <Scene
+          key="Lobby"
+          ee={ee}
+          component={Lobby}
+          title="Lobby"
+          renderRightButton={() => {
+            return <Icon name="menu" />;
+          }}
+        />
         <Scene key="Room" ee={ee} component={Room} title="Room" />
         <Scene
           key="Messages"
@@ -56,6 +63,9 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.socket = null;
+    this.state = {
+      room: null
+    };
 
     ee.addListener("logout", () => {
       this.socket.close();
@@ -72,6 +82,7 @@ export default class App extends Component {
         this.socket.close();
       }
       this.socket = new Socket(ee, this.state.user, room._id);
+      this.setState({ room: room });
     });
   }
 
@@ -85,8 +96,51 @@ export default class App extends Component {
   render() {
     return (
       <Container>
-        <Router scenes={scenes} />
-        <PlayerContainer ee={ee} />
+        <Router>
+          <Scene key="main" type="reset">
+            <Scene key="drawer" open={false} ee={ee} component={DrawerNav}>
+              <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
+                <Scene
+                  key="Lobby"
+                  ee={ee}
+                  component={Lobby}
+                  title="Lobby"
+                  renderRightButton={() => {
+                    if (this.state.room) {
+                      return (
+                        <TouchableOpacity
+                          onPress={() => {
+                            Actions.Room({
+                              room: this.state.room,
+                              title: this.state.room.name,
+                              old: true
+                            });
+                          }}
+                        >
+                          <Icon name="musical-notes" />
+                        </TouchableOpacity>
+                      );
+                    }
+                  }}
+                />
+                <Scene key="Room" ee={ee} component={Room} title="Room" />
+                <Scene
+                  key="Messages"
+                  ee={ee}
+                  component={PrivateMessages}
+                  title="Messages"
+                />
+                <Scene
+                  key="Conversation"
+                  ee={ee}
+                  component={Conversation}
+                  title="Conversation"
+                />
+                <Scene key="Login" ee={ee} component={Login} title="Log In" />
+              </Scene>
+            </Scene>
+          </Scene>
+        </Router>
         <KeyboardSpace />
       </Container>
     );
