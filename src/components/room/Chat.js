@@ -121,8 +121,9 @@ export default class Playlists extends Component {
               transform: [{ scaleY: -1 }]
             }}
             data={this.state.messages}
+            removeClippedSubviews={false}
             // keyExtractor={item => item._id}
-            renderItem={this.renderMessage}
+            renderItem={this.renderMessage.bind(this)}
           />
         </View>
         {this.props.user

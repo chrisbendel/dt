@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { RefreshControl, FlatList } from "react-native";
+import { RefreshControl, FlatList, ScrollView } from "react-native";
 import {
 	Container,
 	Header,
@@ -16,10 +16,14 @@ import {
 	Input
 } from "native-base";
 
+import { OptimizedFlatList } from "react-native-optimized-flatlist";
 import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
+import YouTube from "react-native-youtube";
 
-const defaultImage = require("./../images/dt.png");
+// const defaultImage = require("./../images/dt.png");
+const defaultImage =
+	"https://res.cloudinary.com/hhberclba/image/upload/v1464461630/user/default.png";
 
 export default class Lobby extends Component {
 	constructor(props) {
@@ -36,19 +40,22 @@ export default class Lobby extends Component {
 		this.getLobby();
 	}
 
-	componentWillReceiveProps() {
-		this.getLobby();
-	}
-
 	getLobby(room = null) {
 		this.setState({ refreshing: true });
 		getLobby(room).then(rooms => {
+			rooms.forEach(room => {
+				if (!room.background) {
+					room.background = { secure_url: defaultImage };
+				}
+				if (!room.currentSong) {
+					room.currentSong = { name: "Noone is playing" };
+				}
+			});
 			this.setState({ rooms: rooms, refreshing: false });
 		});
 	}
 
 	_onRefresh() {
-		this.getLobby();
 		this.clearSearch();
 	}
 
@@ -67,19 +74,20 @@ export default class Lobby extends Component {
 
 	renderItem({ item }) {
 		return (
-			<ListItem key={item._id} onPress={() => this.pressRow(item)}>
-				<Thumbnail
-					size={60}
-					source={
-						item.background ? { uri: item.background.secure_url } : defaultImage
-					}
-				/>
+			<ListItem
+				style={{ height: 80 }}
+				key={item._id}
+				onPress={() => this.pressRow(item)}
+			>
 				<Body>
 					<Text style={styles.textCenter} numberOfLines={1}>
 						{item.name}
 					</Text>
-					<Text style={styles.textCenter} numberOfLines={2} note>
-						{item.currentSong ? item.currentSong.name : "No one is playing"}
+					<Text style={styles.textCenter} numberOfLines={1} note>
+						{item.currentSong.name}
+					</Text>
+					<Text style={styles.textCenter} numberOfLines={1} note>
+						{item.activeUsers} people in room
 					</Text>
 				</Body>
 			</ListItem>
@@ -111,8 +119,14 @@ export default class Lobby extends Component {
 					</Item>
 				</Header>
 				<FlatList
+					getItemLayout={(data, index) => ({
+						length: 100,
+						offset: 100 * index,
+						index
+					})}
 					removeClippedSubviews={false}
 					initialNumToRender={20}
+					disableVirtualization={false}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}

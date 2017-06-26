@@ -9,7 +9,13 @@ import {
   Image,
   Text
 } from "native-base";
-import { View, TouchableOpacity, AsyncStorage } from "react-native";
+import {
+  View,
+  PixelRatio,
+  Dimensions,
+  TouchableOpacity,
+  AsyncStorage
+} from "react-native";
 import EventEmitter from "EventEmitter";
 
 import Lobby from "./components/Lobby";
@@ -22,6 +28,7 @@ import { Scene, Router, Actions } from "react-native-router-flux";
 import DrawerNav from "./DrawerNav";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import KeyboardSpace from "react-native-keyboard-space";
+import Video from "./components/Video";
 
 console.disableYellowBox = true;
 
@@ -68,11 +75,15 @@ export default class App extends Component {
     };
 
     ee.addListener("logout", () => {
+      console.log("logging out");
+      this.setState({ user: null });
       this.socket.close();
       this.socket = new Socket(ee);
     });
 
     ee.addListener("login", user => {
+      console.log("logging in");
+      this.setState({ user: user });
       this.socket.close();
       this.socket = new Socket(ee, user);
     });
@@ -139,9 +150,9 @@ export default class App extends Component {
                 <Scene key="Login" ee={ee} component={Login} title="Log In" />
               </Scene>
             </Scene>
+
           </Scene>
         </Router>
-        <KeyboardSpace />
       </Container>
     );
   }

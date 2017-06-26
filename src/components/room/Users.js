@@ -20,6 +20,11 @@ export default class Users extends Component {
 
   users(id) {
     getRoomUsers(id).then(users => {
+      users.forEach(user => {
+        if (!user._user.profileImage) {
+          user._user.profileImage = { secure_url: defaultImage };
+        }
+      });
       this.setState({ users: users });
     });
   }
@@ -33,14 +38,12 @@ export default class Users extends Component {
 
   renderUser({ item }) {
     return (
-      <ListItem key={item._id} avatar>
+      <ListItem style={{ height: 50 }} key={item._id} avatar>
         <Left>
           <Thumbnail
             small
             source={{
-              uri: item._user.profileImage
-                ? item._user.profileImage.secure_url
-                : defaultImage
+              uri: item._user.profileImage.secure_url
             }}
           />
         </Left>
@@ -57,6 +60,11 @@ export default class Users extends Component {
         ref={c => {
           this._users = c;
         }}
+        getItemLayout={(data, index) => ({
+          length: 50,
+          offset: 50 * index,
+          index
+        })}
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
@@ -64,7 +72,7 @@ export default class Users extends Component {
           />
         }
         data={this.state.users}
-        renderItem={this.renderUser}
+        renderItem={this.renderUser.bind(this)}
       />
     );
   }

@@ -192,12 +192,8 @@ class DrawerNav extends Component {
 
 const styles = {
   drawerContainer: {
-    // marginTop: 60,
     justifyContent: "center",
-
-    // alignItems: "center"
     flex: 1
-    // flexDirection: "column"
   },
   center: {
     justifyContent: "center",
