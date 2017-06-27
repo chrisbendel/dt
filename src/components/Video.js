@@ -24,8 +24,11 @@ import Socket from "./../api/socket";
 import { currentSong, getRoomInfo, joinRoom } from "./../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
 import { Actions } from "react-native-router-flux";
+import Loading from "./Loading";
 // import VolumeSlider from "react-native-volume-slider";
 const { height, width } = Dimensions.get("window");
+const defaultImage =
+  "https://vignette1.wikia.nocookie.net/dubstep/images/2/26/Soundcloud-logo.png/revision/latest?cb=20120527192311";
 
 export default class Video extends Component {
   constructor(props) {
@@ -33,7 +36,7 @@ export default class Video extends Component {
     let socket;
 
     this.state = {
-      room: null
+      song: null
     };
 
     this.ee = this.props.ee;
@@ -41,30 +44,31 @@ export default class Video extends Component {
     this.player = null;
 
     this.ee.addListener("newSong", song => {
-      console.log(song);
-      // this.song = null;
-      this.getSong(this.room._id);
+      this.getSong();
     });
 
     this.ee.addListener("pauseQueue", msg => {
-      console.log(msg);
-      // this.song = null;
-      this.getSong(this.room._id);
+      this.getSong();
     });
   }
 
-  componentWillMount() {
-    this.getSong(this.room);
+  componentDidMount() {
+    // if (this.player) {
+    //   this.player.destroy();
+    // }
+    this.getSong();
   }
 
-  getSong(room) {
+  componentWillUnmount() {
+    // if (this.player) {
+    //   this.player.destroy();
+    // }
+    this.setState({ song: null });
+  }
+
+  getSong() {
     currentSong(this.room._id).then(song => {
-      console.log(song);
-      if (song.err) {
-        this.setState({ song: null, room: room });
-      } else {
-        this.setState({ song: song, room: room });
-      }
+      this.setState({ song: song });
     });
   }
 
@@ -78,47 +82,59 @@ export default class Video extends Component {
 
   render() {
     let song = this.state.song;
-    if (song) {
-      switch (song.songInfo.type) {
-        case "youtube":
-          if (this.player) {
-            this.player.destroy();
-          }
-          return (
-            <YouTube
-              ref="youtubePlayer"
-              videoId={song.songInfo.fkid}
-              play={true}
-              rel={false}
-              fullscreen={false}
-              showFullscreenButton={true}
-              showinfo={false}
-              controls={0}
-              apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
-              origin={"https://www.youtube.com"}
-              style={styles.player}
-            />
-          );
-          break;
-        case "soundcloud":
-          this.getScStream(song.songInfo.streamUrl);
-          this.player.seek(song.startTime * 1000, () => {
-            this.player.play();
-          });
-          return (
-            <View>
-              <Image
-                style={{ height: 100, width: width }}
-                source={{ uri: song.songInfo.images.soundcloud.artwork_url }}
-              />
-            </View>
-          );
-          break;
-      }
-    } else {
+    if (this.player) {
+      this.player.destroy();
+    }
+
+    if (!song) {
+      return null;
+    }
+
+    if (song.songInfo.type === "youtube") {
       return (
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <Text> Nobody is playing right now </Text>
+        <View style={styles.container}>
+          <YouTube
+            ref={c => {
+              this._youTubePlayer = c;
+            }}
+            videoId={song.songInfo.fkid}
+            play={true}
+            rel={false}
+            fullscreen={false}
+            showFullscreenButton={true}
+            showinfo={false}
+            controls={0}
+            apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
+            origin={"https://www.youtube.com"}
+            onChangeState={e => {
+              console.log(e);
+              // if (e.state == "buffering") {
+              //   this._youTubePlayer.seekTo(song.startTime);
+              // }
+            }}
+            style={styles.player}
+          />
+        </View>
+      );
+    }
+
+    if (song.songInfo.type === "soundcloud") {
+      this.player = new Player.play(
+        this.songInfo.streamUrl + "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs"
+      );
+      this.player.seek(song.startTime * 1000);
+      return (
+        <View style={styles.container}>
+          <Image
+            style={{ height: 100, width: 200 }}
+            resizeMode={"contain"}
+            source={{
+              uri: song.songInfo.images.thumbnail
+                ? song.songInfo.images.thumbnail
+                : defaultImage
+            }}
+          />
+          <Text note numberOfLines={1}>{song.songInfo.name}</Text>
         </View>
       );
     }
@@ -126,8 +142,14 @@ export default class Video extends Component {
 }
 
 const styles = {
+  container: {
+    alignItems: "center",
+    width: width
+  },
   player: {
-    alignSelf: "stretch",
-    height: 250
+    height: 150,
+    width: 210,
+    marginHorizontal: 10,
+    marginVertical: 3
   }
 };

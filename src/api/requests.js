@@ -248,6 +248,9 @@ export function currentSong(id) {
   })
     .then(res => res.json())
     .then(json => {
+      if (json.data.err) {
+        return null;
+      }
       return json.data;
     })
     .catch(e => {

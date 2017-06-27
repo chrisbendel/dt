@@ -21,6 +21,6 @@ lane :beta do
   crashlytics(
     api_token: "7a9da90345ae192fb6655168986efc0c2e819d91",
     build_secret: "29f0b8970264e384826283e0f0e81a5a58c11d4af733ee17257ee1ac165c5bf8",
-    apk_path: "app/app-release.apk"
+    apk_path: "app/build/outputs/apk/app-release.apk"
   )
 end

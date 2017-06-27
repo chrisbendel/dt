@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { RefreshControl, FlatList, ScrollView } from "react-native";
+import { RefreshControl, FlatList, ScrollView, Platform } from "react-native";
 import {
 	Container,
 	Header,
@@ -96,7 +96,7 @@ export default class Lobby extends Component {
 
 	render() {
 		return (
-			<Container style={{ marginTop: 50 }}>
+			<Container style={{ paddingTop: Platform.OS === "ios" ? 64 : 54 }}>
 				<Header searchBar rounded>
 					<Item
 						style={{
@@ -115,7 +115,10 @@ export default class Lobby extends Component {
 							onChangeText={search => (this.query = search)}
 							onSubmitEditing={() => this.getLobby(this.query)}
 						/>
-						<Icon onPress={this.clearSearch.bind(this)} name="refresh" />
+						<Icon
+							onPress={this.clearSearch.bind(this)}
+							name="refresh"
+						/>
 					</Item>
 				</Header>
 				<FlatList
