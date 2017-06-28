@@ -21,30 +21,28 @@ import EventEmitter from "EventEmitter";
 
 import Lobby from "./components/Lobby";
 import Room from "./components/Room";
-import Login from "./components/Login";
+import Settings from "./components/Settings";
 import Socket from "./api/socket";
 import Conversation from "./components/Conversation";
 import PrivateMessages from "./components/PrivateMessages";
 import { Scene, Router, Actions } from "react-native-router-flux";
-import DrawerNav from "./DrawerNav";
-import KeyboardSpace from "react-native-keyboard-space";
 
 console.disableYellowBox = true;
-
 const ee = new EventEmitter();
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.socket = null;
+
     this.state = {
-      room: null
+      user: null
     };
 
     ee.addListener("logout", () => {
-      this.setState({ user: null });
       this.socket.close();
       this.socket = new Socket(ee);
+      this.setState({ user: null });
     });
 
     ee.addListener("login", user => {
@@ -56,7 +54,6 @@ export default class App extends Component {
     ee.addListener("joinRoom", room => {
       this.socket.close();
       this.socket = new Socket(ee, this.state.user, room._id);
-      // this.setState({ room: room });
     });
   }
 
@@ -67,29 +64,63 @@ export default class App extends Component {
     });
   }
 
+  renderRightButton() {
+    return (
+      <TouchableOpacity
+        style={{ justifyContent: "center", alignItems: "center" }}
+        onPress={() => {
+          Actions.Settings({ user: this.state.user });
+        }}
+      >
+        <Icon name="settings" />
+      </TouchableOpacity>
+    );
+  }
+
+  renderLeftButton() {
+    if (this.state.user) {
+      return (
+        <TouchableOpacity
+          style={{ justifyContent: "center", alignItems: "center" }}
+          onPress={() => {
+            Actions.Messages();
+          }}
+        >
+          <Icon name="mail" />
+        </TouchableOpacity>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
     return (
       <Router>
-        <Scene key="main" type="reset">
-          <Scene key="drawer" open={false} ee={ee} component={DrawerNav}>
-            <Scene key="root" tabs={false} drawerIcon={<Icon name="menu" />}>
-              <Scene key="Lobby" ee={ee} component={Lobby} title="Lobby" />
-              <Scene key="Room" ee={ee} component={Room} title="Room" />
-              <Scene
-                key="Messages"
-                ee={ee}
-                component={PrivateMessages}
-                title="Messages"
-              />
-              <Scene
-                key="Conversation"
-                ee={ee}
-                component={Conversation}
-                title="Conversation"
-              />
-              <Scene key="Login" ee={ee} component={Login} title="Log In" />
-            </Scene>
-          </Scene>
+        <Scene key="root">
+          <Scene
+            renderRightButton={this.renderRightButton.bind(this)}
+            renderLeftButton={this.renderLeftButton.bind(this)}
+            key="Lobby"
+            type="reset"
+            ee={ee}
+            component={Lobby}
+            title="Lobby"
+          />
+          <Scene key="Room" ee={ee} component={Room} title="Room" />
+          <Scene
+            key="Messages"
+            ee={ee}
+            component={PrivateMessages}
+            title="Messages"
+          />
+          <Scene
+            key="Conversation"
+            ee={ee}
+            component={Conversation}
+            title="Conversation"
+          />
+          <Scene key="Settings" ee={ee} component={Settings} title="Settings" />
         </Scene>
       </Router>
     );

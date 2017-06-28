@@ -19,12 +19,12 @@ import {
   PixelRatio,
   ScrollView
 } from "react-native";
+
 import YouTube from "react-native-youtube";
-import Socket from "./../api/socket";
-import { currentSong, getRoomInfo, joinRoom } from "./../api/requests";
+import { currentSong, getRoomInfo, joinRoom } from "./../../api/requests";
 import { Player, MediaStates } from "react-native-audio-toolkit";
 import { Actions } from "react-native-router-flux";
-import Loading from "./Loading";
+import Loading from "./../Loading";
 // import VolumeSlider from "react-native-volume-slider";
 const { height, width } = Dimensions.get("window");
 const defaultImage =
@@ -33,21 +33,21 @@ const defaultImage =
 export default class Video extends Component {
   constructor(props) {
     super(props);
-    let socket;
 
     this.state = {
       song: null
     };
 
     this.ee = this.props.ee;
-    this.room = this.props.room;
     this.player = null;
 
     this.ee.addListener("newSong", song => {
+      console.log("new song", song);
       this.getSong();
     });
 
     this.ee.addListener("pauseQueue", msg => {
+      console.log("pause queue", msg);
       this.getSong();
     });
   }
@@ -67,7 +67,7 @@ export default class Video extends Component {
   }
 
   getSong() {
-    currentSong(this.room._id).then(song => {
+    currentSong(this.props.room._id).then(song => {
       this.setState({ song: song });
     });
   }
@@ -81,60 +81,62 @@ export default class Video extends Component {
   }
 
   render() {
-    let song = this.state.song;
     if (this.player) {
       this.player.destroy();
     }
 
-    if (!song) {
+    if (!this.state.song) {
       return null;
     }
 
-    if (song.songInfo.type === "youtube") {
+    if (this.state.song.songInfo.type === "youtube") {
       return (
         <View style={styles.container}>
           <YouTube
             ref={c => {
               this._youTubePlayer = c;
             }}
-            videoId={song.songInfo.fkid}
+            videoId={this.state.song.songInfo.fkid}
             play={true}
             rel={false}
             fullscreen={false}
-            showFullscreenButton={true}
             showinfo={false}
             controls={0}
-            apiKey={"AIzaSyBkJJ0ZoT8XbBDYpZ8sVr1OkVev4C5poWI"}
+            apiKey={"AIzaSyDDfWq9i6O9sQxyIOZdKhfqx0EPj87L3-c"}
             origin={"https://www.youtube.com"}
+            onReady={e => {
+              this._youTubePlayer.seekTo(this.state.song.startTime);
+            }}
             onChangeState={e => {
-              console.log(e);
-              // if (e.state == "buffering") {
-              //   this._youTubePlayer.seekTo(song.startTime);
-              // }
+              if (e.state === "buffering") {
+                this._youTubePlayer.seekTo(this.state.song.startTime);
+              }
             }}
             style={styles.player}
           />
+          <Text note numberOfLines={1}>{this.state.song.songInfo.name}</Text>
         </View>
       );
     }
 
-    if (song.songInfo.type === "soundcloud") {
-      this.player = new Player.play(
-        this.songInfo.streamUrl + "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs"
-      );
-      this.player.seek(song.startTime * 1000);
+    if (this.state.song.songInfo.type === "soundcloud") {
+      // this.player = new Player.play(
+      //   this.state.song.songInfo.streamUrl +
+      //     "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs"
+      // );
+      // this.player.seek(this.state.song.startTime * 1000);
       return (
         <View style={styles.container}>
           <Image
             style={{ height: 100, width: 200 }}
             resizeMode={"contain"}
             source={{
-              uri: song.songInfo.images.thumbnail
-                ? song.songInfo.images.thumbnail
+              uri: this.state.song.songInfo.images.thumbnail
+                ? this.state.song.songInfo.images.thumbnail
                 : defaultImage
             }}
           />
-          <Text note numberOfLines={1}>{song.songInfo.name}</Text>
+          <Text note numberOfLines={1}>{this.state.song.songInfo.name}</Text>
         </View>
       );
     }
@@ -143,13 +145,12 @@ export default class Video extends Component {
 
 const styles = {
   container: {
-    alignItems: "center",
-    width: width
+    alignItems: "center"
   },
   player: {
-    height: 150,
-    width: 210,
-    marginHorizontal: 10,
+    width: 220,
+    height: 115,
+    marginHorizontal: 3,
     marginVertical: 3
   }
 };

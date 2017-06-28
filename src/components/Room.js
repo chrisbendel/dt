@@ -23,9 +23,9 @@ import { getUserAvatar, getUserInfo, chat } from "./../api/requests";
 import Playlists from "./room/Playlists";
 import Users from "./room/Users";
 import Chat from "./room/Chat";
-import Video from "./Video";
-import YouTube from "react-native-youtube";
+import Video from "./room/Video";
 import Loading from "./Loading";
+import YouTube from "react-native-youtube";
 
 export default class Room extends Component {
 	constructor(props) {
@@ -38,17 +38,22 @@ export default class Room extends Component {
 		this.ee = this.props.ee;
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		AsyncStorage.getItem("user").then(user => {
-			console.log(user);
 			this.setState({ user: JSON.parse(user), loading: false });
 		});
 	}
 
 	render() {
+		if (this.state.loading) {
+			return null;
+		}
+
 		return (
-			<Container style={{ paddingTop: Platform.OS === "ios" ? 64 : 56 }}>
-				<Video room={this.props.room} ee={this.ee} />
+			<Container style={{ marginTop: Platform.OS === "ios" ? 64 : 54 }}>
+				<View>
+					<Video room={this.props.room} ee={this.ee} />
+				</View>
 				<Tabs locked>
 					<Tab heading="Chat">
 						<Chat

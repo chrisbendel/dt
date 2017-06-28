@@ -12,7 +12,7 @@ import {
   Left,
   Right
 } from "native-base";
-import { RefreshControl, FlatList, AsyncStorage } from "react-native";
+import { RefreshControl, FlatList, AsyncStorage, Platform } from "react-native";
 import { getMessages, markAsRead } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 
@@ -92,8 +92,7 @@ export default class Messages extends Component {
 
   render() {
     return (
-      <Container>
-        <Header />
+      <Container style={{ marginTop: Platform.OS === "ios" ? 64 : 54 }}>
         <FlatList
           removeClippedSubviews={false}
           initialNumToRender={this.state.conversations.length}

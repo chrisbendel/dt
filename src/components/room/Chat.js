@@ -111,13 +111,12 @@ export default class Playlists extends Component {
     return (
       <View
         style={{
-          flex: 7,
-          flexGrow: 1,
+          flex: 6,
           flexDirection: "column",
           justifyContent: "space-around"
         }}
       >
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 5 }}>
           <FlatList
             ref={c => {
               this._chatroom = c;

@@ -16,7 +16,6 @@ import {
 	Input
 } from "native-base";
 
-import { OptimizedFlatList } from "react-native-optimized-flatlist";
 import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 import YouTube from "react-native-youtube";
@@ -66,9 +65,9 @@ export default class Lobby extends Component {
 	}
 
 	pressRow(item) {
-		this.ee.emit("joinRoom", item);
 		joinRoom(item._id).then(() => {
 			Actions.Room({ room: item, title: item.name });
+			this.ee.emit("joinRoom", item);
 		});
 	}
 
@@ -115,10 +114,7 @@ export default class Lobby extends Component {
 							onChangeText={search => (this.query = search)}
 							onSubmitEditing={() => this.getLobby(this.query)}
 						/>
-						<Icon
-							onPress={this.clearSearch.bind(this)}
-							name="refresh"
-						/>
+						<Icon onPress={this.clearSearch.bind(this)} name="refresh" />
 					</Item>
 				</Header>
 				<FlatList
