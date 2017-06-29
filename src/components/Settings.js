@@ -19,7 +19,7 @@ import {
   Thumbnail,
   Input
 } from "native-base";
-import { Actions } from "react-native-router-flux";
+import { Actions, ActionConst } from "react-native-router-flux";
 
 import Loading from "./Loading";
 import { login, logout } from "./../api/requests";
@@ -46,11 +46,26 @@ export default class Settings extends Component {
   }
 
   logout() {
+    this.setState({ loading: true });
     logout().then(() => {
-      Actions.Lobby({
-        type: "reset"
-      });
       this.ee.emit("logout");
+      this.setState({ loading: false });
+      Actions.Lobby({ type: ActionConst.RESET });
+    });
+  }
+
+  login() {
+    this.setState({ loading: true });
+    login(this.state.username, this.state.password).then(res => {
+      if (res.code) {
+        Alert.alert(
+          res.data.details.message || res.data.details.message.message
+        );
+      } else {
+        this.ee.emit("login", res);
+        this.setState({ loading: false });
+        Actions.Lobby({ type: ActionConst.RESET });
+      }
     });
   }
 
@@ -80,7 +95,6 @@ export default class Settings extends Component {
                     text: "Logout",
                     onPress: () => {
                       this.logout();
-                      Actions.Lobby({ type: "reset" });
                     }
                   }
                 ]);
@@ -138,20 +152,7 @@ export default class Settings extends Component {
               block
               bordered
               onPress={() => {
-                login(this.state.username, this.state.password).then(res => {
-                  if (res.code) {
-                    Alert.alert(
-                      res.data.details.message ||
-                        res.data.details.message.message
-                    );
-                  } else {
-                    this.ee.emit("login", res);
-
-                    Actions.Lobby({
-                      type: "reset"
-                    });
-                  }
-                });
+                this.login();
               }}
             >
               <Text>Log In</Text>

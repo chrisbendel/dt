@@ -46,14 +46,9 @@ export default class App extends Component {
     });
 
     ee.addListener("login", user => {
-      this.setState({ user: user });
       this.socket.close();
       this.socket = new Socket(ee, user);
-    });
-
-    ee.addListener("joinRoom", room => {
-      this.socket.close();
-      this.socket = new Socket(ee, this.state.user, room._id);
+      this.setState({ user: user });
     });
   }
 
@@ -64,7 +59,7 @@ export default class App extends Component {
     });
   }
 
-  renderRightButton() {
+  renderLeftButton = () => {
     return (
       <TouchableOpacity
         style={{ justifyContent: "center", alignItems: "center" }}
@@ -75,9 +70,9 @@ export default class App extends Component {
         <Icon name="settings" />
       </TouchableOpacity>
     );
-  }
+  };
 
-  renderLeftButton() {
+  renderRightButton = () => {
     if (this.state.user) {
       return (
         <TouchableOpacity
@@ -92,17 +87,17 @@ export default class App extends Component {
     } else {
       return null;
     }
-  }
+  };
 
   render() {
     return (
       <Router>
         <Scene key="root">
           <Scene
-            renderRightButton={this.renderRightButton.bind(this)}
-            renderLeftButton={this.renderLeftButton.bind(this)}
+            renderRightButton={this.renderRightButton}
+            renderLeftButton={this.renderLeftButton}
             key="Lobby"
-            type="reset"
+            type="refresh"
             ee={ee}
             component={Lobby}
             title="Lobby"
