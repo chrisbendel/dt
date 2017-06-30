@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { RefreshControl, FlatList, ScrollView, Platform } from "react-native";
+import {
+	RefreshControl,
+	FlatList,
+	ScrollView,
+	Platform,
+	View
+} from "react-native";
 import {
 	Container,
 	Header,
@@ -20,7 +26,6 @@ import { getLobby, joinRoom, token } from "./../api/requests";
 import { Actions } from "react-native-router-flux";
 import YouTube from "react-native-youtube";
 
-// const defaultImage = require("./../images/dt.png");
 const defaultImage =
 	"https://res.cloudinary.com/hhberclba/image/upload/v1464461630/user/default.png";
 
@@ -96,27 +101,22 @@ export default class Lobby extends Component {
 	render() {
 		return (
 			<Container style={{ paddingTop: Platform.OS === "ios" ? 64 : 54 }}>
-				<Header searchBar rounded>
-					<Item
-						style={{
-							paddingLeft: 20,
-							paddingRight: 5
-						}}
-					>
-						<Input
-							ref="search"
-							placeholder="Search rooms"
-							placeholderTextColor={"black"}
-							returnKeyType="search"
-							returnKeyLabel="search"
-							autoCapitalize="none"
-							autoCorrect={false}
-							onChangeText={search => (this.query = search)}
-							onSubmitEditing={() => this.getLobby(this.query)}
-						/>
-						<Icon onPress={this.clearSearch.bind(this)} name="refresh" />
-					</Item>
-				</Header>
+				<Item style={{ alignItems: "center", justifyContent: "center" }}>
+					<Input
+						ref="search"
+						placeholder="Search for a room"
+						placeholderTextColor={"black"}
+						style={{ textAlign: "center" }}
+						returnKeyType="search"
+						returnKeyLabel="search"
+						autoCapitalize="none"
+						autoCorrect={false}
+						onChangeText={search => (this.query = search)}
+						onSubmitEditing={() => this.getLobby(this.query)}
+					/>
+					<Icon onPress={this.clearSearch.bind(this)} name="refresh" />
+				</Item>
+
 				<FlatList
 					getItemLayout={(data, index) => ({
 						length: 100,

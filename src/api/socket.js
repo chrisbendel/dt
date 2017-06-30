@@ -4,7 +4,8 @@ import { token } from "./requests";
 export default class Socket {
   constructor(ee, user = null, room = null) {
     this.ee = ee;
-    this.setSocket().then(() => {
+    this.setSocket().then(sock => {
+      this.sock = sock;
       this.listeners();
       if (user) {
         this.connectUser(user._id);
@@ -12,7 +13,6 @@ export default class Socket {
       if (room) {
         this.joinRoom(room);
       }
-      return this.sock;
     });
     this.room = null;
     this.setSocket = this.setSocket.bind(this);
@@ -23,13 +23,13 @@ export default class Socket {
 
   setSocket() {
     return token().then(token => {
-      return (this.sock = new EngineIOClient({
+      return new EngineIOClient({
         hostname: "ws.dubtrack.fm",
         secure: true,
         path: "/ws",
         query: { access_token: token },
         transports: ["websocket", "polling"]
-      }));
+      });
     });
   }
 

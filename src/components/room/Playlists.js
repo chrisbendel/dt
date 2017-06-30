@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { ListItem, Left, Body, Right, Text, Icon } from "native-base";
 import { FlatList } from "react-native";
 import { playlist, playlists } from "./../../api/requests";
+import { Actions } from "react-native-router-flux";
 
 export default class Playlists extends Component {
   constructor(props) {
@@ -19,7 +20,13 @@ export default class Playlists extends Component {
 
   renderPlaylistItem({ item }) {
     return (
-      <ListItem icon key={item._id}>
+      <ListItem
+        icon
+        key={item._id}
+        onPress={() => {
+          Actions.Playlist({ playlistID: item._id });
+        }}
+      >
         <Body>
           <Text>{item.name}</Text>
         </Body>

@@ -50,6 +50,11 @@ export default class App extends Component {
       this.socket = new Socket(ee, user);
       this.setState({ user: user });
     });
+
+    ee.addListener("joinRoom", room => {
+      this.socket.close();
+      this.socket = new Socket(ee, this.state.user, room._id);
+    });
   }
 
   componentWillMount() {
@@ -115,7 +120,13 @@ export default class App extends Component {
             component={Conversation}
             title="Conversation"
           />
-          <Scene key="Settings" ee={ee} component={Settings} title="Settings" />
+          <Scene
+            direction="leftToRight"
+            key="Settings"
+            ee={ee}
+            component={Settings}
+            title="Settings"
+          />
         </Scene>
       </Router>
     );

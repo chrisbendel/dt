@@ -53,20 +53,23 @@ export default class Video extends Component {
   }
 
   componentDidMount() {
-    // if (this.player) {
-    //   this.player.destroy();
-    // }
+    if (this.player) {
+      this.player.destroy();
+    }
     this.getSong();
   }
 
   componentWillUnmount() {
-    // if (this.player) {
-    //   this.player.destroy();
-    // }
+    if (this.player) {
+      this.player.destroy();
+    }
     this.setState({ song: null });
   }
 
   getSong() {
+    if (this.player) {
+      this.player.destroy();
+    }
     currentSong(this.props.room._id).then(song => {
       this.setState({ song: song });
     });
@@ -120,11 +123,12 @@ export default class Video extends Component {
     }
 
     if (this.state.song.songInfo.type === "soundcloud") {
-      // this.player = new Player.play(
-      //   this.state.song.songInfo.streamUrl +
-      //     "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs"
-      // );
-      // this.player.seek(this.state.song.startTime * 1000);
+      this.player = new Player(
+        this.state.song.songInfo.streamUrl +
+          "?client_id=F8q33BQPCtQHy1sLdye9DriPDNIECjcs"
+      ).play();
+
+      this.player.seek(this.state.song.startTime * 1000);
       return (
         <View style={styles.container}>
           <Image

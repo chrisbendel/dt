@@ -102,21 +102,15 @@ export default class Settings extends Component {
             >
               <Text>Log Out</Text>
             </Button>
-            <Button block transparent style={{ marginTop: 60 }}>
-              <Text style={{ fontWeight: "bold" }}>
-                Donate or Support
-              </Text>
-            </Button>
             <Button
-              iconLeft
-              transparent
               block
+              bordered
+              style={{ marginTop: 60 }}
               onPress={() => {
                 Linking.openURL("https://paypal.me/chrissbendel");
               }}
             >
-              <Icon name="cash" />
-              <Text note>Buy me a coffee</Text>
+              <Text note>Donations Appreciated!</Text>
             </Button>
           </Form>
         </Container>
@@ -157,21 +151,15 @@ export default class Settings extends Component {
             >
               <Text>Log In</Text>
             </Button>
-            <Button block transparent style={{ marginTop: 60 }}>
-              <Text style={{ fontWeight: "bold" }}>
-                Donate or Support
-              </Text>
-            </Button>
             <Button
-              iconLeft
-              transparent
               block
+              bordered
+              style={{ marginTop: 60 }}
               onPress={() => {
                 Linking.openURL("https://paypal.me/chrissbendel");
               }}
             >
-              <Icon name="cash" />
-              <Text note>Buy me a coffee</Text>
+              <Text note>Donations Appreciated!</Text>
             </Button>
           </Form>
         </Container>
