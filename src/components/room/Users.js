@@ -38,7 +38,7 @@ export default class Users extends Component {
 
   renderUser({ item }) {
     return (
-      <ListItem style={{ height: 50 }} key={item._id} avatar>
+      <ListItem key={item._id} avatar>
         <Left>
           <Thumbnail
             small
@@ -48,7 +48,7 @@ export default class Users extends Component {
           />
         </Left>
         <Body>
-          <Text>{item._user.username}</Text>
+          <Text note numberOfLines={1}>{item._user.username}</Text>
         </Body>
       </ListItem>
     );
@@ -57,20 +57,6 @@ export default class Users extends Component {
   render() {
     return (
       <FlatList
-        ref={c => {
-          this._users = c;
-        }}
-        getItemLayout={(data, index) => ({
-          length: 50,
-          offset: 50 * index,
-          index
-        })}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh.bind(this)}
-          />
-        }
         data={this.state.users}
         keyExtractor={item => item._id}
         renderItem={this.renderUser.bind(this)}

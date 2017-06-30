@@ -177,7 +177,7 @@ export function playlist(id) {
 }
 
 export function roomQueue(id) {
-  return fetch(base + "room/" + id + "/playlist", {
+  return fetch(base + "room/" + id + "/playlist/details", {
     method: "GET",
     credentials: "include"
   })
@@ -188,6 +188,7 @@ export function roomQueue(id) {
 }
 
 export function addSong(roomID, songID, songType) {
+  console.log("hi");
   let obj = {
     method: "POST",
     credentials: "include",
@@ -202,7 +203,11 @@ export function addSong(roomID, songID, songType) {
     })
   };
 
-  return fetch(base + "room/" + roomID + "/playlist", obj);
+  return fetch(base + "room/" + roomID + "/playlist", obj)
+    .then(res => res.json())
+    .then(json => {
+      console.log(json);
+    });
 }
 
 /******************/

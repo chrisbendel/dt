@@ -1,28 +1,11 @@
 import React, { Component } from "react";
-import {
-	Icon,
-	Header,
-	Tabs,
-	Tab,
-	Left,
-	Body,
-	Right,
-	Button,
-	Footer,
-	Text,
-	Input,
-	Item,
-	TabHeading,
-	ListItem,
-	Thumbnail,
-	Container,
-	Content
-} from "native-base";
+import { Tabs, Tab, Container } from "native-base";
 import { View, AsyncStorage, FlatList, Platform } from "react-native";
-import { getUserAvatar, getUserInfo, chat } from "./../api/requests";
+import { getUserAvatar, getUserInfo } from "./../api/requests";
 import Playlists from "./room/Playlists";
 import Users from "./room/Users";
 import Chat from "./room/Chat";
+import Queue from "./room/Queue";
 import Video from "./room/Video";
 import Loading from "./Loading";
 import YouTube from "react-native-youtube";
@@ -70,6 +53,9 @@ export default class Room extends Component {
 								<Playlists id={this.props.room._id} />
 							</Tab>
 						: null}
+					<Tab heading="Queue">
+						<Queue id={this.props.room._id} />
+					</Tab>
 				</Tabs>
 			</Container>
 		);

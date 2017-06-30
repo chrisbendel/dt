@@ -12,9 +12,8 @@ import {
   Title,
   Icon
 } from "native-base";
-import Playlist from "./Playlist";
-import { FlatList, Modal, View } from "react-native";
-import { playlist, playlists } from "./../../api/requests";
+import { FlatList, View, Alert } from "react-native";
+import { playlist, playlists, addSong } from "./../../api/requests";
 
 export default class Playlists extends Component {
   constructor(props) {
@@ -22,8 +21,7 @@ export default class Playlists extends Component {
     this.state = {
       playlists: [],
       songs: null,
-      name: null,
-      visible: false
+      name: null
     };
   }
 
@@ -33,10 +31,6 @@ export default class Playlists extends Component {
     });
   }
 
-  setModalVisible(visible) {
-    this.setState({ visible: visible });
-  }
-
   renderPlaylistItem({ item }) {
     return (
       <ListItem
@@ -44,7 +38,7 @@ export default class Playlists extends Component {
         key={item._id}
         onPress={() => {
           playlist(item._id).then(songs => {
-            this.setState({ name: item.name, songs: songs, visible: true });
+            this.setState({ name: item.name, songs: songs });
           });
         }}
       >
@@ -60,8 +54,23 @@ export default class Playlists extends Component {
   }
 
   renderSong({ item }) {
+    console.log(item);
     return (
-      <ListItem avatar key={item._id}>
+      <ListItem
+        avatar
+        key={item._id}
+        onPress={() => {
+          Alert.alert("Queue this song?", null, [
+            { text: "Cancel" },
+            {
+              text: "Queue Song",
+              onPress: () => {
+                addSong(this.props.id, item._song.fkid, item._song.type);
+              }
+            }
+          ]);
+        }}
+      >
         <Left>
           <Thumbnail small source={{ uri: item._song.images.thumbnail }} />
         </Left>

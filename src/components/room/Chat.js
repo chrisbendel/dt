@@ -34,7 +34,6 @@ export default class Playlists extends Component {
     this.props.ee.addListener("chat", msg => {
       if (this.mounted) {
         getUserInfo(msg.user._id).then(user => {
-          msg.key = msg._id;
           msg.avatar = user.profileImage.secure_url;
           msg.humanTime = new Date(msg.time).toLocaleTimeString();
           this.setState(previousState => ({
@@ -88,7 +87,7 @@ export default class Playlists extends Component {
     return (
       <ListItem
         avatar
-        key={item.key}
+        key={item._id}
         style={{
           transform: [{ scaleY: -1 }],
           borderWidth: 0,
@@ -113,14 +112,10 @@ export default class Playlists extends Component {
     return (
       <Container>
         <FlatList
-          ref={c => {
-            this._chatroom = c;
-          }}
           style={{
             transform: [{ scaleY: -1 }]
           }}
           data={this.state.messages}
-          removeClippedSubviews={false}
           keyExtractor={item => item._id}
           renderItem={this.renderMessage.bind(this)}
         />
