@@ -8,6 +8,7 @@ import {
   Thumbnail,
   Text,
   Icon,
+  Container,
   Input
 } from "native-base";
 import {
@@ -33,6 +34,7 @@ export default class Playlists extends Component {
     this.props.ee.addListener("chat", msg => {
       if (this.mounted) {
         getUserInfo(msg.user._id).then(user => {
+          msg.key = msg._id;
           msg.avatar = user.profileImage.secure_url;
           msg.humanTime = new Date(msg.time).toLocaleTimeString();
           this.setState(previousState => ({
@@ -86,7 +88,7 @@ export default class Playlists extends Component {
     return (
       <ListItem
         avatar
-        key={item._id}
+        key={item.key}
         style={{
           transform: [{ scaleY: -1 }],
           borderWidth: 0,
@@ -109,74 +111,57 @@ export default class Playlists extends Component {
 
   render() {
     return (
-      <View
-        style={{
-          flex: 6,
-          flexDirection: "column",
-          justifyContent: "space-around"
-        }}
-      >
-        <View style={{ flex: 5 }}>
-          <FlatList
-            ref={c => {
-              this._chatroom = c;
-            }}
-            style={{
-              transform: [{ scaleY: -1 }]
-            }}
-            data={this.state.messages}
-            removeClippedSubviews={false}
-            // keyExtractor={item => item._id}
-            renderItem={this.renderMessage.bind(this)}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <KeyboardAvoidingView behavior="padding">
-            {this.props.user
-              ? <Item
-                  style={{
-                    borderWidth: 0,
-                    borderBottomWidth: 0
-                  }}
-                >
-                  <Input
-                    ref={chat => {
-                      this._chat = chat;
-                    }}
-                    style={{
-                      paddingLeft: 20,
-                      borderWidth: 0,
-                      borderBottomWidth: 0
-                    }}
-                    onChangeText={message => (this.chatMessage = message)}
-                    onSubmitEditing={this.onSend.bind(this)}
-                    returnKeyType="send"
-                    placeholder="Send a message ..."
-                  />
-                </Item>
-              : <Item
-                  disabled
-                  style={{
-                    borderWidth: 0,
-                    borderBottomWidth: 0
-                  }}
-                >
-                  <Input
-                    ref={chat => {
-                      this._chat = chat;
-                    }}
-                    style={{
-                      paddingLeft: 20,
-                      borderWidth: 0,
-                      borderBottomWidth: 0
-                    }}
-                    placeholder="Log in to join the chatroom"
-                  />
-                </Item>}
-          </KeyboardAvoidingView>
-        </View>
+      <Container>
+        <FlatList
+          ref={c => {
+            this._chatroom = c;
+          }}
+          style={{
+            transform: [{ scaleY: -1 }]
+          }}
+          data={this.state.messages}
+          removeClippedSubviews={false}
+          keyExtractor={item => item._id}
+          renderItem={this.renderMessage.bind(this)}
+        />
+        {this.props.user
+          ? <Item
+              style={{
+                borderBottomWidth: 0
+              }}
+            >
+              <Input
+                ref={chat => {
+                  this._chat = chat;
+                }}
+                style={{
+                  paddingLeft: 20
+                }}
+                onChangeText={message => (this.chatMessage = message)}
+                onSubmitEditing={this.onSend.bind(this)}
+                returnKeyType="send"
+                placeholder="Send a message ..."
+              />
+            </Item>
+          : <Item
+              disabled
+              style={{
+                borderBottomWidth: 0
+              }}
+            >
+              <Input
+                ref={chat => {
+                  this._chat = chat;
+                }}
+                style={{
+                  paddingLeft: 20
+                }}
+                placeholder="Log in to join the chatroom"
+              />
+            </Item>}
+        <KeyboardSpacer />
 
-      </View>
+      </Container>
     );
   }
 }

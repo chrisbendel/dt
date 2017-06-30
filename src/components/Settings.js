@@ -104,13 +104,13 @@ export default class Settings extends Component {
             </Button>
             <Button
               block
-              bordered
+              info
               style={{ marginTop: 60 }}
               onPress={() => {
                 Linking.openURL("https://paypal.me/chrissbendel");
               }}
             >
-              <Text note>Donations Appreciated!</Text>
+              <Text style={{ fontSize: 12 }}>Donations Appreciated!</Text>
             </Button>
           </Form>
         </Container>
@@ -144,7 +144,7 @@ export default class Settings extends Component {
             </Item>
             <Button
               block
-              bordered
+              info
               onPress={() => {
                 this.login();
               }}
@@ -153,13 +153,14 @@ export default class Settings extends Component {
             </Button>
             <Button
               block
+              primary
               bordered
               style={{ marginTop: 60 }}
               onPress={() => {
                 Linking.openURL("https://paypal.me/chrissbendel");
               }}
             >
-              <Text note>Donations Appreciated!</Text>
+              <Text style={{ fontSize: 12 }}>Donations Appreciated!</Text>
             </Button>
           </Form>
         </Container>

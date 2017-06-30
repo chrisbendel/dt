@@ -166,7 +166,7 @@ export function playlists() {
 }
 
 export function playlist(id) {
-  return fetch(base + "playlist/" + id, {
+  return fetch(base + "playlist/" + id + "/songs", {
     method: "GET",
     credentials: "include"
   })
@@ -174,6 +174,35 @@ export function playlist(id) {
     .then(json => {
       return json.data;
     });
+}
+
+export function roomQueue(id) {
+  return fetch(base + "room/" + id + "/playlist", {
+    method: "GET",
+    credentials: "include"
+  })
+    .then(res => res.json())
+    .then(json => {
+      return json.data;
+    });
+}
+
+export function addSong(roomID, songID, songType) {
+  let obj = {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Origin: ""
+    },
+    body: JSON.stringify({
+      songId: songID,
+      songType: songType
+    })
+  };
+
+  return fetch(base + "room/" + roomID + "/playlist", obj);
 }
 
 /******************/

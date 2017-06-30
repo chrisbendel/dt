@@ -4,7 +4,8 @@ import {
 	FlatList,
 	ScrollView,
 	Platform,
-	View
+	View,
+	ListView
 } from "react-native";
 import {
 	Container,
@@ -33,8 +34,14 @@ export default class Lobby extends Component {
 	constructor(props) {
 		super(props);
 		this.query = "";
+		const ds = new ListView.DataSource({
+			rowHasChanged: (r1, r2) => r1 !== r2
+		});
+
 		this.state = {
-			rooms: [],
+			rooms: new ListView.DataSource({
+				rowHasChanged: (r1, r2) => r1 !== r2
+			}),
 			refreshing: false
 		};
 		this.ee = this.props.ee;
@@ -55,7 +62,10 @@ export default class Lobby extends Component {
 					room.currentSong = { name: "Noone is playing" };
 				}
 			});
-			this.setState({ rooms: rooms, refreshing: false });
+			this.setState({
+				rooms: this.state.rooms.cloneWithRows(rooms),
+				refreshing: false
+			});
 		});
 	}
 
@@ -76,13 +86,13 @@ export default class Lobby extends Component {
 		});
 	}
 
-	renderItem({ item }) {
+	// renderItem({ item }) {
+	renderItem(item) {
 		return (
-			<ListItem
-				style={{ height: 80 }}
-				key={item._id}
-				onPress={() => this.pressRow(item)}
-			>
+			<ListItem style={{ height: 80 }} onPress={() => this.pressRow(item)}>
+				{Platform.OS === "ios"
+					? <Thumbnail source={{ uri: item.background.secure_url }} />
+					: null}
 				<Body>
 					<Text style={styles.textCenter} numberOfLines={1}>
 						{item.name}
@@ -105,7 +115,7 @@ export default class Lobby extends Component {
 					<Input
 						ref="search"
 						placeholder="Search for a room"
-						placeholderTextColor={"black"}
+						placeholderTextColor={"blue"}
 						style={{ textAlign: "center" }}
 						returnKeyType="search"
 						returnKeyLabel="search"
@@ -117,24 +127,16 @@ export default class Lobby extends Component {
 					<Icon onPress={this.clearSearch.bind(this)} name="refresh" />
 				</Item>
 
-				<FlatList
-					getItemLayout={(data, index) => ({
-						length: 100,
-						offset: 100 * index,
-						index
-					})}
+				<ListView
 					removeClippedSubviews={false}
-					initialNumToRender={20}
-					disableVirtualization={false}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}
 							onRefresh={this._onRefresh.bind(this)}
 						/>
 					}
-					data={this.state.rooms}
-					keyExtractor={(item, index) => index}
-					renderItem={this.renderItem.bind(this)}
+					dataSource={this.state.rooms}
+					renderRow={this.renderItem.bind(this)}
 				/>
 			</Container>
 		);

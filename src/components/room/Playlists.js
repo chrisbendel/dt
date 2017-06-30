@@ -1,14 +1,29 @@
 import React, { Component } from "react";
-import { ListItem, Left, Body, Right, Text, Icon } from "native-base";
-import { FlatList } from "react-native";
+import {
+  Container,
+  ListItem,
+  Header,
+  Left,
+  Body,
+  Right,
+  Text,
+  Thumbnail,
+  Button,
+  Title,
+  Icon
+} from "native-base";
+import Playlist from "./Playlist";
+import { FlatList, Modal, View } from "react-native";
 import { playlist, playlists } from "./../../api/requests";
-import { Actions } from "react-native-router-flux";
 
 export default class Playlists extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlists: []
+      playlists: [],
+      songs: null,
+      name: null,
+      visible: false
     };
   }
 
@@ -18,13 +33,19 @@ export default class Playlists extends Component {
     });
   }
 
+  setModalVisible(visible) {
+    this.setState({ visible: visible });
+  }
+
   renderPlaylistItem({ item }) {
     return (
       <ListItem
         icon
         key={item._id}
         onPress={() => {
-          Actions.Playlist({ playlistID: item._id });
+          playlist(item._id).then(songs => {
+            this.setState({ name: item.name, songs: songs, visible: true });
+          });
         }}
       >
         <Body>
@@ -38,12 +59,56 @@ export default class Playlists extends Component {
     );
   }
 
-  render() {
+  renderSong({ item }) {
     return (
-      <FlatList
-        data={this.state.playlists}
-        renderItem={this.renderPlaylistItem}
-      />
+      <ListItem avatar key={item._id}>
+        <Left>
+          <Thumbnail small source={{ uri: item._song.images.thumbnail }} />
+        </Left>
+        <Body>
+          <Text numberOfLines={1} note>{item._song.name}</Text>
+        </Body>
+      </ListItem>
+    );
+  }
+
+  render() {
+    if (this.state.songs) {
+      return (
+        <Container>
+          <Header>
+            <Left>
+              <Button
+                transparent
+                onPress={() => {
+                  this.setState({ songs: null });
+                }}
+              >
+                <Icon name="arrow-back" />
+              </Button>
+            </Left>
+            <Body>
+              <Title>{this.state.name}</Title>
+            </Body>
+            <Right />
+          </Header>
+          <FlatList
+            keyExtractor={item => item._id}
+            data={this.state.songs}
+            renderItem={this.renderSong.bind(this)}
+          />
+        </Container>
+      );
+    }
+
+    return (
+      <Container>
+        <FlatList
+          keyExtractor={item => item._id}
+          data={this.state.playlists}
+          renderItem={this.renderPlaylistItem.bind(this)}
+        />
+      </Container>
     );
   }
 }

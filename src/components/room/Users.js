@@ -72,6 +72,7 @@ export default class Users extends Component {
           />
         }
         data={this.state.users}
+        keyExtractor={item => item._id}
         renderItem={this.renderUser.bind(this)}
       />
     );
