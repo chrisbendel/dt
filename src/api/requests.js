@@ -203,11 +203,7 @@ export function addSong(roomID, songID, songType) {
     })
   };
 
-  return fetch(base + "room/" + roomID + "/playlist", obj)
-    .then(res => res.json())
-    .then(json => {
-      console.log(json);
-    });
+  return fetch(base + "room/" + roomID + "/playlist", obj);
 }
 
 /******************/

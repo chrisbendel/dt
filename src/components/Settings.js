@@ -58,9 +58,12 @@ export default class Settings extends Component {
     this.setState({ loading: true });
     login(this.state.username, this.state.password).then(res => {
       if (res.code) {
+        console.log(res);
         Alert.alert(
-          res.data.details.message || res.data.details.message.message
+          res.data.details.message.message || res.data.details.message
         );
+        this.setState({ loading: false });
+        Actions.refresh();
       } else {
         this.ee.emit("login", res);
         this.setState({ loading: false });

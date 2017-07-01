@@ -1,4 +1,4 @@
-package com.dt;
+package com.chrissbendel;
 
 import android.app.Application;
 

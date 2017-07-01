@@ -1,4 +1,4 @@
-package com.dt;
+package com.chrissbendel;
 
 import com.facebook.react.ReactActivity;
 import com.crashlytics.android.Crashlytics;
